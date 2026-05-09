@@ -14,7 +14,143 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      event_registrations: {
+        Row: {
+          created_at: string
+          email: string | null
+          event_id: string
+          full_name: string
+          id: string
+          notes: string | null
+          phone: string
+        }
+        Insert: {
+          created_at?: string
+          email?: string | null
+          event_id: string
+          full_name: string
+          id?: string
+          notes?: string | null
+          phone: string
+        }
+        Update: {
+          created_at?: string
+          email?: string | null
+          event_id?: string
+          full_name?: string
+          id?: string
+          notes?: string | null
+          phone?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "event_registrations_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      events: {
+        Row: {
+          cover_image_path: string | null
+          created_at: string
+          created_by: string | null
+          description: string | null
+          event_date: string
+          id: string
+          location: string
+          registration_open: boolean
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          cover_image_path?: string | null
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          event_date: string
+          id?: string
+          location: string
+          registration_open?: boolean
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          cover_image_path?: string | null
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          event_date?: string
+          id?: string
+          location?: string
+          registration_open?: boolean
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      gallery_images: {
+        Row: {
+          category: string
+          created_at: string
+          created_by: string | null
+          id: string
+          image_path: string
+          title: string
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          image_path: string
+          title: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          image_path?: string
+          title?: string
+        }
+        Relationships: []
+      }
+      reports: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          description: string | null
+          file_path: string
+          id: string
+          published_at: string
+          title: string
+          year: number
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          file_path: string
+          id?: string
+          published_at?: string
+          title: string
+          year: number
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          file_path?: string
+          id?: string
+          published_at?: string
+          title?: string
+          year?: number
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
