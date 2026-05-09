@@ -20,7 +20,7 @@ export function Footer() {
           <div className="mt-6 space-y-2 text-sm">
             <p className="flex items-start gap-2"><MapPin className="h-4 w-4 mt-0.5 shrink-0" /> পাবনা সদর, পাবনা, বাংলাদেশ</p>
             <p className="flex items-center gap-2"><Phone className="h-4 w-4" /> +৮৮০ ১৭১৬-৮০৮০৭৪</p>
-            <p className="flex items-center gap-2"><Mail className="h-4 w-4" /> pnc.pabna@outlook.com</p>
+            <p className="flex items-center gap-2"><Mail className="h-4 w-4" /><span>pnc.pabna@outlook.com</span></p>
             <a href="https://www.facebook.com/pncpabna/" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 mt-2 text-sm hover:underline">
               <Facebook className="h-4 w-4" /> facebook.com/pncpabna
             </a>
