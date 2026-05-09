@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { z } from "zod";
 import {
-  Shield, LogOut, Calendar, Image as ImageIcon, FileText, Plus, Trash2, Users, Download
+  Shield, LogOut, Calendar, Image as ImageIcon, FileText, Plus, Trash2, Users, Download, History
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth, publicUrl } from "@/hooks/use-auth";
@@ -17,7 +17,7 @@ export const Route = createFileRoute("/admin")({
 });
 
 const GALLERY_CATEGORIES = ["সভা ও আলোচনা", "সামাজিক উদ্যোগ", "মানবিক কার্যক্রম", "শুভেচ্ছা ও সম্মাননা", "পাবনার মুহূর্ত"];
-type Tab = "events" | "gallery" | "reports" | "registrations";
+type Tab = "events" | "gallery" | "reports" | "registrations" | "audit";
 
 function AdminPage() {
   const { user, loading } = useAuth();
@@ -40,6 +40,7 @@ function AdminPage() {
     { id: "gallery", label: "গ্যালারি", icon: ImageIcon },
     { id: "reports", label: "প্রতিবেদন", icon: FileText },
     { id: "registrations", label: "নিবন্ধন", icon: Users },
+    { id: "audit", label: "অডিট লগ", icon: History },
   ];
 
   return (
@@ -76,7 +77,88 @@ function AdminPage() {
       {tab === "gallery" && <GalleryAdmin />}
       {tab === "reports" && <ReportsAdmin />}
       {tab === "registrations" && <RegistrationsAdmin />}
+      {tab === "audit" && <AuditAdmin />}
     </section>
+  );
+}
+
+/* ============ AUDIT ============ */
+function AuditAdmin() {
+  const [logs, setLogs] = useState<any[]>([]);
+  const [filter, setFilter] = useState<"all" | "gallery_images" | "reports">("all");
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    (async () => {
+      setLoading(true);
+      let q = supabase.from("audit_logs").select("*").order("created_at", { ascending: false }).limit(200);
+      if (filter !== "all") q = q.eq("table_name", filter);
+      const { data, error } = await q;
+      if (error) toast.error("লগ লোড করা যায়নি");
+      setLogs(data || []);
+      setLoading(false);
+    })();
+  }, [filter]);
+
+  const titleOf = (row: any) =>
+    row.new_data?.title || row.old_data?.title || row.record_id?.slice(0, 8) || "—";
+
+  const actionBadge = (a: string) => {
+    const map: Record<string, string> = {
+      INSERT: "bg-green-500/15 text-green-700 dark:text-green-400",
+      UPDATE: "bg-blue-500/15 text-blue-700 dark:text-blue-400",
+      DELETE: "bg-red-500/15 text-red-700 dark:text-red-400",
+    };
+    return <span className={`inline-block rounded px-2 py-0.5 text-xs font-medium ${map[a] || "bg-muted"}`}>{a}</span>;
+  };
+
+  return (
+    <div className="space-y-4">
+      <div className="flex flex-wrap items-center gap-2">
+        {(["all", "gallery_images", "reports"] as const).map((f) => (
+          <button
+            key={f}
+            onClick={() => setFilter(f)}
+            className={`rounded-md px-3 py-1.5 text-sm ${filter === f ? "bg-primary text-primary-foreground" : "bg-muted hover:bg-muted/80"}`}
+          >
+            {f === "all" ? "সব" : f === "gallery_images" ? "গ্যালারি" : "প্রতিবেদন"}
+          </button>
+        ))}
+      </div>
+
+      {loading ? (
+        <p className="text-sm text-muted-foreground">লোড হচ্ছে...</p>
+      ) : logs.length === 0 ? (
+        <p className="text-sm text-muted-foreground">কোনো লগ পাওয়া যায়নি।</p>
+      ) : (
+        <div className="overflow-x-auto rounded-lg border border-border">
+          <table className="w-full text-sm">
+            <thead className="bg-muted/50">
+              <tr className="text-left">
+                <th className="px-3 py-2 font-medium">সময়</th>
+                <th className="px-3 py-2 font-medium">টেবিল</th>
+                <th className="px-3 py-2 font-medium">অ্যাকশন</th>
+                <th className="px-3 py-2 font-medium">শিরোনাম</th>
+                <th className="px-3 py-2 font-medium">ব্যবহারকারী</th>
+              </tr>
+            </thead>
+            <tbody>
+              {logs.map((l) => (
+                <tr key={l.id} className="border-t border-border">
+                  <td className="px-3 py-2 whitespace-nowrap text-muted-foreground">
+                    {new Date(l.created_at).toLocaleString("bn-BD")}
+                  </td>
+                  <td className="px-3 py-2">{l.table_name === "gallery_images" ? "গ্যালারি" : "প্রতিবেদন"}</td>
+                  <td className="px-3 py-2">{actionBadge(l.action)}</td>
+                  <td className="px-3 py-2 max-w-xs truncate">{titleOf(l)}</td>
+                  <td className="px-3 py-2 text-muted-foreground">{l.user_email || l.user_id?.slice(0, 8) || "—"}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </div>
   );
 }
 
