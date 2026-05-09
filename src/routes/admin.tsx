@@ -40,6 +40,7 @@ function AdminPage() {
     { id: "gallery", label: "গ্যালারি", icon: ImageIcon },
     { id: "reports", label: "প্রতিবেদন", icon: FileText },
     { id: "registrations", label: "নিবন্ধন", icon: Users },
+    { id: "audit", label: "অডিট লগ", icon: History },
   ];
 
   return (
