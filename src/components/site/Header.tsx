@@ -7,8 +7,10 @@ const nav = [
   { to: "/", label: "হোম" },
   { to: "/about", label: "আমাদের সম্পর্কে" },
   { to: "/activities", label: "কার্যক্রম" },
+  { to: "/events", label: "ইভেন্ট" },
   { to: "/news", label: "সংবাদ" },
   { to: "/gallery", label: "গ্যালারি" },
+  { to: "/reports", label: "প্রতিবেদন" },
   { to: "/membership", label: "সদস্য হোন" },
   { to: "/contact", label: "যোগাযোগ" },
 ] as const;
