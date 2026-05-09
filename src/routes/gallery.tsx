@@ -62,7 +62,7 @@ function GalleryPage() {
           {filtered.map((it, i) => (
             <figure key={i} className="group relative overflow-hidden rounded-2xl border border-border bg-card shadow-card aspect-[4/3]">
               <img
-                src={`https://source.unsplash.com/600x450/?${encodeURIComponent(it.q)}`}
+                src={`https://picsum.photos/seed/${encodeURIComponent(it.q)}/600/450`}
                 alt={it.title}
                 loading="lazy"
                 width={600}
