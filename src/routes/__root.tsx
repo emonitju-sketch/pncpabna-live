@@ -17,17 +17,17 @@ function NotFoundComponent() {
   return (
     <div className="flex min-h-[70vh] items-center justify-center bg-background px-4">
       <div className="max-w-md text-center">
-        <h1 className="text-7xl font-bold text-primary">404</h1>
-        <h2 className="mt-4 text-xl font-semibold">Page not found</h2>
+        <h1 className="text-7xl font-bold text-primary">৪০৪</h1>
+        <h2 className="mt-4 text-xl font-semibold">পাতাটি খুঁজে পাওয়া যায়নি</h2>
         <p className="mt-2 text-sm text-muted-foreground">
-          The page you're looking for doesn't exist or has been moved.
+          আপনি যে পাতাটি খুঁজছেন সেটি আর নেই অথবা সরিয়ে ফেলা হয়েছে।
         </p>
         <div className="mt-6">
           <Link
             to="/"
             className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:opacity-90"
           >
-            Return Home
+            হোমে ফিরে যান
           </Link>
         </div>
       </div>
@@ -41,16 +41,16 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
   return (
     <div className="flex min-h-[70vh] items-center justify-center bg-background px-4">
       <div className="max-w-md text-center">
-        <h1 className="text-xl font-semibold">This page didn't load</h1>
-        <p className="mt-2 text-sm text-muted-foreground">Something went wrong. Please try again.</p>
+        <h1 className="text-xl font-semibold">পাতাটি লোড করা যায়নি</h1>
+        <p className="mt-2 text-sm text-muted-foreground">কিছু একটা সমস্যা হয়েছে। অনুগ্রহ করে আবার চেষ্টা করুন।</p>
         <div className="mt-6 flex justify-center gap-2">
           <button
             onClick={() => { router.invalidate(); reset(); }}
             className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:opacity-90"
           >
-            Try again
+            আবার চেষ্টা করুন
           </button>
-          <a href="/" className="rounded-md border border-input px-4 py-2 text-sm">Go home</a>
+          <a href="/" className="rounded-md border border-input px-4 py-2 text-sm">হোম</a>
         </div>
       </div>
     </div>
@@ -62,17 +62,19 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Pabna Nursing College — Government Nursing Education, Bangladesh" },
+      { title: "পাবনা নাগরিক কমিটি - পিএনসি | নাগরিক ঐক্যেই বদলাবে পাবনা" },
       {
         name: "description",
         content:
-          "Pabna Nursing College (PNC) is a government nursing education institution in Pabna, Bangladesh, offering BSc, Post-Basic BSc, Diploma in Nursing Science & Midwifery, and Diploma in Midwifery aligned with BNMC.",
+          "পাবনা নাগরিক কমিটি - পিএনসি একটি নাগরিকভিত্তিক সামাজিক সংগঠন, যা পাবনার উন্নয়ন, সামাজিক সচেতনতা, নাগরিক অধিকার এবং মানবিক উদ্যোগে কাজ করে।",
       },
-      { name: "author", content: "Pabna Nursing College" },
-      { name: "theme-color", content: "#065F46" },
-      { property: "og:title", content: "Pabna Nursing College" },
-      { property: "og:description", content: "Government nursing education institution connected with the 250-bed General Hospital, Pabna." },
+      { name: "keywords", content: "পাবনা নাগরিক কমিটি, পিএনসি পাবনা, PNC Pabna, পাবনা সামাজিক সংগঠন, পাবনা উন্নয়ন, পাবনা নাগরিক উদ্যোগ" },
+      { name: "author", content: "পাবনা নাগরিক কমিটি - পিএনসি" },
+      { name: "theme-color", content: "#006A4E" },
+      { property: "og:title", content: "পাবনা নাগরিক কমিটি - পিএনসি" },
+      { property: "og:description", content: "নাগরিক ঐক্যেই বদলাবে পাবনা — একটি নাগরিকভিত্তিক সামাজিক সংগঠন।" },
       { property: "og:type", content: "website" },
+      { property: "og:locale", content: "bn_BD" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
     links: [
@@ -81,7 +83,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
         rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap",
+        href: "https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Noto+Sans+Bengali:wght@400;500;600;700&display=swap",
       },
     ],
   }),
@@ -93,7 +95,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
 function RootShell({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="bn">
       <head>
         <HeadContent />
       </head>

@@ -7,9 +7,9 @@ type Props = {
 export function PageHeader({ eyebrow, title, description }: Props) {
   return (
     <section className="gradient-hero text-primary-foreground">
-      <div className="container-pnc py-16 md:py-20">
+      <div className="container-pnc py-14 md:py-20">
         {eyebrow && (
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-gold mb-3">{eyebrow}</p>
+          <p className="text-xs font-semibold uppercase tracking-[0.18em] opacity-90 mb-3">{eyebrow}</p>
         )}
         <h1 className="text-balance text-3xl md:text-5xl font-bold max-w-3xl">{title}</h1>
         {description && (
