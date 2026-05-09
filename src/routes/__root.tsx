@@ -77,6 +77,22 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:locale", content: "bn_BD" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "NGO",
+          name: "পাবনা নাগরিক কমিটি - পিএনসি",
+          alternateName: "PNC Pabna",
+          url: "https://pncpabna.org",
+          slogan: "নাগরিক ঐক্যেই বদলাবে পাবনা",
+          sameAs: ["https://www.facebook.com/pncpabna/"],
+          address: { "@type": "PostalAddress", addressLocality: "Pabna", addressCountry: "BD" },
+          contactPoint: { "@type": "ContactPoint", telephone: "+8801716808074", email: "pnc.pabna@outlook.com", contactType: "customer service" },
+        }),
+      },
+    ],
     links: [
       { rel: "stylesheet", href: appCss },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },

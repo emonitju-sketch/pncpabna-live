@@ -9,6 +9,8 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as RobotsDottxtRouteImport } from './routes/robots[.]txt'
 import { Route as ReportsRouteImport } from './routes/reports'
 import { Route as NewsRouteImport } from './routes/news'
 import { Route as MembershipRouteImport } from './routes/membership'
@@ -20,9 +22,17 @@ import { Route as AdminRouteImport } from './routes/admin'
 import { Route as ActivitiesRouteImport } from './routes/activities'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as ApiPublicSitemapDotxmlRouteImport } from './routes/api/public/sitemap[.]xml'
-import { Route as ApiPublicRobotsDottxtRouteImport } from './routes/api/public/robots[.]txt'
 
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RobotsDottxtRoute = RobotsDottxtRouteImport.update({
+  id: '/robots.txt',
+  path: '/robots.txt',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ReportsRoute = ReportsRouteImport.update({
   id: '/reports',
   path: '/reports',
@@ -78,16 +88,6 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiPublicSitemapDotxmlRoute = ApiPublicSitemapDotxmlRouteImport.update({
-  id: '/api/public/sitemap.xml',
-  path: '/api/public/sitemap.xml',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiPublicRobotsDottxtRoute = ApiPublicRobotsDottxtRouteImport.update({
-  id: '/api/public/robots.txt',
-  path: '/api/public/robots.txt',
-  getParentRoute: () => rootRouteImport,
-} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -101,8 +101,8 @@ export interface FileRoutesByFullPath {
   '/membership': typeof MembershipRoute
   '/news': typeof NewsRoute
   '/reports': typeof ReportsRoute
-  '/api/public/robots.txt': typeof ApiPublicRobotsDottxtRoute
-  '/api/public/sitemap.xml': typeof ApiPublicSitemapDotxmlRoute
+  '/robots.txt': typeof RobotsDottxtRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -116,8 +116,8 @@ export interface FileRoutesByTo {
   '/membership': typeof MembershipRoute
   '/news': typeof NewsRoute
   '/reports': typeof ReportsRoute
-  '/api/public/robots.txt': typeof ApiPublicRobotsDottxtRoute
-  '/api/public/sitemap.xml': typeof ApiPublicSitemapDotxmlRoute
+  '/robots.txt': typeof RobotsDottxtRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -132,8 +132,8 @@ export interface FileRoutesById {
   '/membership': typeof MembershipRoute
   '/news': typeof NewsRoute
   '/reports': typeof ReportsRoute
-  '/api/public/robots.txt': typeof ApiPublicRobotsDottxtRoute
-  '/api/public/sitemap.xml': typeof ApiPublicSitemapDotxmlRoute
+  '/robots.txt': typeof RobotsDottxtRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -149,8 +149,8 @@ export interface FileRouteTypes {
     | '/membership'
     | '/news'
     | '/reports'
-    | '/api/public/robots.txt'
-    | '/api/public/sitemap.xml'
+    | '/robots.txt'
+    | '/sitemap.xml'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -164,8 +164,8 @@ export interface FileRouteTypes {
     | '/membership'
     | '/news'
     | '/reports'
-    | '/api/public/robots.txt'
-    | '/api/public/sitemap.xml'
+    | '/robots.txt'
+    | '/sitemap.xml'
   id:
     | '__root__'
     | '/'
@@ -179,8 +179,8 @@ export interface FileRouteTypes {
     | '/membership'
     | '/news'
     | '/reports'
-    | '/api/public/robots.txt'
-    | '/api/public/sitemap.xml'
+    | '/robots.txt'
+    | '/sitemap.xml'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -195,12 +195,26 @@ export interface RootRouteChildren {
   MembershipRoute: typeof MembershipRoute
   NewsRoute: typeof NewsRoute
   ReportsRoute: typeof ReportsRoute
-  ApiPublicRobotsDottxtRoute: typeof ApiPublicRobotsDottxtRoute
-  ApiPublicSitemapDotxmlRoute: typeof ApiPublicSitemapDotxmlRoute
+  RobotsDottxtRoute: typeof RobotsDottxtRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/robots.txt': {
+      id: '/robots.txt'
+      path: '/robots.txt'
+      fullPath: '/robots.txt'
+      preLoaderRoute: typeof RobotsDottxtRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/reports': {
       id: '/reports'
       path: '/reports'
@@ -278,20 +292,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/public/sitemap.xml': {
-      id: '/api/public/sitemap.xml'
-      path: '/api/public/sitemap.xml'
-      fullPath: '/api/public/sitemap.xml'
-      preLoaderRoute: typeof ApiPublicSitemapDotxmlRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/public/robots.txt': {
-      id: '/api/public/robots.txt'
-      path: '/api/public/robots.txt'
-      fullPath: '/api/public/robots.txt'
-      preLoaderRoute: typeof ApiPublicRobotsDottxtRouteImport
-      parentRoute: typeof rootRouteImport
-    }
   }
 }
 
@@ -307,9 +307,19 @@ const rootRouteChildren: RootRouteChildren = {
   MembershipRoute: MembershipRoute,
   NewsRoute: NewsRoute,
   ReportsRoute: ReportsRoute,
-  ApiPublicRobotsDottxtRoute: ApiPublicRobotsDottxtRoute,
-  ApiPublicSitemapDotxmlRoute: ApiPublicSitemapDotxmlRoute,
+  RobotsDottxtRoute: RobotsDottxtRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
