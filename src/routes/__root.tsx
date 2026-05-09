@@ -63,28 +63,17 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: "পাবনা নাগরিক কমিটি - পিএনসি | নাগরিক ঐক্যেই বদলাবে পাবনা" },
-      {
-        name: "description",
-        content:
-          "পাবনা নাগরিক কমিটি - পিএনসি একটি নাগরিকভিত্তিক সামাজিক সংগঠন, যা পাবনার উন্নয়ন, সামাজিক সচেতনতা, নাগরিক অধিকার এবং মানবিক উদ্যোগে কাজ করে।",
-      },
+      { name: "description", content: "নাগরিক ঐক্য, সামাজিক সচেতনতা এবং পাবনার উন্নয়নের জন্য একটি কমিউনিটি প্ল্যাটফর্ম।" },
       { name: "keywords", content: "পাবনা নাগরিক কমিটি, পিএনসি পাবনা, PNC Pabna, পাবনা সামাজিক সংগঠন, পাবনা উন্নয়ন, পাবনা নাগরিক উদ্যোগ" },
       { name: "author", content: "পাবনা নাগরিক কমিটি - পিএনসি" },
       { name: "theme-color", content: "#006A4E" },
       { property: "og:title", content: "পাবনা নাগরিক কমিটি - পিএনসি | নাগরিক ঐক্যেই বদলাবে পাবনা" },
-      { property: "og:description", content: "পাবনা নাগরিক কমিটি - পিএনসি (PNC) একটি নাগরিকভিত্তিক সামাজিক প্ল্যাটফর্ম, যা পাবনার উন্নয়ন, জনসচেতনতা, সামাজিক সম্প্রীতি এবং জনস্বার্থে কাজ করে।
-
-আমাদের বিশ্বাস" },
+      { property: "og:description", content: "নাগরিক ঐক্য, সামাজিক সচেতনতা এবং পাবনার উন্নয়নের জন্য একটি কমিউনিটি প্ল্যাটফর্ম।" },
       { property: "og:type", content: "website" },
       { property: "og:locale", content: "bn_BD" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: "পাবনা নাগরিক কমিটি - পিএনসি | নাগরিক ঐক্যেই বদলাবে পাবনা" },
-      { name: "description", content: "পাবনা নাগরিক কমিটি - পিএনসি (PNC) একটি নাগরিকভিত্তিক সামাজিক প্ল্যাটফর্ম, যা পাবনার উন্নয়ন, জনসচেতনতা, সামাজিক সম্প্রীতি এবং জনস্বার্থে কাজ করে।
-
-আমাদের বিশ্বাস" },
-      { name: "twitter:description", content: "পাবনা নাগরিক কমিটি - পিএনসি (PNC) একটি নাগরিকভিত্তিক সামাজিক প্ল্যাটফর্ম, যা পাবনার উন্নয়ন, জনসচেতনতা, সামাজিক সম্প্রীতি এবং জনস্বার্থে কাজ করে।
-
-আমাদের বিশ্বাস" },
+      { name: "twitter:description", content: "নাগরিক ঐক্য, সামাজিক সচেতনতা এবং পাবনার উন্নয়নের জন্য একটি কমিউনিটি প্ল্যাটফর্ম।" },
       { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/6cewNcEDHjRfFEYCm75pnz6qDZf1/social-images/social-1778285728859-dx.webp" },
       { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/6cewNcEDHjRfFEYCm75pnz6qDZf1/social-images/social-1778285728859-dx.webp" },
     ],
