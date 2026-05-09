@@ -9,23 +9,27 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as NoticeBoardRouteImport } from './routes/notice-board'
-import { Route as FacultyRouteImport } from './routes/faculty'
+import { Route as NewsRouteImport } from './routes/news'
+import { Route as MembershipRouteImport } from './routes/membership'
+import { Route as GalleryRouteImport } from './routes/gallery'
 import { Route as ContactRouteImport } from './routes/contact'
-import { Route as CampusLifeRouteImport } from './routes/campus-life'
-import { Route as AdmissionRouteImport } from './routes/admission'
-import { Route as AcademicsRouteImport } from './routes/academics'
+import { Route as ActivitiesRouteImport } from './routes/activities'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 
-const NoticeBoardRoute = NoticeBoardRouteImport.update({
-  id: '/notice-board',
-  path: '/notice-board',
+const NewsRoute = NewsRouteImport.update({
+  id: '/news',
+  path: '/news',
   getParentRoute: () => rootRouteImport,
 } as any)
-const FacultyRoute = FacultyRouteImport.update({
-  id: '/faculty',
-  path: '/faculty',
+const MembershipRoute = MembershipRouteImport.update({
+  id: '/membership',
+  path: '/membership',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GalleryRoute = GalleryRouteImport.update({
+  id: '/gallery',
+  path: '/gallery',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ContactRoute = ContactRouteImport.update({
@@ -33,19 +37,9 @@ const ContactRoute = ContactRouteImport.update({
   path: '/contact',
   getParentRoute: () => rootRouteImport,
 } as any)
-const CampusLifeRoute = CampusLifeRouteImport.update({
-  id: '/campus-life',
-  path: '/campus-life',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AdmissionRoute = AdmissionRouteImport.update({
-  id: '/admission',
-  path: '/admission',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AcademicsRoute = AcademicsRouteImport.update({
-  id: '/academics',
-  path: '/academics',
+const ActivitiesRoute = ActivitiesRouteImport.update({
+  id: '/activities',
+  path: '/activities',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AboutRoute = AboutRouteImport.update({
@@ -62,92 +56,92 @@ const IndexRoute = IndexRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/academics': typeof AcademicsRoute
-  '/admission': typeof AdmissionRoute
-  '/campus-life': typeof CampusLifeRoute
+  '/activities': typeof ActivitiesRoute
   '/contact': typeof ContactRoute
-  '/faculty': typeof FacultyRoute
-  '/notice-board': typeof NoticeBoardRoute
+  '/gallery': typeof GalleryRoute
+  '/membership': typeof MembershipRoute
+  '/news': typeof NewsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/academics': typeof AcademicsRoute
-  '/admission': typeof AdmissionRoute
-  '/campus-life': typeof CampusLifeRoute
+  '/activities': typeof ActivitiesRoute
   '/contact': typeof ContactRoute
-  '/faculty': typeof FacultyRoute
-  '/notice-board': typeof NoticeBoardRoute
+  '/gallery': typeof GalleryRoute
+  '/membership': typeof MembershipRoute
+  '/news': typeof NewsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/academics': typeof AcademicsRoute
-  '/admission': typeof AdmissionRoute
-  '/campus-life': typeof CampusLifeRoute
+  '/activities': typeof ActivitiesRoute
   '/contact': typeof ContactRoute
-  '/faculty': typeof FacultyRoute
-  '/notice-board': typeof NoticeBoardRoute
+  '/gallery': typeof GalleryRoute
+  '/membership': typeof MembershipRoute
+  '/news': typeof NewsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/about'
-    | '/academics'
-    | '/admission'
-    | '/campus-life'
+    | '/activities'
     | '/contact'
-    | '/faculty'
-    | '/notice-board'
+    | '/gallery'
+    | '/membership'
+    | '/news'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/about'
-    | '/academics'
-    | '/admission'
-    | '/campus-life'
+    | '/activities'
     | '/contact'
-    | '/faculty'
-    | '/notice-board'
+    | '/gallery'
+    | '/membership'
+    | '/news'
   id:
     | '__root__'
     | '/'
     | '/about'
-    | '/academics'
-    | '/admission'
-    | '/campus-life'
+    | '/activities'
     | '/contact'
-    | '/faculty'
-    | '/notice-board'
+    | '/gallery'
+    | '/membership'
+    | '/news'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
-  AcademicsRoute: typeof AcademicsRoute
-  AdmissionRoute: typeof AdmissionRoute
-  CampusLifeRoute: typeof CampusLifeRoute
+  ActivitiesRoute: typeof ActivitiesRoute
   ContactRoute: typeof ContactRoute
-  FacultyRoute: typeof FacultyRoute
-  NoticeBoardRoute: typeof NoticeBoardRoute
+  GalleryRoute: typeof GalleryRoute
+  MembershipRoute: typeof MembershipRoute
+  NewsRoute: typeof NewsRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/notice-board': {
-      id: '/notice-board'
-      path: '/notice-board'
-      fullPath: '/notice-board'
-      preLoaderRoute: typeof NoticeBoardRouteImport
+    '/news': {
+      id: '/news'
+      path: '/news'
+      fullPath: '/news'
+      preLoaderRoute: typeof NewsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/faculty': {
-      id: '/faculty'
-      path: '/faculty'
-      fullPath: '/faculty'
-      preLoaderRoute: typeof FacultyRouteImport
+    '/membership': {
+      id: '/membership'
+      path: '/membership'
+      fullPath: '/membership'
+      preLoaderRoute: typeof MembershipRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/gallery': {
+      id: '/gallery'
+      path: '/gallery'
+      fullPath: '/gallery'
+      preLoaderRoute: typeof GalleryRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/contact': {
@@ -157,25 +151,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ContactRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/campus-life': {
-      id: '/campus-life'
-      path: '/campus-life'
-      fullPath: '/campus-life'
-      preLoaderRoute: typeof CampusLifeRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/admission': {
-      id: '/admission'
-      path: '/admission'
-      fullPath: '/admission'
-      preLoaderRoute: typeof AdmissionRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/academics': {
-      id: '/academics'
-      path: '/academics'
-      fullPath: '/academics'
-      preLoaderRoute: typeof AcademicsRouteImport
+    '/activities': {
+      id: '/activities'
+      path: '/activities'
+      fullPath: '/activities'
+      preLoaderRoute: typeof ActivitiesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/about': {
@@ -198,12 +178,11 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
-  AcademicsRoute: AcademicsRoute,
-  AdmissionRoute: AdmissionRoute,
-  CampusLifeRoute: CampusLifeRoute,
+  ActivitiesRoute: ActivitiesRoute,
   ContactRoute: ContactRoute,
-  FacultyRoute: FacultyRoute,
-  NoticeBoardRoute: NoticeBoardRoute,
+  GalleryRoute: GalleryRoute,
+  MembershipRoute: MembershipRoute,
+  NewsRoute: NewsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

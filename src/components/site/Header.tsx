@@ -1,43 +1,40 @@
 import { useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { Menu, X, Bell } from "lucide-react";
+import { Menu, X, Users } from "lucide-react";
 import logo from "@/assets/pnc-logo.png";
 
 const nav = [
-  { to: "/", label: "Home" },
-  { to: "/about", label: "About" },
-  { to: "/academics", label: "Academics" },
-  { to: "/admission", label: "Admission" },
-  { to: "/faculty", label: "Faculty" },
-  { to: "/campus-life", label: "Campus Life" },
-  { to: "/notice-board", label: "Notice Board" },
-  { to: "/contact", label: "Contact" },
+  { to: "/", label: "হোম" },
+  { to: "/about", label: "আমাদের সম্পর্কে" },
+  { to: "/activities", label: "কার্যক্রম" },
+  { to: "/news", label: "সংবাদ" },
+  { to: "/gallery", label: "গ্যালারি" },
+  { to: "/membership", label: "সদস্য হোন" },
+  { to: "/contact", label: "যোগাযোগ" },
 ] as const;
 
 export function Header() {
   const [open, setOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border bg-background/85 backdrop-blur supports-[backdrop-filter]:bg-background/70">
+    <header className="sticky top-0 z-50 w-full border-b border-border bg-background/90 backdrop-blur supports-[backdrop-filter]:bg-background/75">
       <div className="bg-primary text-primary-foreground text-xs">
         <div className="container-pnc flex h-9 items-center justify-between">
-          <span className="hidden sm:inline">Government Nursing Education Institution · Pabna, Bangladesh</span>
-          <span className="sm:hidden">PNC · Govt. Nursing Institution</span>
+          <span className="hidden sm:inline">পাবনা সদর, পাবনা, বাংলাদেশ</span>
+          <span className="sm:hidden">পিএনসি · পাবনা</span>
           <div className="flex items-center gap-4">
-            <a href="tel:+8802588846042" className="hover:text-gold">+880 2588 846042</a>
-            <span className="hidden md:inline opacity-80">ncprincipal.pabna@gmail.com</span>
+            <a href="tel:+8801716808074" className="hover:text-white/80">+৮৮০ ১৭১৬-৮০৮০৭৪</a>
+            <span className="hidden md:inline opacity-90">pnc.pabna@outlook.com</span>
           </div>
         </div>
       </div>
 
       <div className="container-pnc flex h-20 items-center justify-between gap-4">
         <Link to="/" className="flex items-center gap-3">
-          <img src={logo} alt="Pabna Nursing College logo" width={48} height={48} className="h-12 w-12" />
+          <img src={logo} alt="পিএনসি লোগো" width={48} height={48} className="h-12 w-12" />
           <div className="leading-tight">
-            <div className="font-display text-lg font-bold text-primary">Pabna Nursing College</div>
-            <div className="text-[11px] uppercase tracking-wider text-muted-foreground">
-              Government Nursing Education Institution
-            </div>
+            <div className="font-display text-base md:text-lg font-bold text-primary">পাবনা নাগরিক কমিটি - পিএনসি</div>
+            <div className="text-[11px] md:text-xs text-muted-foreground">নাগরিক ঐক্যেই বদলাবে পাবনা</div>
           </div>
         </Link>
 
@@ -56,13 +53,13 @@ export function Header() {
 
         <div className="flex items-center gap-2">
           <Link
-            to="/notice-board"
-            className="hidden sm:inline-flex items-center gap-2 rounded-md bg-gold px-4 py-2 text-sm font-semibold text-gold-foreground hover:opacity-90 transition"
+            to="/membership"
+            className="hidden sm:inline-flex items-center gap-2 rounded-md bg-red-accent px-4 py-2 text-sm font-semibold text-red-accent-foreground hover:opacity-90 transition"
           >
-            <Bell className="h-4 w-4" /> Notice Board
+            <Users className="h-4 w-4" /> আমাদের সাথে যুক্ত হোন
           </Link>
           <button
-            aria-label="Toggle menu"
+            aria-label="মেনু"
             onClick={() => setOpen((v) => !v)}
             className="xl:hidden inline-flex items-center justify-center rounded-md border border-border h-10 w-10"
           >
@@ -85,6 +82,13 @@ export function Header() {
                 {item.label}
               </Link>
             ))}
+            <Link
+              to="/membership"
+              onClick={() => setOpen(false)}
+              className="mt-2 inline-flex items-center justify-center gap-2 rounded-md bg-red-accent px-4 py-2.5 text-sm font-semibold text-red-accent-foreground"
+            >
+              <Users className="h-4 w-4" /> আমাদের সাথে যুক্ত হোন
+            </Link>
           </nav>
         </div>
       )}

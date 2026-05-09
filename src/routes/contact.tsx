@@ -1,117 +1,125 @@
-import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
+import { useState } from "react";
 import { z } from "zod";
 import { toast } from "sonner";
 import { PageHeader } from "@/components/site/PageHeader";
-import { Mail, Phone, MapPin, Send } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Phone, Mail, MapPin, Facebook, MessageCircle } from "lucide-react";
 
 export const Route = createFileRoute("/contact")({
   head: () => ({
     meta: [
-      { title: "Contact — Pabna Nursing College" },
-      { name: "description", content: "Contact Pabna Nursing College, located at the 250-bed General Hospital area, Pabna, Bangladesh. Phone, email and contact form." },
-      { property: "og:title", content: "Contact Pabna Nursing College" },
-      { property: "og:description", content: "Get in touch with PNC by phone, email or contact form." },
+      { title: "যোগাযোগ — পাবনা নাগরিক কমিটি" },
+      { name: "description", content: "পাবনা নাগরিক কমিটি - পিএনসি-র সাথে যোগাযোগ করুন। ফোন, ইমেইল ও ফেসবুক মেসেঞ্জার।" },
+      { property: "og:title", content: "যোগাযোগ — পিএনসি" },
+      { property: "og:description", content: "আমাদের সাথে যোগাযোগ করুন।" },
     ],
   }),
   component: ContactPage,
 });
 
 const schema = z.object({
-  name: z.string().trim().min(2, "Please enter your name").max(100),
-  phone: z.string().trim().min(6, "Enter a valid phone").max(20),
-  email: z.string().trim().email("Enter a valid email").max(255),
-  message: z.string().trim().min(10, "Message is too short").max(1000),
+  name: z.string().trim().min(2, "নাম লিখুন").max(100),
+  phone: z.string().trim().min(10, "সঠিক মোবাইল দিন").max(20),
+  email: z.string().trim().email("সঠিক ইমেইল দিন").max(255).optional().or(z.literal("")),
+  subject: z.string().trim().min(2, "বিষয় লিখুন").max(150),
+  message: z.string().trim().min(5, "বার্তা লিখুন").max(1000),
 });
 
 function ContactPage() {
   const [submitting, setSubmitting] = useState(false);
-
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const fd = new FormData(e.currentTarget);
-    const parsed = schema.safeParse({
-      name: fd.get("name"),
-      phone: fd.get("phone"),
-      email: fd.get("email"),
-      message: fd.get("message"),
-    });
+    const data = Object.fromEntries(fd) as Record<string, string>;
+    const parsed = schema.safeParse(data);
     if (!parsed.success) {
-      toast.error(parsed.error.issues[0]?.message ?? "Please check the form");
+      toast.error(parsed.error.issues[0].message);
       return;
     }
     setSubmitting(true);
     setTimeout(() => {
       setSubmitting(false);
-      toast.success("Thank you — your message has been received.");
       (e.target as HTMLFormElement).reset();
-    }, 600);
+      toast.success("আপনার বার্তা পাঠানো হয়েছে। ধন্যবাদ!");
+    }, 700);
   };
 
   return (
     <>
       <PageHeader
-        eyebrow="Contact"
-        title="Contact Pabna Nursing College"
-        description="We welcome enquiries from prospective students, alumni, partners, and the community."
+        eyebrow="যোগাযোগ"
+        title="যোগাযোগ করুন"
+        description="যেকোনো প্রশ্ন, পরামর্শ বা সহযোগিতার জন্য আমাদের সাথে যোগাযোগ করুন।"
       />
-
-      <section className="container-pnc py-16 md:py-20 grid gap-10 lg:grid-cols-3">
-        <aside className="space-y-4">
-          {[
-            { icon: MapPin, t: "Address", d: "Pabna Nursing College, 250 Bedded General Hospital Area, Pabna, Bangladesh" },
-            { icon: Phone, t: "Phone", d: "+880 2588 846042", href: "tel:+8802588846042" },
-            { icon: Mail, t: "Email", d: "ncprincipal.pabna@gmail.com", href: "mailto:ncprincipal.pabna@gmail.com" },
-          ].map((c) => (
-            <div key={c.t} className="rounded-xl border border-border bg-card p-6 shadow-card">
-              <c.icon className="h-6 w-6 text-primary" />
-              <h3 className="mt-3 font-semibold">{c.t}</h3>
-              {c.href ? (
-                <a href={c.href} className="mt-1 block text-sm text-muted-foreground hover:text-primary">{c.d}</a>
-              ) : (
-                <p className="mt-1 text-sm text-muted-foreground">{c.d}</p>
-              )}
+      <section className="container-pnc py-14 md:py-20 grid gap-10 lg:grid-cols-5">
+        <aside className="lg:col-span-2 space-y-4">
+          <div className="rounded-2xl bg-primary text-primary-foreground p-6 shadow-elegant space-y-4">
+            <div>
+              <h3 className="font-semibold text-lg">পাবনা নাগরিক কমিটি - পিএনসি</h3>
+              <p className="text-sm opacity-90 mt-1">নাগরিক ঐক্যেই বদলাবে পাবনা।</p>
             </div>
-          ))}
+            <div className="space-y-2.5 text-sm">
+              <p className="flex items-start gap-2"><MapPin className="h-4 w-4 mt-0.5 shrink-0" /> পাবনা সদর, পাবনা, বাংলাদেশ</p>
+              <p className="flex items-center gap-2"><Phone className="h-4 w-4" /> <a href="tel:+8801716808074" className="hover:underline">+৮৮০ ১৭১৬-৮০৮০৭৪</a></p>
+              <p className="flex items-center gap-2"><Mail className="h-4 w-4" /> <a href="mailto:pnc.pabna@outlook.com" className="hover:underline break-all">pnc.pabna@outlook.com</a></p>
+            </div>
+          </div>
+
+          <a href="https://m.me/pncpabna" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 rounded-2xl border border-border bg-card p-5 shadow-card card-hover">
+            <MessageCircle className="h-6 w-6 text-primary" />
+            <div>
+              <div className="font-semibold text-foreground">Messenger-এ যোগাযোগ</div>
+              <div className="text-xs text-muted-foreground">দ্রুত উত্তরের জন্য মেসেজ করুন</div>
+            </div>
+          </a>
+          <a href="https://www.facebook.com/pncpabna/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 rounded-2xl border border-border bg-card p-5 shadow-card card-hover">
+            <Facebook className="h-6 w-6 text-primary" />
+            <div>
+              <div className="font-semibold text-foreground">আমাদের ফেসবুক পেজ</div>
+              <div className="text-xs text-muted-foreground">facebook.com/pncpabna</div>
+            </div>
+          </a>
         </aside>
 
-        <form onSubmit={onSubmit} className="lg:col-span-2 rounded-2xl border border-border bg-card p-8 shadow-card space-y-5">
-          <div>
-            <h2 className="text-2xl font-bold">Send us a message</h2>
-            <p className="mt-1 text-sm text-muted-foreground">We will respond during regular office hours.</p>
-          </div>
-          <div className="grid gap-4 md:grid-cols-2">
-            <Field name="name" label="Full Name" />
-            <Field name="phone" label="Phone" type="tel" />
-            <div className="md:col-span-2"><Field name="email" label="Email" type="email" /></div>
-            <div className="md:col-span-2">
-              <label className="text-sm font-medium">Message</label>
-              <textarea
-                name="message"
-                rows={5}
-                maxLength={1000}
-                required
-                className="mt-1 w-full rounded-md border border-input bg-background p-3 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
-              />
+        <form onSubmit={onSubmit} className="lg:col-span-3 rounded-2xl border border-border bg-card p-6 md:p-8 shadow-card space-y-5">
+          <div className="grid gap-5 sm:grid-cols-2">
+            <Field name="name" label="নাম *" />
+            <Field name="phone" label="মোবাইল *" type="tel" />
+            <Field name="email" label="ইমেইল" type="email" />
+            <Field name="subject" label="বিষয় *" />
+            <div className="sm:col-span-2">
+              <Label htmlFor="message">বার্তা *</Label>
+              <Textarea id="message" name="message" rows={5} className="mt-1.5" />
             </div>
           </div>
-          <button
-            disabled={submitting}
-            className="inline-flex items-center gap-2 rounded-md bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground hover:opacity-90 disabled:opacity-60"
-          >
-            <Send className="h-4 w-4" /> {submitting ? "Sending..." : "Send Message"}
-          </button>
+          <div className="flex flex-wrap gap-3">
+            <button
+              type="submit"
+              disabled={submitting}
+              className="inline-flex items-center gap-2 rounded-lg bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground hover:opacity-90 transition disabled:opacity-60"
+            >
+              {submitting ? "পাঠানো হচ্ছে..." : "বার্তা পাঠান"}
+            </button>
+            <a href="https://m.me/pncpabna" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 rounded-lg bg-red-accent px-6 py-3 text-sm font-semibold text-red-accent-foreground hover:opacity-90 transition">
+              <MessageCircle className="h-4 w-4" /> Messenger-এ যোগাযোগ
+            </a>
+          </div>
         </form>
       </section>
 
       <section className="container-pnc pb-20">
         <div className="overflow-hidden rounded-2xl border border-border shadow-card">
           <iframe
-            title="Pabna Nursing College location"
-            src="https://www.google.com/maps?q=Pabna+General+Hospital,+Pabna,+Bangladesh&output=embed"
-            className="w-full h-[420px]"
+            title="Pabna Map"
+            src="https://www.google.com/maps?q=Pabna,Bangladesh&output=embed"
+            width="100%"
+            height="380"
             loading="lazy"
             referrerPolicy="no-referrer-when-downgrade"
+            className="block w-full"
           />
         </div>
       </section>
@@ -122,15 +130,8 @@ function ContactPage() {
 function Field({ name, label, type = "text" }: { name: string; label: string; type?: string }) {
   return (
     <div>
-      <label className="text-sm font-medium" htmlFor={name}>{label}</label>
-      <input
-        id={name}
-        name={name}
-        type={type}
-        required
-        maxLength={255}
-        className="mt-1 w-full h-11 rounded-md border border-input bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
-      />
+      <Label htmlFor={name}>{label}</Label>
+      <Input id={name} name={name} type={type} className="mt-1.5" />
     </div>
   );
 }
