@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { z } from "zod";
 import {
-  Shield, LogOut, Calendar, Image as ImageIcon, FileText, Plus, Trash2, Users, Download
+  Shield, LogOut, Calendar, Image as ImageIcon, FileText, Plus, Trash2, Users, Download, History
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth, publicUrl } from "@/hooks/use-auth";
