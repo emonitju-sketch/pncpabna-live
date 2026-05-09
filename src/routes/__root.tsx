@@ -62,7 +62,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "পাবনা নাগরিক কমিটি - পিএনসি | নাগরিক ঐক্যেই বদলাবে পাবনা" },
+      { title: "PNC Pabna" },
       {
         name: "description",
         content:
@@ -71,20 +71,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "keywords", content: "পাবনা নাগরিক কমিটি, পিএনসি পাবনা, PNC Pabna, পাবনা সামাজিক সংগঠন, পাবনা উন্নয়ন, পাবনা নাগরিক উদ্যোগ" },
       { name: "author", content: "পাবনা নাগরিক কমিটি - পিএনসি" },
       { name: "theme-color", content: "#006A4E" },
-      { property: "og:title", content: "পাবনা নাগরিক কমিটি - পিএনসি | নাগরিক ঐক্যেই বদলাবে পাবনা" },
-      { property: "og:description", content: "পাবনা নাগরিক কমিটি - পিএনসি (PNC) একটি নাগরিকভিত্তিক সামাজিক প্ল্যাটফর্ম, যা পাবনার উন্নয়ন, জনসচেতনতা, সামাজিক সম্প্রীতি এবং জনস্বার্থে কাজ করে।
-
-আমাদের বিশ্বাস" },
+      { property: "og:title", content: "PNC Pabna" },
+      { property: "og:description", content: "Pabna Nagorik Committee (PNC) is a citizen-driven social platform working for the development of Pabna, public awareness, social harmony, and community welfare." },
       { property: "og:type", content: "website" },
       { property: "og:locale", content: "bn_BD" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "পাবনা নাগরিক কমিটি - পিএনসি | নাগরিক ঐক্যেই বদলাবে পাবনা" },
-      { name: "description", content: "পাবনা নাগরিক কমিটি - পিএনসি (PNC) একটি নাগরিকভিত্তিক সামাজিক প্ল্যাটফর্ম, যা পাবনার উন্নয়ন, জনসচেতনতা, সামাজিক সম্প্রীতি এবং জনস্বার্থে কাজ করে।
-
-আমাদের বিশ্বাস" },
-      { name: "twitter:description", content: "পাবনা নাগরিক কমিটি - পিএনসি (PNC) একটি নাগরিকভিত্তিক সামাজিক প্ল্যাটফর্ম, যা পাবনার উন্নয়ন, জনসচেতনতা, সামাজিক সম্প্রীতি এবং জনস্বার্থে কাজ করে।
-
-আমাদের বিশ্বাস" },
+      { name: "twitter:title", content: "PNC Pabna" },
+      { name: "description", content: "Pabna Nagorik Committee (PNC) is a citizen-driven social platform working for the development of Pabna, public awareness, social harmony, and community welfare." },
+      { name: "twitter:description", content: "Pabna Nagorik Committee (PNC) is a citizen-driven social platform working for the development of Pabna, public awareness, social harmony, and community welfare." },
       { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/6cewNcEDHjRfFEYCm75pnz6qDZf1/social-images/social-1778285728859-dx.webp" },
       { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/6cewNcEDHjRfFEYCm75pnz6qDZf1/social-images/social-1778285728859-dx.webp" },
     ],
