@@ -72,12 +72,19 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "author", content: "পাবনা নাগরিক কমিটি - পিএনসি" },
       { name: "theme-color", content: "#006A4E" },
       { property: "og:title", content: "পাবনা নাগরিক কমিটি - পিএনসি | নাগরিক ঐক্যেই বদলাবে পাবনা" },
-      { property: "og:description", content: "পাবনা নাগরিক কমিটি - পিএনসি (PNC) পাবনার উন্নয়ন, জনসচেতনতা, সামাজিক সম্প্রীতি এবং জনস্বার্থে কাজ করে।" },
+      { property: "og:description", content: "পাবনা নাগরিক কমিটি - পিএনসি (PNC) একটি নাগরিকভিত্তিক সামাজিক প্ল্যাটফর্ম, যা পাবনার উন্নয়ন, জনসচেতনতা, সামাজিক সম্প্রীতি এবং জনস্বার্থে কাজ করে।
+
+আমাদের বিশ্বাস" },
       { property: "og:type", content: "website" },
       { property: "og:locale", content: "bn_BD" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: "পাবনা নাগরিক কমিটি - পিএনসি | নাগরিক ঐক্যেই বদলাবে পাবনা" },
-      { name: "twitter:description", content: "পাবনা নাগরিক কমিটি - পিএনসি (PNC) পাবনার উন্নয়ন, জনসচেতনতা, সামাজিক সম্প্রীতি এবং জনস্বার্থে কাজ করে।" },
+      { name: "description", content: "পাবনা নাগরিক কমিটি - পিএনসি (PNC) একটি নাগরিকভিত্তিক সামাজিক প্ল্যাটফর্ম, যা পাবনার উন্নয়ন, জনসচেতনতা, সামাজিক সম্প্রীতি এবং জনস্বার্থে কাজ করে।
+
+আমাদের বিশ্বাস" },
+      { name: "twitter:description", content: "পাবনা নাগরিক কমিটি - পিএনসি (PNC) একটি নাগরিকভিত্তিক সামাজিক প্ল্যাটফর্ম, যা পাবনার উন্নয়ন, জনসচেতনতা, সামাজিক সম্প্রীতি এবং জনস্বার্থে কাজ করে।
+
+আমাদের বিশ্বাস" },
       { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/6cewNcEDHjRfFEYCm75pnz6qDZf1/social-images/social-1778285728859-dx.webp" },
       { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/6cewNcEDHjRfFEYCm75pnz6qDZf1/social-images/social-1778285728859-dx.webp" },
     ],
