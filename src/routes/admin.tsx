@@ -23,9 +23,29 @@ function AdminPage() {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
   const [tab, setTab] = useState<Tab>("events");
+  const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
 
   useEffect(() => {
-    if (!loading && !user) navigate({ to: "/login" });
+    if (loading) return;
+    if (!user) { navigate({ to: "/login" }); return; }
+    let cancelled = false;
+    (async () => {
+      const { data, error } = await supabase
+        .from("user_roles")
+        .select("role")
+        .eq("user_id", user.id)
+        .eq("role", "admin")
+        .maybeSingle();
+      if (cancelled) return;
+      if (error || !data) {
+        setIsAdmin(false);
+        toast.error("এই পাতায় প্রবেশের অনুমতি নেই");
+        navigate({ to: "/" });
+      } else {
+        setIsAdmin(true);
+      }
+    })();
+    return () => { cancelled = true; };
   }, [loading, user, navigate]);
 
   const signOut = async () => {
@@ -33,7 +53,8 @@ function AdminPage() {
     navigate({ to: "/" });
   };
 
-  if (loading || !user) return <div className="container-pnc py-20 text-center text-muted-foreground">লোড হচ্ছে...</div>;
+  if (loading || !user || isAdmin !== true) return <div className="container-pnc py-20 text-center text-muted-foreground">লোড হচ্ছে...</div>;
+
 
   const tabs: { id: Tab; label: string; icon: any }[] = [
     { id: "events", label: "ইভেন্ট", icon: Calendar },
