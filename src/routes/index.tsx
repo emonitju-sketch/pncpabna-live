@@ -1,6 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
 import { Users, Megaphone, HeartHandshake, TrendingUp, Facebook, ArrowRight, Target, Eye, Sparkles } from "lucide-react";
 import hero from "@/assets/hero-pnc.jpg";
+import { supabase } from "@/integrations/supabase/client";
+import { publicUrl } from "@/hooks/use-auth";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -23,18 +26,42 @@ const features = [
 ];
 
 function HomePage() {
+  const [heroSrc, setHeroSrc] = useState<string>(hero);
+  const [heroPos, setHeroPos] = useState<string | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      const { data } = await supabase
+        .from("site_settings")
+        .select("hero_image_path, hero_object_position")
+        .eq("id", "home")
+        .maybeSingle();
+      if (cancelled || !data) return;
+      if (data.hero_image_path) setHeroSrc(publicUrl("gallery", data.hero_image_path));
+      if (data.hero_object_position) setHeroPos(data.hero_object_position);
+    })();
+    return () => { cancelled = true; };
+  }, []);
+
   return (
     <>
       {/* HERO */}
       <section className="relative overflow-hidden">
         <img
-          src={hero}
+          src={heroSrc}
           alt="পাবনার নাগরিকদের ঐক্য"
           width={1920}
           height={1088}
           fetchPriority="high"
-          className="absolute inset-0 h-full w-full object-cover object-[70%_center] sm:object-[center_40%] md:object-center scale-110 md:scale-100"
+          style={heroPos ? { objectPosition: heroPos } : undefined}
+          className={
+            heroPos
+              ? "absolute inset-0 h-full w-full object-cover"
+              : "absolute inset-0 h-full w-full object-cover object-[70%_center] sm:object-[center_40%] md:object-center scale-110 md:scale-100"
+          }
         />
+
 
         <div className="absolute inset-0 gradient-overlay" />
         <div className="relative container-pnc py-20 md:py-28 text-primary-foreground">
