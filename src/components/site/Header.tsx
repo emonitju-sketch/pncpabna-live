@@ -11,6 +11,7 @@ const nav = [
   { to: "/news", label: "সংবাদ" },
   { to: "/gallery", label: "গ্যালারি" },
   { to: "/reports", label: "প্রতিবেদন" },
+  { to: "/constitution", label: "গঠনতন্ত্র" },
   { to: "/membership", label: "সদস্য হোন" },
   { to: "/contact", label: "যোগাযোগ" },
 ] as const;
