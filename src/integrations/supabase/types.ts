@@ -187,30 +187,6 @@ export type Database = {
         }
         Relationships: []
       }
-      site_settings: {
-        Row: {
-          hero_image_path: string | null
-          hero_object_position: string
-          id: string
-          updated_at: string
-          updated_by: string | null
-        }
-        Insert: {
-          hero_image_path?: string | null
-          hero_object_position?: string
-          id: string
-          updated_at?: string
-          updated_by?: string | null
-        }
-        Update: {
-          hero_image_path?: string | null
-          hero_object_position?: string
-          id?: string
-          updated_at?: string
-          updated_by?: string | null
-        }
-        Relationships: []
-      }
       user_roles: {
         Row: {
           created_at: string
