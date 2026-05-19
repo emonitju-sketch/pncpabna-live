@@ -32,8 +32,10 @@ function HomePage() {
           alt="পাবনার নাগরিকদের ঐক্য"
           width={1920}
           height={1088}
-          className="absolute inset-0 h-full w-full object-cover"
+          fetchPriority="high"
+          className="absolute inset-0 h-full w-full object-cover object-[70%_center] sm:object-[center_40%] md:object-center scale-110 md:scale-100"
         />
+
         <div className="absolute inset-0 gradient-overlay" />
         <div className="relative container-pnc py-20 md:py-28 text-primary-foreground">
           <span className="inline-flex items-center gap-2 rounded-full bg-white/15 backdrop-blur px-4 py-1.5 text-xs font-medium border border-white/20">
