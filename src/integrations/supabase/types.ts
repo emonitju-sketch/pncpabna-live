@@ -50,6 +50,30 @@ export type Database = {
         }
         Relationships: []
       }
+      constitution_amendments: {
+        Row: {
+          change_summary_bn: string
+          created_at: string
+          effective_date: string
+          id: string
+          version: string
+        }
+        Insert: {
+          change_summary_bn: string
+          created_at?: string
+          effective_date?: string
+          id?: string
+          version: string
+        }
+        Update: {
+          change_summary_bn?: string
+          created_at?: string
+          effective_date?: string
+          id?: string
+          version?: string
+        }
+        Relationships: []
+      }
       event_registrations: {
         Row: {
           created_at: string
