@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { z } from "zod";
 import {
-  Shield, LogOut, Calendar, Image as ImageIcon, FileText, Plus, Trash2, Users, Download, History
+  Shield, LogOut, Calendar, Image as ImageIcon, FileText, Plus, Trash2, Users, Download, History, Settings as SettingsIcon, Upload
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth, publicUrl } from "@/hooks/use-auth";
@@ -17,7 +17,7 @@ export const Route = createFileRoute("/admin")({
 });
 
 const GALLERY_CATEGORIES = ["সভা ও আলোচনা", "সামাজিক উদ্যোগ", "মানবিক কার্যক্রম", "শুভেচ্ছা ও সম্মাননা", "পাবনার মুহূর্ত"];
-type Tab = "events" | "gallery" | "reports" | "registrations" | "audit";
+type Tab = "events" | "gallery" | "reports" | "registrations" | "audit" | "site";
 
 function AdminPage() {
   const { user, loading } = useAuth();
@@ -61,6 +61,7 @@ function AdminPage() {
     { id: "gallery", label: "গ্যালারি", icon: ImageIcon },
     { id: "reports", label: "প্রতিবেদন", icon: FileText },
     { id: "registrations", label: "নিবন্ধন", icon: Users },
+    { id: "site", label: "সাইট সেটিংস", icon: SettingsIcon },
     { id: "audit", label: "অডিট লগ", icon: History },
   ];
 
@@ -98,6 +99,7 @@ function AdminPage() {
       {tab === "gallery" && <GalleryAdmin />}
       {tab === "reports" && <ReportsAdmin />}
       {tab === "registrations" && <RegistrationsAdmin />}
+      {tab === "site" && <SiteSettingsAdmin />}
       {tab === "audit" && <AuditAdmin />}
     </section>
   );
@@ -427,6 +429,186 @@ function RegistrationsAdmin() {
           {rows.length === 0 && <tr><td colSpan={5} className="p-6 text-center text-muted-foreground">কোনো নিবন্ধন নেই।</td></tr>}
         </tbody>
       </table>
+    </div>
+  );
+}
+
+/* ============ SITE SETTINGS (Hero) ============ */
+const POSITION_PRESETS: { value: string; label: string }[] = [
+  { value: "center", label: "কেন্দ্র" },
+  { value: "center top", label: "উপর" },
+  { value: "center bottom", label: "নিচ" },
+  { value: "left center", label: "বাম" },
+  { value: "right center", label: "ডান" },
+  { value: "70% center", label: "ডানে ৭০%" },
+  { value: "30% center", label: "বামে ৩০%" },
+  { value: "center 30%", label: "উপরে ৩০%" },
+  { value: "center 70%", label: "নিচে ৭০%" },
+];
+
+function SiteSettingsAdmin() {
+  const [loading, setLoading] = useState(true);
+  const [busy, setBusy] = useState(false);
+  const [imagePath, setImagePath] = useState<string | null>(null);
+  const [position, setPosition] = useState<string>("center");
+  const [customPos, setCustomPos] = useState<string>("");
+
+  useEffect(() => {
+    (async () => {
+      const { data, error } = await supabase
+        .from("site_settings")
+        .select("*")
+        .eq("id", "home")
+        .maybeSingle();
+      if (error) toast.error("সেটিংস লোড করা যায়নি");
+      if (data) {
+        setImagePath(data.hero_image_path);
+        setPosition(data.hero_object_position || "center");
+      }
+      setLoading(false);
+    })();
+  }, []);
+
+  const upload = async (file: File) => {
+    setBusy(true);
+    try {
+      const ext = file.name.split(".").pop() || "jpg";
+      const path = `hero/hero-${Date.now()}.${ext}`;
+      const { error } = await supabase.storage.from("gallery").upload(path, file, {
+        upsert: false, contentType: file.type, cacheControl: "3600",
+      });
+      if (error) throw error;
+      setImagePath(path);
+      toast.success("আপলোড সম্পন্ন। সেভ করতে ভুলবেন না।");
+    } catch (e: any) {
+      toast.error(e.message || "আপলোড ব্যর্থ");
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const save = async () => {
+    setBusy(true);
+    try {
+      const finalPos = customPos.trim() || position;
+      const { error } = await supabase
+        .from("site_settings")
+        .upsert({ id: "home", hero_image_path: imagePath, hero_object_position: finalPos });
+      if (error) throw error;
+      setPosition(finalPos);
+      setCustomPos("");
+      toast.success("সেটিংস সংরক্ষিত");
+    } catch (e: any) {
+      toast.error(e.message || "সংরক্ষণ ব্যর্থ");
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const previewUrl = imagePath ? publicUrl("gallery", imagePath) : null;
+  const activePos = customPos.trim() || position;
+
+  if (loading) return <p className="text-sm text-muted-foreground">লোড হচ্ছে...</p>;
+
+  return (
+    <div className="space-y-6 max-w-3xl">
+      <div>
+        <h2 className="text-lg font-semibold text-foreground">হোম হিরো ব্যাকগ্রাউন্ড</h2>
+        <p className="text-sm text-muted-foreground mt-1">
+          হোমপেজের ব্যাকগ্রাউন্ড ছবি ও ক্রপ পজিশন পরিবর্তন করুন। পরিবর্তন তাৎক্ষণিকভাবে সাইটে প্রতিফলিত হবে।
+        </p>
+      </div>
+
+      <div className="rounded-lg border border-border bg-card p-4 space-y-4">
+        <div>
+          <Label>ছবি আপলোড</Label>
+          <div className="mt-1.5 flex items-center gap-3">
+            <label className="inline-flex cursor-pointer items-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:opacity-90">
+              <Upload className="h-4 w-4" /> ছবি বাছাই
+              <input
+                type="file"
+                accept="image/*"
+                className="hidden"
+                disabled={busy}
+                onChange={(e) => { const f = e.target.files?.[0]; if (f) upload(f); e.currentTarget.value = ""; }}
+              />
+            </label>
+            {imagePath && <span className="text-xs text-muted-foreground truncate">{imagePath}</span>}
+          </div>
+        </div>
+
+        <div>
+          <Label>ক্রপ পজিশন (প্রিসেট)</Label>
+          <div className="mt-1.5 flex flex-wrap gap-2">
+            {POSITION_PRESETS.map((p) => (
+              <button
+                key={p.value}
+                type="button"
+                onClick={() => { setPosition(p.value); setCustomPos(""); }}
+                className={`rounded-md px-3 py-1.5 text-sm border transition ${
+                  activePos === p.value
+                    ? "bg-primary text-primary-foreground border-primary"
+                    : "bg-background border-border hover:bg-muted"
+                }`}
+              >
+                {p.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div>
+          <Label htmlFor="custompos">কাস্টম পজিশন (CSS object-position)</Label>
+          <Input
+            id="custompos"
+            placeholder="যেমন: 60% 40%"
+            value={customPos}
+            onChange={(e) => setCustomPos(e.target.value)}
+            className="mt-1.5"
+          />
+          <p className="mt-1 text-xs text-muted-foreground">
+            উদাহরণ: <code>center</code>, <code>70% center</code>, <code>60% 30%</code>
+          </p>
+        </div>
+      </div>
+
+      <div>
+        <Label>প্রিভিউ</Label>
+        <div className="mt-1.5 relative h-64 w-full overflow-hidden rounded-lg border border-border bg-muted">
+          {previewUrl ? (
+            <img
+              src={previewUrl}
+              alt="হিরো প্রিভিউ"
+              className="absolute inset-0 h-full w-full object-cover"
+              style={{ objectPosition: activePos }}
+            />
+          ) : (
+            <div className="flex h-full items-center justify-center text-sm text-muted-foreground">
+              কোনো ছবি নেই — ডিফল্ট ব্যাকগ্রাউন্ড দেখানো হবে।
+            </div>
+          )}
+          <div className="absolute inset-0 gradient-overlay pointer-events-none" />
+        </div>
+      </div>
+
+      <div className="flex items-center gap-3">
+        <button
+          onClick={save}
+          disabled={busy}
+          className="inline-flex items-center gap-2 rounded-md bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground hover:opacity-90 disabled:opacity-60"
+        >
+          সংরক্ষণ করুন
+        </button>
+        {imagePath && (
+          <button
+            onClick={() => setImagePath(null)}
+            disabled={busy}
+            className="inline-flex items-center gap-1.5 rounded-md border border-border px-4 py-2.5 text-sm hover:bg-muted"
+          >
+            <Trash2 className="h-4 w-4" /> ছবি সরান
+          </button>
+        )}
+      </div>
     </div>
   );
 }
