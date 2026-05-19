@@ -152,10 +152,12 @@
       linear-gradient(135deg, color-mix(in oklab, var(--primary) 92%, black) 0%, var(--primary) 60%, color-mix(in oklab, var(--primary) 75%, black) 100%);
   }
   .gradient-overlay {
-    background: linear-gradient(135deg,
-      color-mix(in oklab, var(--primary) 88%, black) 0%,
-      color-mix(in oklab, var(--primary) 70%, transparent) 60%,
-      color-mix(in oklab, var(--primary) 85%, black) 100%);
+    background:
+      linear-gradient(180deg, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.35) 50%, rgba(0,0,0,0.75) 100%),
+      linear-gradient(135deg,
+        color-mix(in oklab, var(--primary) 70%, black) 0%,
+        color-mix(in oklab, var(--primary) 35%, transparent) 55%,
+        color-mix(in oklab, var(--primary) 75%, black) 100%);
   }
   .text-balance { text-wrap: balance; }
   .card-hover {
