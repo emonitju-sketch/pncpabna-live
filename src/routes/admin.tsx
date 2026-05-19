@@ -99,6 +99,7 @@ function AdminPage() {
       {tab === "gallery" && <GalleryAdmin />}
       {tab === "reports" && <ReportsAdmin />}
       {tab === "registrations" && <RegistrationsAdmin />}
+      {tab === "site" && <SiteSettingsAdmin />}
       {tab === "audit" && <AuditAdmin />}
     </section>
   );
