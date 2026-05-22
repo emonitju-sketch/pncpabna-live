@@ -34,6 +34,7 @@ const allChapters: Chapter[] = [
 ];
 
 function ConstitutionPage() {
+  const { unlocked, unlock } = useConstitutionUnlocked();
   const [query, setQuery] = useState("");
   const [activeNum, setActiveNum] = useState<string>(allChapters[0].num);
   const [amendments, setAmendments] = useState<Amendment[]>([]);
