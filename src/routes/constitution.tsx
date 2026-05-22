@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { supabase } from "@/integrations/supabase/client";
 import constitution from "@/data/constitution.json";
+import { ConstitutionGate, useConstitutionUnlocked } from "@/components/site/ConstitutionGate";
 
 type Chapter = { num: string; title: string; body: string };
 type Amendment = { id: string; version: string; change_summary_bn: string; effective_date: string };
