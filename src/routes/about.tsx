@@ -33,7 +33,8 @@ function AboutPage() {
           <p>
             আমাদের কার্যক্রম রাজনৈতিক দলের ঊর্ধ্বে — আমরা পাবনার সাধারণ মানুষের কণ্ঠস্বর তুলে ধরতে, যুব সমাজকে নেতৃত্বে আনতে এবং সমাজের প্রান্তিক মানুষের পাশে দাঁড়াতে কাজ করি।
           </p>
-          <div className="grid gap-5 sm:grid-cols-2 mt-6">
+          <h2 className="mt-8 text-2xl md:text-3xl font-bold text-foreground">আমাদের মূলনীতি ও পদ্ধতি</h2>
+          <div className="grid gap-5 sm:grid-cols-2 mt-4">
             {[
               { icon: Target, title: "মূলনীতি", text: "ঐক্য, সচেতনতা, দায়িত্ব ও মানবিকতা।" },
               { icon: Award, title: "মূল্যবোধ", text: "সততা, স্বচ্ছতা, সম্মান ও জনসেবা।" },
