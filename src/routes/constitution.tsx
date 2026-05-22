@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { supabase } from "@/integrations/supabase/client";
 import constitution from "@/data/constitution.json";
+import { ConstitutionGate, useConstitutionUnlocked } from "@/components/site/ConstitutionGate";
 
 type Chapter = { num: string; title: string; body: string };
 type Amendment = { id: string; version: string; change_summary_bn: string; effective_date: string };
@@ -33,6 +34,7 @@ const allChapters: Chapter[] = [
 ];
 
 function ConstitutionPage() {
+  const { unlocked, unlock } = useConstitutionUnlocked();
   const [query, setQuery] = useState("");
   const [activeNum, setActiveNum] = useState<string>(allChapters[0].num);
   const [amendments, setAmendments] = useState<Amendment[]>([]);
@@ -105,6 +107,8 @@ function ConstitutionPage() {
 
   return (
     <>
+      {!unlocked && <ConstitutionGate onUnlock={unlock} />}
+      <div className={!unlocked ? "pointer-events-none select-none blur-md" : undefined} aria-hidden={!unlocked}>
       <PageHeader
         eyebrow={`সংস্করণ ${latestVersion}`}
         title="পূর্ণাঙ্গ গঠনতন্ত্র"
@@ -221,6 +225,7 @@ function ConstitutionPage() {
           </main>
         </div>
       </section>
+      </div>
     </>
   );
 }
