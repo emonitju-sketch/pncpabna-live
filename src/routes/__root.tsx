@@ -13,6 +13,7 @@ import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { Toaster } from "@/components/ui/sonner";
 import { PreviewDiagnostics } from "@/components/dev/PreviewDiagnostics";
+import { META_CSP } from "@/lib/csp-meta";
 
 function NotFoundComponent() {
   return (
