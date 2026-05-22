@@ -1,73 +1,86 @@
-# PNC Website — Integration Plan (v2 main + new prompt extras)
+# ইস্যু রেজোলিউশন ট্র্যাকিং + ইমেইল নোটিফিকেশন
 
-বর্তমান সাইটটাই (v2 remix — সবুজ/সোনালি/সাদা সিভিক ডিজাইন, বাংলা UI, হোম + /about + /activities + /events + /news + /gallery + /reports + /membership + /contact + /constitution + /admin) **main** হিসেবে থাকবে। ডিজাইন, রঙ, টাইপোগ্রাফি, রাউটিং কাঠামো — কিছুই বদলাবে না।
-
-নতুন prompt থেকে যেগুলো এই কাঠামোর উপর **add-on** হিসেবে যুক্ত হবে শুধু সেগুলোই নিচে আছে। ডুপ্লিকেট পেজ (যেমন `/updates`, `/executive-council` আলাদা রুট) তৈরি হবে না — বিদ্যমান রুটেই বসবে।
+বিদ্যমান `event_registrations` টেবিলকে "ইস্যু/আবেদন" হিসেবে ব্যবহার করে স্ট্যাটাস ট্র্যাকিং, আপভোট ও ইমেইল আপডেট যোগ করব।
 
 ---
 
-## যা যা যুক্ত হবে
+## ১. ডাটাবেস পরিবর্তন
 
-### ১. নোটিশ বোর্ড (হোমপেজের শীর্ষে)
-- হোমের হিরো-এর ঠিক নিচে একটা হাইলাইট স্ট্রিপ — জরুরি ঘোষণা/ইস্যু
-- অ্যাডমিন থেকে যোগ/সম্পাদনা/মেয়াদ-শেষের তারিখ
-- নতুন টেবিল: `notices` (title_bn, body_bn, priority, starts_at, expires_at, is_active)
+**`event_registrations`-এ নতুন কলাম:**
+- `status` (text, default `'pending'`) — `pending` / `in_review` / `in_progress` / `resolved` / `rejected`
+- `status_note` (text, nullable) — অ্যাডমিনের মন্তব্য
+- `status_updated_at` (timestamptz)
+- `last_notified_status` (text, nullable) — ইমেইল ডুপ্লিকেট ঠেকাতে
 
-### ২. গ্যালারি পুনর্গঠন (ব্যবহারকারী ছবি + FB লিংক দেবেন)
-- বিদ্যমান `/gallery` পেজেই — category ট্যাব (কর্মসূচি / সভা / সামাজিক / সংবাদ-কভারেজ / অন্যান্য)
-- প্রতি ছবিতে: caption_bn, তারিখ, FB পোস্ট লিংক (থাকলে)
-- বিদ্যমান `gallery_images` টেবিলে কলাম যোগ: `caption_bn`, `event_date`, `facebook_url`, `display_order`
+**নতুন টেবিল `issue_upvotes`:**
+- `id`, `registration_id` (FK→event_registrations), `voter_email` (text), `created_at`
+- UNIQUE (registration_id, voter_email)
+- public INSERT, public SELECT (count দেখানোর জন্য)
 
-### ৩. নিউজ / কর্মসূচি কন্টেন্ট সাজানো (ব্যবহারকারীর FB পোস্ট/caption থেকে)
-- ব্যবহারকারী যা FB লিংক/caption/ছবি দেবেন সেগুলো ম্যানুয়ালি `news` ও `events` টেবিলে বসানো হবে
-- নতুন টেবিল `news` (title_bn, summary_bn, body_bn, cover_image, source_url, published_at, category)
-- বিদ্যমান `events` টেবিল ব্যবহার — শুধু seed/ম্যানুয়াল এন্ট্রি
-
-### ৪. অ্যাডমিন প্যানেল সম্প্রসারণ (বিদ্যমান `/admin`-এ ট্যাব যোগ)
-নতুন ট্যাব: **নোটিশ**, **নিউজ**, **গ্যালারি ক্যাপশন/ক্রম**, **গঠনতন্ত্র সংশোধনী** (শেষেরটা ইতিমধ্যে আছে)
-- বিদ্যমান অ্যাডমিন স্টাইল ও auth (`has_role('admin')`) reuse
+**RLS:**
+- `event_registrations`: admin ALL (আছে), public SELECT যোগ — শুধু `email` মিললে নিজের আবেদন দেখা যাবে (Public Status Page)
+- `issue_upvotes`: public SELECT + INSERT, admin ALL
 
 ---
 
-## নতুন prompt-এর যেসব আইটেম **এই ধাপে যুক্ত হবে না** (পরে আলাদা প্ল্যানে)
+## ২. ইমেইল ইনফ্রা (Lovable built-in)
 
-| আইটেম | কেন এখন না |
-|---|---|
-| Facebook auto-sync (Graph API + page token) | আলাদা অ্যাপ-রিভিউ + টোকেন প্রসেস; ম্যানুয়াল ইম্পোর্ট দিয়ে আপাতত চলবে |
-| AI categorization (বাংলা ট্যাগ/সারাংশ) | নিউজ ভলিউম কম থাকা পর্যন্ত ম্যানুয়ালই যথেষ্ট |
-| Dynamic Executive Council from DB | বর্তমানে স্ট্যাটিক — চাইলে পরে `leaders` টেবিলে নেওয়া যাবে |
-| sync_attempts / sync_state / backoff | শুধু auto-sync চালু হলে দরকার |
-| Email greetings module | আলাদা ফিচার, পরে |
+ধাপ:
+1. সেন্ডার ডোমেইন সেটআপ ডায়লগ (নিচে বাটন)
+2. `email_domain--setup_email_infra` — queue + cron job
+3. `email_domain--scaffold_transactional_email` — sender route
+4. নতুন টেমপ্লেট `issue-status-update.tsx` (বাংলা, সবুজ-সোনালি ব্র্যান্ডিং)
 
-লঞ্চের আগে চাইলে এগুলো আলাদা প্ল্যানে তোলা যাবে।
+**ট্রিগার:** Admin UI থেকে status বদলালে server function → submitter (`event_registrations.email`) + সব `issue_upvotes.voter_email`-কে আলাদা আলাদা ইমেইল enqueue করবে; `last_notified_status` আপডেট হবে যাতে রিসেন্ড না হয়।
 
 ---
 
-## টেকনিক্যাল সারাংশ
+## ৩. UI পরিবর্তন
 
-**নতুন টেবিল (২টা):** `notices`, `news`
-**আলটার (১টা):** `gallery_images` — `caption_bn`, `event_date`, `facebook_url`, `display_order`
-**RLS:** public SELECT, admin ALL (বিদ্যমান `has_role()` ফাংশন reuse)
-**ফাইল স্টোরেজ:** বিদ্যমান `gallery` bucket reuse
-**রাউট:** কোনো নতুন রাউট নেই — সব বিদ্যমান পেজে inject
-**অ্যাডমিন:** বিদ্যমান `/admin`-এ ৩টা নতুন ট্যাব
+**Admin (`/admin`) — নতুন ট্যাব "আবেদন/ইস্যু":**
+- সব registrations টেবিল: name, phone, event, status badge, upvote count
+- প্রতি সারিতে status dropdown + note ইনপুট → Save → server fn কল
+- Filter: status, event
+
+**Public — নতুন পেজ `/issues/$id`:**
+- টাইটেল, বর্তমান স্ট্যাটাস (timeline), অ্যাডমিনের নোট
+- আপভোট বাটন — visitor email + click → `issue_upvotes` insert
+- ইমেইল আপডেট সাবস্ক্রিপশন (upvote-ই subscription হিসেবে কাজ করে)
+
+**Public — `/issues` (লিস্ট):**
+- সব registration কার্ড: title (event name), status badge, upvote count
+- শুধু সাম্প্রতিক ৫০টা, status filter
+
+**Registration form-এ note:** "স্ট্যাটাস আপডেট আপনার ইমেইলে পাঠানো হবে।"
+
+---
+
+## ৪. টেকনিক্যাল
+
+**Server functions** (`src/lib/issues.functions.ts`):
+- `updateIssueStatus({ id, status, note })` — admin only (`requireSupabaseAuth` + `has_role` check), Supabase update + enqueue emails via `enqueue_email` RPC
+- `upvoteIssue({ registrationId, email })` — public, insert into `issue_upvotes`
+- `getPublicIssue({ id })` — public read
+
+**Email template** `issue-status-update.tsx`:
+- Props: `issueTitle`, `oldStatus`, `newStatus`, `note`, `viewUrl`
+- Subject: `আপনার আবেদনের স্ট্যাটাস: <newStatus_bn>`
+
+**Status বাংলা ম্যাপিং:** pending→অপেক্ষমাণ, in_review→যাচাই হচ্ছে, in_progress→কাজ চলছে, resolved→সমাধান হয়েছে, rejected→অগ্রহণযোগ্য।
 
 ---
 
 ## বিল্ড অর্ডার
 
-1. মাইগ্রেশন: `notices`, `news` টেবিল + `gallery_images` কলাম
-2. অ্যাডমিনে নোটিশ ট্যাব + হোমপেজ স্ট্রিপ
-3. অ্যাডমিনে নিউজ ট্যাব + `/news` পেজ লাইভ ডেটা থেকে
-4. অ্যাডমিনে গ্যালারি ক্যাপশন/ক্রম ট্যাব + `/gallery` ক্যাটেগরি ট্যাব
-5. ব্যবহারকারী যেসব FB লিংক/ছবি/caption দেবেন সেগুলো seed হিসেবে বসানো
+1. মাইগ্রেশন (কলাম + `issue_upvotes` + RLS)
+2. ইমেইল ডোমেইন সেটআপ → infra → scaffold
+3. ইমেইল টেমপ্লেট + server functions
+4. Admin "ইস্যু" ট্যাব
+5. Public `/issues` ও `/issues/$id` পেজ + আপভোট
+6. Registration form-এ আপডেট-নোটিস
 
 ---
 
-## পরের ধাপে আপনার থেকে যা লাগবে
+## প্রথম স্টেপ যা এখনই দরকার
 
-- নোটিশ বোর্ডের জন্য প্রথম ২-৩টা ঘোষণার বাংলা টেক্সট
-- গ্যালারির জন্য ছবি (আপলোড) + প্রতিটার caption + কোন category
-- নিউজ/কর্মসূচির জন্য FB পোস্ট URL বা caption টেক্সট
-
-প্ল্যান approve করলে মাইগ্রেশন দিয়ে শুরু করব।
+ইমেইল পাঠাতে একটা sender ডোমেইন setup করতে হবে। সেটা শেষ হলে বাকি সব auto-build হবে।
