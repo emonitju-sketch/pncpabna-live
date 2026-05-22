@@ -15,7 +15,9 @@ export const Route = createFileRoute("/activities")({
       { name: "description", content: "সামাজিক সচেতনতা, নাগরিক সংলাপ, যুব নেতৃত্ব, মানবিক সহায়তা — পিএনসি-র বিভিন্ন কার্যক্রম ও প্রকল্প।" },
       { property: "og:title", content: "আমাদের কার্যক্রম — পিএনসি" },
       { property: "og:description", content: "পাবনার জন্য নাগরিক উদ্যোগ ও কর্মসূচি।" },
+      { property: "og:url", content: "https://pncpab.lovable.app/activities" },
     ],
+    links: [{ rel: "canonical", href: "https://pncpab.lovable.app/activities" }],
   }),
   component: ActivitiesPage,
 });
