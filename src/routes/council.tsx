@@ -66,7 +66,6 @@ const executive: { role: string; name: string }[] = [
   { role: "নারী বিষয়ক সম্পাদক", name: "—" },
 ];
 
-
 function CouncilPage() {
   return (
     <>
