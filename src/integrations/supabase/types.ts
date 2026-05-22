@@ -14,6 +14,51 @@ export type Database = {
   }
   public: {
     Tables: {
+      activities: {
+        Row: {
+          activity_date: string | null
+          category: string
+          cover_image_path: string | null
+          created_at: string
+          created_by: string | null
+          description_bn: string | null
+          display_order: number
+          id: string
+          is_published: boolean
+          location: string | null
+          title_bn: string
+          updated_at: string
+        }
+        Insert: {
+          activity_date?: string | null
+          category?: string
+          cover_image_path?: string | null
+          created_at?: string
+          created_by?: string | null
+          description_bn?: string | null
+          display_order?: number
+          id?: string
+          is_published?: boolean
+          location?: string | null
+          title_bn: string
+          updated_at?: string
+        }
+        Update: {
+          activity_date?: string | null
+          category?: string
+          cover_image_path?: string | null
+          created_at?: string
+          created_by?: string | null
+          description_bn?: string | null
+          display_order?: number
+          id?: string
+          is_published?: boolean
+          location?: string | null
+          title_bn?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       audit_logs: {
         Row: {
           action: string
