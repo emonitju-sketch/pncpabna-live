@@ -4,8 +4,10 @@ import logo from "@/assets/pnc-logo.png";
 
 export function Footer() {
   return (
-    <footer className="mt-20 bg-primary text-primary-foreground">
-      <div className="container-pnc py-14 grid gap-10 md:grid-cols-4">
+    <footer className="mt-20 relative gradient-hero text-primary-foreground">
+      <div className="gold-strip" />
+      <div aria-hidden className="absolute inset-0 pattern-dots text-white pointer-events-none" />
+      <div className="relative container-pnc py-14 grid gap-10 md:grid-cols-4">
         <div className="md:col-span-2">
           <div className="flex items-center gap-3">
             <img src={logo} alt="" width={48} height={48} className="h-12 w-12 bg-white rounded-full p-1" />
