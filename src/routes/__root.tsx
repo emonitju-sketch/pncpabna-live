@@ -92,7 +92,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           "@type": "NGO",
           name: "পাবনা নাগরিক কমিটি - পিএনসি",
           alternateName: "PNC Pabna",
-          url: "https://pncpabna.org",
+          url: "https://pncpab.lovable.app",
           slogan: "নাগরিক ঐক্যেই বদলাবে পাবনা",
           sameAs: ["https://www.facebook.com/pncpabna/"],
           address: { "@type": "PostalAddress", addressLocality: "Pabna", addressCountry: "BD" },
