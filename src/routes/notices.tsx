@@ -227,6 +227,6 @@ function NoticesPage() {
           />
         </div>
       )}
-    </main>
+    </>
   );
 }
