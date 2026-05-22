@@ -16,7 +16,9 @@ export const Route = createFileRoute("/events")({
       { name: "description", content: "পিএনসি-র আসন্ন সভা, কর্মসূচি ও কমিউনিটি ইভেন্টের তারিখ, স্থান ও নিবন্ধন।" },
       { property: "og:title", content: "ইভেন্ট ক্যালেন্ডার — পিএনসি" },
       { property: "og:description", content: "আসন্ন কর্মসূচি ও নিবন্ধন।" },
+      { property: "og:url", content: "https://pncpab.lovable.app/events" },
     ],
+    links: [{ rel: "canonical", href: "https://pncpab.lovable.app/events" }],
   }),
   component: EventsPage,
 });
