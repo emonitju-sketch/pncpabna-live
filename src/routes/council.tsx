@@ -204,9 +204,24 @@ function CouncilPage() {
               </tbody>
             </table>
           </div>
-          <p className="mt-4 text-xs text-muted-foreground">
-            * পূর্ণ তালিকা শীঘ্রই হালনাগাদ করা হবে।
-          </p>
+          <div className="mt-6 grid gap-4 sm:grid-cols-2">
+            <div className="rounded-xl border border-border bg-card p-5 shadow-card">
+              <div className="text-xs font-semibold uppercase tracking-wide text-[var(--gold)]">
+                আহ্বায়ক (Convenor)
+              </div>
+              <div className="mt-1 font-display text-base font-bold text-foreground">
+                জনাব মো: আবুল বাসার খান জুয়েল
+              </div>
+            </div>
+            <div className="rounded-xl border border-border bg-card p-5 shadow-card">
+              <div className="text-xs font-semibold uppercase tracking-wide text-[var(--gold)]">
+                সদস্য সচিব (Member Secretary)
+              </div>
+              <div className="mt-1 font-display text-base font-bold text-foreground">
+                মো: রাশেদুল ইসলাম
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
