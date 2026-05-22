@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Users, Megaphone, HeartHandshake, TrendingUp, Facebook, ArrowRight, Target, Eye, Sparkles } from "lucide-react";
 import hero from "@/assets/hero-pnc.jpg";
 import { NoticeStrip } from "@/components/site/NoticeStrip";
-import { AiNewsSection } from "@/components/site/AiNewsSection";
+
 
 export const Route = createFileRoute("/")({
   head: () => ({
