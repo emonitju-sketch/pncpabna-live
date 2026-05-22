@@ -30,8 +30,8 @@ const noticeSearchSchema = z.object({
   category: fallback(z.string(), "সব").default("সব"),
   query: fallback(z.string(), "").default(""),
   sort: fallback(z.enum(["newest", "oldest"]), "newest").default("newest"),
-  dateFrom: fallback(z.string().optional(), undefined),
-  dateTo: fallback(z.string().optional(), undefined),
+  dateFrom: z.string().optional().catch(undefined),
+  dateTo: z.string().optional().catch(undefined),
 });
 
 export const Route = createFileRoute("/notices")({
