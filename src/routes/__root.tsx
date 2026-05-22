@@ -138,6 +138,7 @@ function RootComponent() {
         </main>
         <Footer />
         <Toaster richColors position="top-right" />
+        {import.meta.env.DEV && <PreviewDiagnostics />}
       </div>
     </QueryClientProvider>
   );
