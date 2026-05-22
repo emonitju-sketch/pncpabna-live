@@ -1,0 +1,100 @@
+name: Security
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  schedule:
+    # Weekly Monday 06:00 UTC — catches newly-disclosed CVEs in unchanged deps
+    - cron: "0 6 * * 1"
+
+# Minimum permissions; jobs that need more elevate explicitly
+permissions:
+  contents: read
+
+concurrency:
+  group: security-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # ---------------------------------------------------------------------------
+  # Dependency vulnerability scan (npm audit via bun)
+  # ---------------------------------------------------------------------------
+  dependencies:
+    name: Dependency audit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      # Fail the build only on high/critical advisories.
+      # Use npm (already on the runner) since it has a stable audit JSON shape.
+      - name: Audit production dependencies
+        run: |
+          set -o pipefail
+          npm audit --omit=dev --audit-level=high --json > audit.json || true
+          node -e "
+            const a = require('./audit.json');
+            const vulns = a.vulnerabilities || {};
+            const bad = Object.values(vulns).filter(v => ['high','critical'].includes(v.severity));
+            if (bad.length) {
+              console.error('High/critical vulnerabilities found:');
+              for (const v of bad) console.error('  -', v.name, v.severity, v.via?.[0]?.title || '');
+              process.exit(1);
+            }
+            console.log('No high/critical vulnerabilities.');
+          "
+
+      - name: Upload audit report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: npm-audit-report
+          path: audit.json
+          retention-days: 30
+
+  # ---------------------------------------------------------------------------
+  # Static Application Security Testing — CodeQL (JS/TS)
+  # ---------------------------------------------------------------------------
+  codeql:
+    name: CodeQL SAST
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write   # required to upload SARIF into the Security tab
+      actions: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: javascript-typescript
+          queries: security-extended,security-and-quality
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
+        with:
+          category: "/language:javascript-typescript"
+
+  # ---------------------------------------------------------------------------
+  # Secret scanning — gitleaks
+  # ---------------------------------------------------------------------------
+  secrets:
+    name: Secret scan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # full history so gitleaks can scan past commits
+
+      - uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
