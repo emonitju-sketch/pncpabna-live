@@ -15,8 +15,13 @@ export const Route = createFileRoute("/")({
       { property: "og:image", content: hero },
       { name: "twitter:image", content: hero },
     ],
-    links: [{ rel: "canonical", href: "https://pncpab.lovable.app/" }],
+    links: [
+      { rel: "canonical", href: "https://pncpab.lovable.app/" },
+      // Preload LCP hero image so it starts downloading before React mounts
+      { rel: "preload", as: "image", href: hero, fetchpriority: "high" },
+    ],
   }),
+
   component: HomePage,
 });
 
@@ -37,8 +42,12 @@ function HomePage() {
           alt="পাবনার নাগরিকদের ঐক্য"
           width={1920}
           height={1088}
+          loading="eager"
+          fetchPriority="high"
+          decoding="async"
           className="absolute inset-0 h-full w-full object-cover"
         />
+
         <div className="absolute inset-0 gradient-overlay" />
         <div aria-hidden className="absolute inset-0 pattern-dots text-white pointer-events-none" />
         <div className="relative container-pnc py-20 md:py-28 text-primary-foreground">

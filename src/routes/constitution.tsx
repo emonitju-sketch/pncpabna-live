@@ -174,7 +174,7 @@ function ConstitutionPage() {
           </aside>
 
           {/* Main content */}
-          <main>
+          <div>
             <Tabs defaultValue="legal" className="w-full">
               <TabsList>
                 <TabsTrigger value="legal" className="gap-2">
@@ -222,7 +222,7 @@ function ConstitutionPage() {
                 </div>
               </TabsContent>
             </Tabs>
-          </main>
+          </div>
         </div>
       </section>
       </div>
