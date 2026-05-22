@@ -18,6 +18,7 @@ import { Route as MembershipRouteImport } from './routes/membership'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as GalleryRouteImport } from './routes/gallery'
 import { Route as EventsRouteImport } from './routes/events'
+import { Route as CouncilRouteImport } from './routes/council'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as ConstitutionRouteImport } from './routes/constitution'
 import { Route as AdminRouteImport } from './routes/admin'
@@ -70,6 +71,11 @@ const EventsRoute = EventsRouteImport.update({
   path: '/events',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CouncilRoute = CouncilRouteImport.update({
+  id: '/council',
+  path: '/council',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ContactRoute = ContactRouteImport.update({
   id: '/contact',
   path: '/contact',
@@ -108,6 +114,7 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AdminRoute
   '/constitution': typeof ConstitutionRoute
   '/contact': typeof ContactRoute
+  '/council': typeof CouncilRoute
   '/events': typeof EventsRoute
   '/gallery': typeof GalleryRoute
   '/login': typeof LoginRoute
@@ -125,6 +132,7 @@ export interface FileRoutesByTo {
   '/admin': typeof AdminRoute
   '/constitution': typeof ConstitutionRoute
   '/contact': typeof ContactRoute
+  '/council': typeof CouncilRoute
   '/events': typeof EventsRoute
   '/gallery': typeof GalleryRoute
   '/login': typeof LoginRoute
@@ -143,6 +151,7 @@ export interface FileRoutesById {
   '/admin': typeof AdminRoute
   '/constitution': typeof ConstitutionRoute
   '/contact': typeof ContactRoute
+  '/council': typeof CouncilRoute
   '/events': typeof EventsRoute
   '/gallery': typeof GalleryRoute
   '/login': typeof LoginRoute
@@ -162,6 +171,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/constitution'
     | '/contact'
+    | '/council'
     | '/events'
     | '/gallery'
     | '/login'
@@ -179,6 +189,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/constitution'
     | '/contact'
+    | '/council'
     | '/events'
     | '/gallery'
     | '/login'
@@ -196,6 +207,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/constitution'
     | '/contact'
+    | '/council'
     | '/events'
     | '/gallery'
     | '/login'
@@ -214,6 +226,7 @@ export interface RootRouteChildren {
   AdminRoute: typeof AdminRoute
   ConstitutionRoute: typeof ConstitutionRoute
   ContactRoute: typeof ContactRoute
+  CouncilRoute: typeof CouncilRoute
   EventsRoute: typeof EventsRoute
   GalleryRoute: typeof GalleryRoute
   LoginRoute: typeof LoginRoute
@@ -290,6 +303,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EventsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/council': {
+      id: '/council'
+      path: '/council'
+      fullPath: '/council'
+      preLoaderRoute: typeof CouncilRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/contact': {
       id: '/contact'
       path: '/contact'
@@ -342,6 +362,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminRoute: AdminRoute,
   ConstitutionRoute: ConstitutionRoute,
   ContactRoute: ContactRoute,
+  CouncilRoute: CouncilRoute,
   EventsRoute: EventsRoute,
   GalleryRoute: GalleryRoute,
   LoginRoute: LoginRoute,
