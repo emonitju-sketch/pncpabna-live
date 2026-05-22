@@ -1,0 +1,1 @@
+DROP POLICY IF EXISTS "registrations public read own" ON public.event_registrations;
