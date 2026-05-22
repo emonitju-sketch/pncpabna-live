@@ -79,9 +79,9 @@ export function ContentStudio() {
     setItems((p) => p.map((i) => (i.id === id ? { ...i, caption } : i)));
 
   const runAnalyze = async () => {
-    const valid = items.filter((i) => i.caption.trim().length > 0);
+    const valid = items;
     if (valid.length === 0) {
-      toast.error("প্রতিটি ছবির caption দিন");
+      toast.error("কমপক্ষে একটি ছবি যোগ করুন");
       return;
     }
     setBusy(true);
