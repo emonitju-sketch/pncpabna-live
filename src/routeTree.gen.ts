@@ -13,7 +13,6 @@ import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as RobotsDottxtRouteImport } from './routes/robots[.]txt'
 import { Route as ReportsRouteImport } from './routes/reports'
 import { Route as NoticesRouteImport } from './routes/notices'
-import { Route as NewsRouteImport } from './routes/news'
 import { Route as MembershipRouteImport } from './routes/membership'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as GalleryRouteImport } from './routes/gallery'
@@ -44,11 +43,6 @@ const ReportsRoute = ReportsRouteImport.update({
 const NoticesRoute = NoticesRouteImport.update({
   id: '/notices',
   path: '/notices',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const NewsRoute = NewsRouteImport.update({
-  id: '/news',
-  path: '/news',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MembershipRoute = MembershipRouteImport.update({
@@ -119,7 +113,6 @@ export interface FileRoutesByFullPath {
   '/gallery': typeof GalleryRoute
   '/login': typeof LoginRoute
   '/membership': typeof MembershipRoute
-  '/news': typeof NewsRoute
   '/notices': typeof NoticesRoute
   '/reports': typeof ReportsRoute
   '/robots.txt': typeof RobotsDottxtRoute
@@ -137,7 +130,6 @@ export interface FileRoutesByTo {
   '/gallery': typeof GalleryRoute
   '/login': typeof LoginRoute
   '/membership': typeof MembershipRoute
-  '/news': typeof NewsRoute
   '/notices': typeof NoticesRoute
   '/reports': typeof ReportsRoute
   '/robots.txt': typeof RobotsDottxtRoute
@@ -156,7 +148,6 @@ export interface FileRoutesById {
   '/gallery': typeof GalleryRoute
   '/login': typeof LoginRoute
   '/membership': typeof MembershipRoute
-  '/news': typeof NewsRoute
   '/notices': typeof NoticesRoute
   '/reports': typeof ReportsRoute
   '/robots.txt': typeof RobotsDottxtRoute
@@ -176,7 +167,6 @@ export interface FileRouteTypes {
     | '/gallery'
     | '/login'
     | '/membership'
-    | '/news'
     | '/notices'
     | '/reports'
     | '/robots.txt'
@@ -194,7 +184,6 @@ export interface FileRouteTypes {
     | '/gallery'
     | '/login'
     | '/membership'
-    | '/news'
     | '/notices'
     | '/reports'
     | '/robots.txt'
@@ -212,7 +201,6 @@ export interface FileRouteTypes {
     | '/gallery'
     | '/login'
     | '/membership'
-    | '/news'
     | '/notices'
     | '/reports'
     | '/robots.txt'
@@ -231,7 +219,6 @@ export interface RootRouteChildren {
   GalleryRoute: typeof GalleryRoute
   LoginRoute: typeof LoginRoute
   MembershipRoute: typeof MembershipRoute
-  NewsRoute: typeof NewsRoute
   NoticesRoute: typeof NoticesRoute
   ReportsRoute: typeof ReportsRoute
   RobotsDottxtRoute: typeof RobotsDottxtRoute
@@ -266,13 +253,6 @@ declare module '@tanstack/react-router' {
       path: '/notices'
       fullPath: '/notices'
       preLoaderRoute: typeof NoticesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/news': {
-      id: '/news'
-      path: '/news'
-      fullPath: '/news'
-      preLoaderRoute: typeof NewsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/membership': {
@@ -367,7 +347,6 @@ const rootRouteChildren: RootRouteChildren = {
   GalleryRoute: GalleryRoute,
   LoginRoute: LoginRoute,
   MembershipRoute: MembershipRoute,
-  NewsRoute: NewsRoute,
   NoticesRoute: NoticesRoute,
   ReportsRoute: ReportsRoute,
   RobotsDottxtRoute: RobotsDottxtRoute,
@@ -376,3 +355,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
