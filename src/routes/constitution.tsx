@@ -222,7 +222,7 @@ function ConstitutionPage() {
                 </div>
               </TabsContent>
             </Tabs>
-          </main>
+          </div>
         </div>
       </section>
       </div>
