@@ -15,8 +15,13 @@ export const Route = createFileRoute("/")({
       { property: "og:image", content: hero },
       { name: "twitter:image", content: hero },
     ],
-    links: [{ rel: "canonical", href: "https://pncpab.lovable.app/" }],
+    links: [
+      { rel: "canonical", href: "https://pncpab.lovable.app/" },
+      // Preload LCP hero image so it starts downloading before React mounts
+      { rel: "preload", as: "image", href: hero, fetchpriority: "high" },
+    ],
   }),
+
   component: HomePage,
 });
 
