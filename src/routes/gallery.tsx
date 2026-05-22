@@ -29,26 +29,28 @@ export const Route = createFileRoute("/gallery")({
   component: GalleryPage,
 });
 
-const CATEGORIES = ["সকল", "সভা ও আলোচনা", "সামাজিক উদ্যোগ", "মানবিক কার্যক্রম", "শুভেচ্ছা ও সম্মাননা", "পাবনার মুহূর্ত"];
-
-type Img = { id: string; title: string; category: string; image_path: string };
+type Img = { id: string; title: string; category: string; image_path: string; caption_bn: string | null };
 
 function GalleryPage() {
   const [active, setActive] = useState("সকল");
   const [images, setImages] = useState<Img[]>([]);
   const [loading, setLoading] = useState(true);
+  const [lightbox, setLightbox] = useState<Img | null>(null);
 
   useEffect(() => {
     (async () => {
       const { data } = await supabase
         .from("gallery_images")
-        .select("id, title, category, image_path")
+        .select("id, title, category, image_path, caption_bn")
+        .order("display_order", { ascending: false })
         .order("created_at", { ascending: false });
       setImages((data as Img[]) || []);
       setLoading(false);
     })();
   }, []);
 
+  // Build categories from actual data
+  const categories = ["সকল", ...Array.from(new Set(images.map((i) => i.category))).sort()];
   const filtered = active === "সকল" ? images : images.filter((i) => i.category === active);
 
   return (
@@ -60,7 +62,7 @@ function GalleryPage() {
       />
       <section className="container-pnc py-12 md:py-16">
         <div className="flex flex-wrap gap-2 mb-8">
-          {CATEGORIES.map((c) => (
+          {categories.map((c) => (
             <button
               key={c}
               onClick={() => setActive(c)}
@@ -71,12 +73,21 @@ function GalleryPage() {
               }`}
             >
               {c}
+              {c !== "সকল" && (
+                <span className="ml-2 text-xs opacity-70">
+                  ({images.filter((i) => i.category === c).length})
+                </span>
+              )}
             </button>
           ))}
         </div>
 
         {loading ? (
-          <p className="text-muted-foreground">লোড হচ্ছে...</p>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <div key={i} className="aspect-[4/3] rounded-2xl bg-muted animate-pulse" />
+            ))}
+          </div>
         ) : filtered.length === 0 ? (
           <p className="text-muted-foreground rounded-2xl border border-dashed border-border bg-card p-8 text-center">
             এখনো কোনো ছবি প্রকাশিত হয়নি।
@@ -84,22 +95,54 @@ function GalleryPage() {
         ) : (
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {filtered.map((it) => (
-              <figure key={it.id} className="group relative overflow-hidden rounded-2xl border border-border bg-card shadow-card aspect-[4/3]">
+              <figure
+                key={it.id}
+                onClick={() => setLightbox(it)}
+                className="group relative overflow-hidden rounded-2xl border border-border bg-card shadow-card aspect-[4/3] cursor-pointer"
+              >
                 <img
                   src={publicUrl("gallery", it.image_path)}
-                  alt={it.title}
+                  alt={it.caption_bn || it.title}
                   loading="lazy"
                   className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                 />
-                <figcaption className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-primary/90 via-primary/40 to-transparent p-4 text-primary-foreground">
+                <figcaption className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent p-4 text-white">
                   <p className="text-xs opacity-90">{it.category}</p>
-                  <p className="font-semibold">{it.title}</p>
+                  <p className="font-semibold line-clamp-2">{it.caption_bn || it.title}</p>
                 </figcaption>
               </figure>
             ))}
           </div>
         )}
       </section>
+
+      {lightbox && (
+        <div
+          onClick={() => setLightbox(null)}
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-4 backdrop-blur-sm"
+        >
+          <button
+            aria-label="বন্ধ করুন"
+            onClick={() => setLightbox(null)}
+            className="absolute top-4 right-4 rounded-full bg-white/10 text-white w-10 h-10 flex items-center justify-center hover:bg-white/20"
+          >
+            ✕
+          </button>
+          <figure onClick={(e) => e.stopPropagation()} className="max-w-5xl w-full">
+            <img
+              src={publicUrl("gallery", lightbox.image_path)}
+              alt={lightbox.caption_bn || lightbox.title}
+              className="w-full h-auto max-h-[80vh] object-contain rounded-lg"
+            />
+            {(lightbox.caption_bn || lightbox.title) && (
+              <figcaption className="mt-4 text-white/90 text-center">
+                <p className="text-xs opacity-70 mb-1">{lightbox.category}</p>
+                <p>{lightbox.caption_bn || lightbox.title}</p>
+              </figcaption>
+            )}
+          </figure>
+        </div>
+      )}
     </>
   );
 }
