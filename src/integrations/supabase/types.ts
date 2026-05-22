@@ -23,7 +23,9 @@ export type Database = {
           created_by: string | null
           description_bn: string | null
           display_order: number
+          external_url: string | null
           id: string
+          is_featured: boolean
           is_published: boolean
           location: string | null
           title_bn: string
@@ -37,7 +39,9 @@ export type Database = {
           created_by?: string | null
           description_bn?: string | null
           display_order?: number
+          external_url?: string | null
           id?: string
+          is_featured?: boolean
           is_published?: boolean
           location?: string | null
           title_bn: string
@@ -51,7 +55,9 @@ export type Database = {
           created_by?: string | null
           description_bn?: string | null
           display_order?: number
+          external_url?: string | null
           id?: string
+          is_featured?: boolean
           is_published?: boolean
           location?: string | null
           title_bn?: string

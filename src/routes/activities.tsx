@@ -1,11 +1,11 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { PageHeader } from "@/components/site/PageHeader";
 import { supabase } from "@/integrations/supabase/client";
 import { publicUrl } from "@/hooks/use-auth";
 import {
   Megaphone, MessageSquare, GraduationCap, HeartHandshake,
-  Users, Vote, Building2, Sparkles, ArrowRight, X, CheckCircle2, Calendar, MapPin, Tag,
+  Users, Vote, Building2, Sparkles, ArrowRight, X, CheckCircle2, Calendar, MapPin, Tag, ExternalLink,
 } from "lucide-react";
 
 export const Route = createFileRoute("/activities")({
@@ -30,6 +30,7 @@ type Activity = {
   location: string | null;
   category: string;
   cover_image_path: string | null;
+  external_url: string | null;
 };
 
 type Pillar = {
@@ -60,26 +61,23 @@ function ActivitiesPage() {
   const [active, setActive] = useState<Pillar | null>(null);
   const [activities, setActivities] = useState<Activity[]>([]);
   const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState<string>("সকল");
 
   useEffect(() => {
     (async () => {
       const { data } = await (supabase as any)
         .from("activities")
-        .select("id, title_bn, description_bn, activity_date, location, category, cover_image_path")
+        .select("id, title_bn, description_bn, activity_date, location, category, cover_image_path, external_url")
         .eq("is_published", true)
+        .eq("is_featured", true)
+        .order("display_order", { ascending: false })
         .order("activity_date", { ascending: false, nullsFirst: false })
-        .limit(60);
+        .limit(6);
       setActivities((data as Activity[]) || []);
       setLoading(false);
     })();
   }, []);
 
-  const categories = useMemo(
-    () => ["সকল", ...Array.from(new Set(activities.map((a) => a.category)))],
-    [activities]
-  );
-  const filtered = filter === "সকল" ? activities : activities.filter((a) => a.category === filter);
+  const filtered = activities;
 
   return (
     <>
@@ -89,30 +87,11 @@ function ActivitiesPage() {
         description="সামাজিক সচেতনতা থেকে মানবিক সহায়তা — পিএনসি-র প্রতিটি কর্মসূচি পাবনার মানুষের কল্যাণে নিবেদিত।"
       />
 
-      {/* Live activities */}
+      {/* Curated featured activities */}
       <section className="container-pnc pt-12 md:pt-16">
-        <div className="flex items-end justify-between flex-wrap gap-4 mb-6">
-          <div>
-            <h2 className="text-2xl md:text-3xl font-bold text-foreground">সাম্প্রতিক কর্মসূচি</h2>
-            <p className="text-sm text-muted-foreground mt-1">তারিখ, স্থান ও ছবিসহ পিএনসি-র প্রকল্পসমূহ।</p>
-          </div>
-          {categories.length > 1 && (
-            <div className="flex flex-wrap gap-2">
-              {categories.map((c) => (
-                <button
-                  key={c}
-                  onClick={() => setFilter(c)}
-                  className={`px-3.5 py-1.5 rounded-full text-xs font-medium transition border ${
-                    filter === c
-                      ? "bg-primary text-primary-foreground border-primary"
-                      : "bg-card text-muted-foreground border-border hover:border-primary hover:text-primary"
-                  }`}
-                >
-                  {c}
-                </button>
-              ))}
-            </div>
-          )}
+        <div className="mb-6">
+          <h2 className="text-2xl md:text-3xl font-bold text-foreground">নির্বাচিত কর্মসূচি</h2>
+          <p className="text-sm text-muted-foreground mt-1">৬টি গুরুত্বপূর্ণ মুহূর্ত — বিস্তারিত দেখতে ফেসবুক পোস্টে যান।</p>
         </div>
 
         {loading ? (
@@ -154,6 +133,16 @@ function ActivitiesPage() {
                     <span className="inline-flex items-center gap-1"><Calendar className="h-3.5 w-3.5" /> {fmtDate(a.activity_date)}</span>
                     {a.location && <span className="inline-flex items-center gap-1"><MapPin className="h-3.5 w-3.5" /> {a.location}</span>}
                   </div>
+                  {a.external_url && (
+                    <a
+                      href={a.external_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="mt-3 inline-flex items-center justify-center gap-1.5 rounded-lg bg-primary px-3.5 py-2 text-xs font-semibold text-primary-foreground hover:opacity-90 transition"
+                    >
+                      বিস্তারিত দেখুন <ExternalLink className="h-3.5 w-3.5" />
+                    </a>
+                  )}
                 </div>
               </article>
             ))}
