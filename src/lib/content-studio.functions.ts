@@ -1,11 +1,15 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { supabaseAdmin } from "@/integrations/supabase/client.server";
 
 const SUPABASE_URL = () => process.env.SUPABASE_URL!;
 
-async function assertAdmin(supabase: any, userId: string) {
-  const { data, error } = await supabase.rpc("has_role", {
+const GENERIC_ERROR = "অপারেশন ব্যর্থ হয়েছে। পরে আবার চেষ্টা করুন।";
+
+async function assertAdmin(userId: string) {
+  // Use service-role client so role lookup is independent of caller JWT.
+  const { data, error } = await supabaseAdmin.rpc("has_role", {
     _user_id: userId,
     _role: "admin",
   });
@@ -75,9 +79,10 @@ async function categorizeOne(caption: string, imageUrl: string | null) {
 
   if (!res.ok) {
     const body = await res.text();
+    console.error("AI gateway error", res.status, body.slice(0, 500));
     if (res.status === 429) throw new Error("AI rate-limit, একটু পরে চেষ্টা করুন");
     if (res.status === 402) throw new Error("AI credit ফুরিয়েছে — Lovable workspace-এ যোগ করুন");
-    throw new Error(`AI error ${res.status}: ${body.slice(0, 200)}`);
+    throw new Error("AI সার্ভিস সাময়িকভাবে অনুপলব্ধ।");
   }
 
   const json: any = await res.json();
@@ -106,7 +111,7 @@ export const analyzeDrafts = createServerFn({ method: "POST" })
   )
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context as any;
-    await assertAdmin(supabase, userId);
+    await assertAdmin(userId);
 
     const results: any[] = [];
     for (const item of data.items) {
@@ -160,10 +165,17 @@ export const updateDraft = createServerFn({ method: "POST" })
   )
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context as any;
-    await assertAdmin(supabase, userId);
+    await assertAdmin(userId);
     const { id, ...patch } = data;
-    const { error } = await supabase.from("content_drafts").update(patch).eq("id", id);
-    if (error) throw new Error(error.message);
+    const { error } = await supabase
+      .from("content_drafts")
+      .update(patch)
+      .eq("id", id)
+      .eq("admin_status", "pending");
+    if (error) {
+      console.error("updateDraft failed", error);
+      throw new Error(GENERIC_ERROR);
+    }
     return { ok: true };
   });
 
@@ -172,12 +184,16 @@ export const rejectDraft = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => z.object({ id: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context as any;
-    await assertAdmin(supabase, userId);
+    await assertAdmin(userId);
     const { error } = await supabase
       .from("content_drafts")
       .update({ admin_status: "rejected" })
-      .eq("id", data.id);
-    if (error) throw new Error(error.message);
+      .eq("id", data.id)
+      .eq("admin_status", "pending");
+    if (error) {
+      console.error("rejectDraft failed", error);
+      throw new Error(GENERIC_ERROR);
+    }
     return { ok: true };
   });
 
@@ -186,16 +202,26 @@ export const publishDraft = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => z.object({ id: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context as any;
-    await assertAdmin(supabase, userId);
+    await assertAdmin(userId);
 
     const { data: d, error: e1 } = await supabase
       .from("content_drafts")
       .select("*")
       .eq("id", data.id)
       .single();
-    if (e1 || !d) throw new Error(e1?.message || "Draft not found");
+    if (e1 || !d) {
+      console.error("publishDraft load failed", e1);
+      throw new Error("Draft not found");
+    }
+    if (d.admin_status !== "pending") {
+      throw new Error("এই draft আগেই প্রকাশিত বা বাতিল হয়েছে।");
+    }
 
+    const VALID_CATS = ["news", "notice", "activity", "gallery"] as const;
     const cat = d.final_category || d.ai_category;
+    if (!VALID_CATS.includes(cat as typeof VALID_CATS[number])) {
+      throw new Error("Invalid category");
+    }
     const title = d.final_title_bn || d.ai_title_bn || "শিরোনাম";
     const body = d.final_body_bn || d.ai_body_bn || d.original_caption;
     const date = d.final_date || d.ai_event_date || null;
@@ -217,7 +243,7 @@ export const publishDraft = createServerFn({ method: "POST" })
         })
         .select("id")
         .single();
-      if (error) throw new Error(error.message);
+      if (error) { console.error("publish insert failed", error); throw new Error(GENERIC_ERROR); }
       targetTable = "news";
       recordId = row.id;
     } else if (cat === "notice") {
@@ -231,7 +257,7 @@ export const publishDraft = createServerFn({ method: "POST" })
         })
         .select("id")
         .single();
-      if (error) throw new Error(error.message);
+      if (error) { console.error("publish insert failed", error); throw new Error(GENERIC_ERROR); }
       targetTable = "notices";
       recordId = row.id;
     } else if (cat === "activity") {
@@ -248,7 +274,7 @@ export const publishDraft = createServerFn({ method: "POST" })
         })
         .select("id")
         .single();
-      if (error) throw new Error(error.message);
+      if (error) { console.error("publish insert failed", error); throw new Error(GENERIC_ERROR); }
       targetTable = "activities";
       recordId = row.id;
     } else {
@@ -267,7 +293,7 @@ export const publishDraft = createServerFn({ method: "POST" })
         })
         .select("id")
         .single();
-      if (error) throw new Error(error.message);
+      if (error) { console.error("publish insert failed", error); throw new Error(GENERIC_ERROR); }
       targetTable = "gallery_images";
       recordId = row.id;
     }
