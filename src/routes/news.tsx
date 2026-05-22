@@ -134,3 +134,35 @@ function NewsPage() {
     </>
   );
 }
+
+function NewsCard({ n }: { n: News }) {
+  const [open, setOpen] = useState(false);
+  const fullText = n.body_bn || n.summary_bn || "";
+  const isLong = fullText.length > 220;
+  return (
+    <article className="card-hover rounded-2xl border border-border bg-card shadow-card flex flex-col overflow-hidden">
+      {n.cover_image_path && (
+        <div className="aspect-video bg-muted">
+          <img src={publicUrl("gallery", n.cover_image_path)} alt={n.title_bn} className="h-full w-full object-cover" loading="lazy" />
+        </div>
+      )}
+      <div className="p-6 flex flex-col flex-1">
+        <div className="flex items-center justify-between text-xs text-muted-foreground">
+          <span className="inline-flex items-center gap-1.5 text-red-accent font-semibold"><Tag className="h-3.5 w-3.5" /> {n.category}</span>
+          <span className="inline-flex items-center gap-1.5"><Calendar className="h-3.5 w-3.5" /> {new Date(n.published_at).toLocaleDateString("bn-BD")}</span>
+        </div>
+        <h3 className="mt-3 text-lg font-bold text-foreground">{n.title_bn}</h3>
+        <p className={`mt-2 text-sm text-muted-foreground flex-1 whitespace-pre-line ${open ? "" : "line-clamp-5"}`}>{fullText}</p>
+        {isLong && (
+          <button
+            onClick={() => setOpen((v) => !v)}
+            className="mt-3 self-start text-sm font-semibold text-primary hover:underline"
+          >
+            {open ? "সংক্ষেপে দেখুন" : "বিস্তারিত পড়ুন"}
+          </button>
+        )}
+      </div>
+    </article>
+  );
+}
+
