@@ -24,17 +24,40 @@ function AdminPage() {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
   const [tab, setTab] = useState<Tab>("studio");
+  const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
 
   useEffect(() => {
     if (!loading && !user) navigate({ to: "/login" });
   }, [loading, user, navigate]);
+
+  useEffect(() => {
+    if (!user) return;
+    let cancelled = false;
+    (async () => {
+      const { data, error } = await supabase
+        .from("user_roles")
+        .select("role")
+        .eq("user_id", user.id)
+        .eq("role", "admin")
+        .maybeSingle();
+      if (cancelled) return;
+      if (error || !data) {
+        setIsAdmin(false);
+        toast.error("এই পাতায় প্রবেশের অনুমতি নেই।");
+        navigate({ to: "/" });
+      } else {
+        setIsAdmin(true);
+      }
+    })();
+    return () => { cancelled = true; };
+  }, [user, navigate]);
 
   const signOut = async () => {
     await supabase.auth.signOut();
     navigate({ to: "/" });
   };
 
-  if (loading || !user) return <div className="container-pnc py-20 text-center text-muted-foreground">লোড হচ্ছে...</div>;
+  if (loading || !user || isAdmin !== true) return <div className="container-pnc py-20 text-center text-muted-foreground">লোড হচ্ছে...</div>;
 
   const tabs: { id: Tab; label: string; icon: any }[] = [
     { id: "studio", label: "AI স্টুডিও", icon: Sparkles },

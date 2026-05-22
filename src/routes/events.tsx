@@ -58,7 +58,7 @@ function EventsPage() {
       .from("events")
       .select("id, title, description, event_date, location, registration_open")
       .order("event_date", { ascending: true });
-    if (error) toast.error(error.message);
+    if (error) { console.error(error); toast.error("ইভেন্ট লোড করা যায়নি। আবার চেষ্টা করুন।"); }
     setEvents((data as Event[]) || []);
     setLoading(false);
   };
@@ -173,7 +173,7 @@ function RegisterModal({ event, onClose }: { event: Event; onClose: () => void }
       notes: parsed.data.notes || null,
     });
     setBusy(false);
-    if (error) { toast.error(error.message); return; }
+    if (error) { console.error(error); toast.error("নিবন্ধন ব্যর্থ হয়েছে। আবার চেষ্টা করুন।"); return; }
     toast.success("নিবন্ধন সফল! ধন্যবাদ।");
     onClose();
   };
