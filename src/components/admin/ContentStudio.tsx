@@ -205,7 +205,7 @@ export function ContentStudio() {
                     )}
                   </div>
                   <Textarea
-                    placeholder="Facebook caption এখানে paste করুন..."
+                    placeholder="Caption (ঐচ্ছিক) — ছবি থেকে AI নিজেই বুঝে নেবে"
                     value={it.caption}
                     onChange={(e) => setCaption(it.id, e.target.value)}
                     rows={3}
