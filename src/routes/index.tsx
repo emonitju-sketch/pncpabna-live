@@ -36,18 +36,20 @@ function HomePage() {
           className="absolute inset-0 h-full w-full object-cover"
         />
         <div className="absolute inset-0 gradient-overlay" />
+        <div aria-hidden className="absolute inset-0 pattern-dots text-white pointer-events-none" />
         <div className="relative container-pnc py-20 md:py-28 text-primary-foreground">
-          <span className="inline-flex items-center gap-2 rounded-full bg-white/15 backdrop-blur px-4 py-1.5 text-xs font-medium border border-white/20">
-            <Sparkles className="h-3.5 w-3.5" /> একটি নাগরিকভিত্তিক সামাজিক সংগঠন
+          <span className="reveal inline-flex items-center gap-2 rounded-full bg-white/15 backdrop-blur px-4 py-1.5 text-xs font-medium border border-white/25">
+            <Sparkles className="h-3.5 w-3.5 text-[var(--gold)]" /> একটি নাগরিকভিত্তিক সামাজিক সংগঠন
           </span>
-          <h1 className="mt-5 text-balance text-4xl md:text-6xl font-bold max-w-4xl leading-tight">
-            নাগরিক ঐক্যেই বদলাবে পাবনা।
+          <h1 className="reveal reveal-delay-1 mt-5 text-balance text-4xl md:text-6xl lg:text-7xl font-bold max-w-4xl heading-display">
+            নাগরিক ঐক্যেই বদলাবে <span className="text-[var(--gold)]">পাবনা</span>।
           </h1>
-          <p className="mt-5 max-w-2xl text-base md:text-xl opacity-95">
+          <div className="reveal reveal-delay-2 mt-6 gold-divider" />
+          <p className="reveal reveal-delay-2 mt-5 max-w-2xl text-base md:text-xl opacity-95 text-pretty">
             পাবনার উন্নয়ন, সামাজিক সচেতনতা, নাগরিক অধিকার এবং মানবিক উদ্যোগে আমরা একসাথে কাজ করি।
           </p>
-          <div className="mt-8 flex flex-wrap items-center gap-3">
-            <Link to="/membership" className="inline-flex items-center gap-2 rounded-lg bg-red-accent px-6 py-3 text-sm md:text-base font-semibold text-red-accent-foreground hover:opacity-90 transition shadow-elegant">
+          <div className="reveal reveal-delay-3 mt-8 flex flex-wrap items-center gap-3">
+            <Link to="/membership" className="shine-on-hover inline-flex items-center gap-2 rounded-lg bg-red-accent px-6 py-3 text-sm md:text-base font-semibold text-red-accent-foreground hover:opacity-95 transition shadow-elegant">
               <Users className="h-5 w-5" /> সদস্য হোন
             </Link>
             <a href="https://www.facebook.com/pncpabna/" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 rounded-lg bg-white/15 backdrop-blur border border-white/30 px-6 py-3 text-sm md:text-base font-semibold text-white hover:bg-white/25 transition">
@@ -55,20 +57,21 @@ function HomePage() {
             </a>
           </div>
 
-          <div className="mt-12 grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl">
+          <div className="reveal reveal-delay-4 mt-12 grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl">
             {[
               ["১০K+", "অনুসারী"],
               ["নাগরিক", "সংগঠন"],
               ["সামাজিক", "উন্নয়ন"],
               ["ঐক্যবদ্ধ", "পাবনার জন্য"],
             ].map(([n, l]) => (
-              <div key={l} className="rounded-xl bg-white/10 backdrop-blur border border-white/20 p-4">
+              <div key={l} className="card-hover rounded-xl bg-white/10 backdrop-blur border border-white/20 p-4">
                 <div className="text-xl md:text-2xl font-bold">{n}</div>
                 <div className="text-xs md:text-sm opacity-90 mt-1">{l}</div>
               </div>
             ))}
           </div>
         </div>
+        <div className="absolute bottom-0 left-0 right-0 gold-strip" />
       </section>
 
       <NoticeStrip />

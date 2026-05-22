@@ -41,7 +41,7 @@ export function Footer() {
               ["/contact", "যোগাযোগ"],
             ].map(([to, label]) => (
               <li key={to}>
-                <Link to={to} className="opacity-90 hover:opacity-100 hover:underline transition">{label}</Link>
+                <Link to={to} className="story-link opacity-90 hover:opacity-100 transition">{label}</Link>
               </li>
             ))}
           </ul>
