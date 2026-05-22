@@ -293,6 +293,7 @@ export type Database = {
           event_date: string | null
           id: string
           image_path: string
+          is_featured: boolean
           title: string
         }
         Insert: {
@@ -304,6 +305,7 @@ export type Database = {
           event_date?: string | null
           id?: string
           image_path: string
+          is_featured?: boolean
           title: string
         }
         Update: {
@@ -315,6 +317,7 @@ export type Database = {
           event_date?: string | null
           id?: string
           image_path?: string
+          is_featured?: boolean
           title?: string
         }
         Relationships: []
