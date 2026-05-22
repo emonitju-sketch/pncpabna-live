@@ -1,73 +1,32 @@
-# PNC Website — Integration Plan (v2 main + new prompt extras)
+# ইস্যু রেজোলিউশন ট্র্যাকিং + ইমেইল নোটিফিকেশন
 
-বর্তমান সাইটটাই (v2 remix — সবুজ/সোনালি/সাদা সিভিক ডিজাইন, বাংলা UI, হোম + /about + /activities + /events + /news + /gallery + /reports + /membership + /contact + /constitution + /admin) **main** হিসেবে থাকবে। ডিজাইন, রঙ, টাইপোগ্রাফি, রাউটিং কাঠামো — কিছুই বদলাবে না।
-
-নতুন prompt থেকে যেগুলো এই কাঠামোর উপর **add-on** হিসেবে যুক্ত হবে শুধু সেগুলোই নিচে আছে। ডুপ্লিকেট পেজ (যেমন `/updates`, `/executive-council` আলাদা রুট) তৈরি হবে না — বিদ্যমান রুটেই বসবে।
+বিদ্যমান `event_registrations` টেবিলকে "ইস্যু/আবেদন" হিসেবে ব্যবহার করে স্ট্যাটাস ট্র্যাকিং, আপভোট ও ইমেইল আপডেট যোগ করব।
 
 ---
 
-## যা যা যুক্ত হবে
+## ১. ডাটাবেস পরিবর্তন
 
-### ১. নোটিশ বোর্ড (হোমপেজের শীর্ষে)
-- হোমের হিরো-এর ঠিক নিচে একটা হাইলাইট স্ট্রিপ — জরুরি ঘোষণা/ইস্যু
-- অ্যাডমিন থেকে যোগ/সম্পাদনা/মেয়াদ-শেষের তারিখ
-- নতুন টেবিল: `notices` (title_bn, body_bn, priority, starts_at, expires_at, is_active)
+**`event_registrations` টেবিলে নতুন কলাম:**
+- `status` (text, default `'pending'`) — মান: `pending`, `in_review`, `in_progress`, `resolved`, `rejected`
+- `status_note` (text, nullable) — অ্যাডমিনের মন্তব্য
+- `status_updated_at` (timestamptz)
+- `last_notified_status` (text, nullable) — ইমেইল ডুপ্লিকেট ঠেকাতে
 
-### ২. গ্যালারি পুনর্গঠন (ব্যবহারকারী ছবি + FB লিংক দেবেন)
-- বিদ্যমান `/gallery` পেজেই — category ট্যাব (কর্মসূচি / সভা / সামাজিক / সংবাদ-কভারেজ / অন্যান্য)
-- প্রতি ছবিতে: caption_bn, তারিখ, FB পোস্ট লিংক (থাকলে)
-- বিদ্যমান `gallery_images` টেবিলে কলাম যোগ: `caption_bn`, `event_date`, `facebook_url`, `display_order`
+**নতুন টেবিল `issue_upvotes`:**
+- `id`, `registration_id` (FK), `voter_email` (text), `created_at`
+- UNIQUE (registration_id, voter_email)
+- public INSERT (rate-limit বাদে), public SELECT count
+- voter_email থাকলে স্ট্যাটাস পরিবর্তনে তাকেও ইমেইল
 
-### ৩. নিউজ / কর্মসূচি কন্টেন্ট সাজানো (ব্যবহারকারীর FB পোস্ট/caption থেকে)
-- ব্যবহারকারী যা FB লিংক/caption/ছবি দেবেন সেগুলো ম্যানুয়ালি `news` ও `events` টেবিলে বসানো হবে
-- নতুন টেবিল `news` (title_bn, summary_bn, body_bn, cover_image, source_url, published_at, category)
-- বিদ্যমান `events` টেবিল ব্যবহার — শুধু seed/ম্যানুয়াল এন্ট্রি
+**RLS:** বিদ্যমান admin policy বহাল, public-এর জন্য SELECT যোগ (যাতে নিজের আবেদন স্ট্যাটাস দেখা যায় টোকেন দিয়ে)। একটা পাবলিক রিড ফাংশন `get_issue_status(registration_id, email)` যাতে শুধু নিজের আবেদন দেখা যায়।
 
-### ৪. অ্যাডমিন প্যানেল সম্প্রসারণ (বিদ্যমান `/admin`-এ ট্যাব যোগ)
-নতুন ট্যাব: **নোটিশ**, **নিউজ**, **গ্যালারি ক্যাপশন/ক্রম**, **গঠনতন্ত্র সংশোধনী** (শেষেরটা ইতিমধ্যে আছে)
-- বিদ্যমান অ্যাডমিন স্টাইল ও auth (`has_role('admin')`) reuse
+**ট্রিগার:** `event_registrations`-এ স্ট্যাটাস বদলালে → submitter + upvoter-দের email queue-এ enqueue করার জন্য একটা ফাংশন কল হবে।
 
 ---
 
-## নতুন prompt-এর যেসব আইটেম **এই ধাপে যুক্ত হবে না** (পরে আলাদা প্ল্যানে)
+## ২. ইমেইল ইনফ্রা
 
-| আইটেম | কেন এখন না |
-|---|---|
-| Facebook auto-sync (Graph API + page token) | আলাদা অ্যাপ-রিভিউ + টোকেন প্রসেস; ম্যানুয়াল ইম্পোর্ট দিয়ে আপাতত চলবে |
-| AI categorization (বাংলা ট্যাগ/সারাংশ) | নিউজ ভলিউম কম থাকা পর্যন্ত ম্যানুয়ালই যথেষ্ট |
-| Dynamic Executive Council from DB | বর্তমানে স্ট্যাটিক — চাইলে পরে `leaders` টেবিলে নেওয়া যাবে |
-| sync_attempts / sync_state / backoff | শুধু auto-sync চালু হলে দরকার |
-| Email greetings module | আলাদা ফিচার, পরে |
-
-লঞ্চের আগে চাইলে এগুলো আলাদা প্ল্যানে তোলা যাবে।
-
----
-
-## টেকনিক্যাল সারাংশ
-
-**নতুন টেবিল (২টা):** `notices`, `news`
-**আলটার (১টা):** `gallery_images` — `caption_bn`, `event_date`, `facebook_url`, `display_order`
-**RLS:** public SELECT, admin ALL (বিদ্যমান `has_role()` ফাংশন reuse)
-**ফাইল স্টোরেজ:** বিদ্যমান `gallery` bucket reuse
-**রাউট:** কোনো নতুন রাউট নেই — সব বিদ্যমান পেজে inject
-**অ্যাডমিন:** বিদ্যমান `/admin`-এ ৩টা নতুন ট্যাব
-
----
-
-## বিল্ড অর্ডার
-
-1. মাইগ্রেশন: `notices`, `news` টেবিল + `gallery_images` কলাম
-2. অ্যাডমিনে নোটিশ ট্যাব + হোমপেজ স্ট্রিপ
-3. অ্যাডমিনে নিউজ ট্যাব + `/news` পেজ লাইভ ডেটা থেকে
-4. অ্যাডমিনে গ্যালারি ক্যাপশন/ক্রম ট্যাব + `/gallery` ক্যাটেগরি ট্যাব
-5. ব্যবহারকারী যেসব FB লিংক/ছবি/caption দেবেন সেগুলো seed হিসেবে বসানো
-
----
-
-## পরের ধাপে আপনার থেকে যা লাগবে
-
-- নোটিশ বোর্ডের জন্য প্রথম ২-৩টা ঘোষণার বাংলা টেক্সট
-- গ্যালারির জন্য ছবি (আপলোড) + প্রতিটার caption + কোন category
-- নিউজ/কর্মসূচির জন্য FB পোস্ট URL বা caption টেক্সট
-
-প্ল্যান approve করলে মাইগ্রেশন দিয়ে শুরু করব।
+Lovable Cloud-এর built-in email system ব্যবহার করব (ডোমেইন সেটআপ লাগবে — প্রথম ধাপ)। তারপর:
+- `email_domain--setup_email_infra` — queue + cron
+- `email_domain--scaffold_transactional_email` — sender route
+- নতুন টেম
