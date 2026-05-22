@@ -1,11 +1,15 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { supabaseAdmin } from "@/integrations/supabase/client.server";
 
 const SUPABASE_URL = () => process.env.SUPABASE_URL!;
 
-async function assertAdmin(supabase: any, userId: string) {
-  const { data, error } = await supabase.rpc("has_role", {
+const GENERIC_ERROR = "অপারেশন ব্যর্থ হয়েছে। পরে আবার চেষ্টা করুন।";
+
+async function assertAdmin(userId: string) {
+  // Use service-role client so role lookup is independent of caller JWT.
+  const { data, error } = await supabaseAdmin.rpc("has_role", {
     _user_id: userId,
     _role: "admin",
   });
