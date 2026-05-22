@@ -167,8 +167,15 @@ export const updateDraft = createServerFn({ method: "POST" })
     const { supabase, userId } = context as any;
     await assertAdmin(userId);
     const { id, ...patch } = data;
-    const { error } = await supabase.from("content_drafts").update(patch).eq("id", id);
-    if (error) throw new Error(error.message);
+    const { error } = await supabase
+      .from("content_drafts")
+      .update(patch)
+      .eq("id", id)
+      .eq("admin_status", "pending");
+    if (error) {
+      console.error("updateDraft failed", error);
+      throw new Error(GENERIC_ERROR);
+    }
     return { ok: true };
   });
 
@@ -181,8 +188,12 @@ export const rejectDraft = createServerFn({ method: "POST" })
     const { error } = await supabase
       .from("content_drafts")
       .update({ admin_status: "rejected" })
-      .eq("id", data.id);
-    if (error) throw new Error(error.message);
+      .eq("id", data.id)
+      .eq("admin_status", "pending");
+    if (error) {
+      console.error("rejectDraft failed", error);
+      throw new Error(GENERIC_ERROR);
+    }
     return { ok: true };
   });
 
