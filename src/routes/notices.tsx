@@ -89,7 +89,8 @@ function NoticesPage() {
   }, [query, category]);
 
   return (
-    <main>
+    <>
+
       <PageHeader
         eyebrow="অফিসিয়াল"
         title="নোটিশ ও ঘোষণা"
