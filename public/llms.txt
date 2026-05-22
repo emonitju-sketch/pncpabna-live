@@ -1,0 +1,22 @@
+# পাবনা নাগরিক কমিটি (PNC Pabna)
+
+> Citizen-driven social platform for Pabna, Bangladesh. Coordinates civic activities, events, news, and community reports.
+
+Site: https://pncpab.lovable.app
+Language: Bengali (bn-BD)
+
+## Key pages
+- [Home](https://pncpab.lovable.app/) — Overview, hero, latest activities
+- [About](https://pncpab.lovable.app/about) — Mission and committee background
+- [Activities](https://pncpab.lovable.app/activities) — Ongoing civic activities
+- [News](https://pncpab.lovable.app/news) — Announcements and news articles
+- [Events](https://pncpab.lovable.app/events) — Upcoming events with registration
+- [Gallery](https://pncpab.lovable.app/gallery) — Categorized photo archive
+- [Reports](https://pncpab.lovable.app/reports) — Annual reports and newsletters (PDF)
+- [Constitution](https://pncpab.lovable.app/constitution) — Organization constitution and amendments
+- [Membership](https://pncpab.lovable.app/membership) — Membership benefits and signup
+- [Contact](https://pncpab.lovable.app/contact) — Contact information
+
+## Machine-readable
+- Sitemap: https://pncpab.lovable.app/sitemap.xml
+- Robots: https://pncpab.lovable.app/robots.txt
