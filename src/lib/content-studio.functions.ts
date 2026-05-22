@@ -239,7 +239,7 @@ export const publishDraft = createServerFn({ method: "POST" })
         })
         .select("id")
         .single();
-      if (error) throw new Error(error.message);
+      if (error) { console.error("publish insert failed", error); throw new Error(GENERIC_ERROR); }
       targetTable = "news";
       recordId = row.id;
     } else if (cat === "notice") {
@@ -253,7 +253,7 @@ export const publishDraft = createServerFn({ method: "POST" })
         })
         .select("id")
         .single();
-      if (error) throw new Error(error.message);
+      if (error) { console.error("publish insert failed", error); throw new Error(GENERIC_ERROR); }
       targetTable = "notices";
       recordId = row.id;
     } else if (cat === "activity") {
@@ -270,7 +270,7 @@ export const publishDraft = createServerFn({ method: "POST" })
         })
         .select("id")
         .single();
-      if (error) throw new Error(error.message);
+      if (error) { console.error("publish insert failed", error); throw new Error(GENERIC_ERROR); }
       targetTable = "activities";
       recordId = row.id;
     } else {
@@ -289,7 +289,7 @@ export const publishDraft = createServerFn({ method: "POST" })
         })
         .select("id")
         .single();
-      if (error) throw new Error(error.message);
+      if (error) { console.error("publish insert failed", error); throw new Error(GENERIC_ERROR); }
       targetTable = "gallery_images";
       recordId = row.id;
     }
