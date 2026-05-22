@@ -3,13 +3,14 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { z } from "zod";
 import {
-  Shield, LogOut, Calendar, Image as ImageIcon, FileText, Plus, Trash2, Users, Download, History
+  Shield, LogOut, Calendar, Image as ImageIcon, FileText, Plus, Trash2, Users, Download, History, Sparkles
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth, publicUrl } from "@/hooks/use-auth";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { ContentStudio } from "@/components/admin/ContentStudio";
 
 export const Route = createFileRoute("/admin")({
   head: () => ({ meta: [{ title: "অ্যাডমিন প্যানেল — পিএনসি" }, { name: "robots", content: "noindex" }] }),
@@ -17,12 +18,12 @@ export const Route = createFileRoute("/admin")({
 });
 
 const GALLERY_CATEGORIES = ["সভা ও আলোচনা", "সামাজিক উদ্যোগ", "মানবিক কার্যক্রম", "শুভেচ্ছা ও সম্মাননা", "পাবনার মুহূর্ত"];
-type Tab = "events" | "gallery" | "reports" | "registrations" | "audit";
+type Tab = "studio" | "events" | "gallery" | "reports" | "registrations" | "audit";
 
 function AdminPage() {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
-  const [tab, setTab] = useState<Tab>("events");
+  const [tab, setTab] = useState<Tab>("studio");
 
   useEffect(() => {
     if (!loading && !user) navigate({ to: "/login" });
@@ -36,6 +37,7 @@ function AdminPage() {
   if (loading || !user) return <div className="container-pnc py-20 text-center text-muted-foreground">লোড হচ্ছে...</div>;
 
   const tabs: { id: Tab; label: string; icon: any }[] = [
+    { id: "studio", label: "AI স্টুডিও", icon: Sparkles },
     { id: "events", label: "ইভেন্ট", icon: Calendar },
     { id: "gallery", label: "গ্যালারি", icon: ImageIcon },
     { id: "reports", label: "প্রতিবেদন", icon: FileText },
@@ -73,6 +75,7 @@ function AdminPage() {
         ))}
       </div>
 
+      {tab === "studio" && <ContentStudio />}
       {tab === "events" && <EventsAdmin />}
       {tab === "gallery" && <GalleryAdmin />}
       {tab === "reports" && <ReportsAdmin />}
