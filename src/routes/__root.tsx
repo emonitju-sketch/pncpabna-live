@@ -64,6 +64,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
+      // Defense-in-depth CSP delivered in the document (edge cache strips
+      // response headers from our SSR layer). frame-ancestors / X-Frame-Options
+      // cannot be set via meta — they remain in src/lib/security-headers.ts.
+      { httpEquiv: "Content-Security-Policy", content: META_CSP },
+      { name: "referrer", content: "strict-origin-when-cross-origin" },
       { title: "PNC Pabna — পাবনা নাগরিক কমিটি" },
       {
         name: "description",
