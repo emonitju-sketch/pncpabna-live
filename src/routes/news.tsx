@@ -183,9 +183,10 @@ function NewsPage() {
                       description: n.summary_bn || (n.body_bn ? n.body_bn.slice(0, 160) : undefined),
                     },
                   })),
-                }),
+                }).replace(/</g, "\\u003c"),
               }}
             />
+
           </>
         )}
       </section>

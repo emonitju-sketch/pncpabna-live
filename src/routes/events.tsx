@@ -121,9 +121,10 @@ function EventsPage() {
                 description: e.description || undefined,
                 organizer: { "@type": "Organization", name: "পাবনা নাগরিক কমিটি", url: "https://pncpab.lovable.app/" },
               })),
-            ),
+            ).replace(/</g, "\\u003c"),
           }}
         />
+
       )}
 
       {openEvent && <RegisterModal event={openEvent} onClose={() => setOpenEvent(null)} />}
