@@ -230,6 +230,61 @@ function CouncilPage() {
         </div>
       </section>
 
+      {/* Official authorization documents */}
+      <section className="container-pnc py-14 md:py-20">
+        <div className="flex items-end justify-between gap-4 mb-8">
+          <div>
+            <div className="text-xs font-semibold uppercase tracking-wide text-primary">
+              অনুমোদনপত্র ও আইনগত বৈধতা
+            </div>
+            <h2 className="mt-1 text-2xl md:text-3xl font-bold text-foreground">
+              প্রেস বিজ্ঞপ্তি ও স্বাক্ষরিত কমিটি তালিকা
+            </h2>
+            <p className="mt-2 text-sm text-muted-foreground max-w-2xl">
+              আহ্বায়ক ও সদস্য সচিবের স্বাক্ষরিত নবগঠিত কার্যনির্বাহী পরিষদের মূল ঘোষণাপত্র ও পূর্ণাঙ্গ তালিকা — কমিটির আইনগত বৈধতা নিশ্চিত করে।
+            </p>
+          </div>
+          <FileCheck2 className="hidden sm:block h-8 w-8 text-primary/70" />
+        </div>
+
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {[
+            { src: pressRelease, label: "প্রেস বিজ্ঞপ্তি (২০/০১/২০২৬)", caption: "নবগঠিত কার্যনির্বাহী পরিষদ ঘোষণা" },
+            { src: councilList1, label: "পৃষ্ঠা ১", caption: "ক্রমিক ১–২০ (নেতৃত্ব ও সম্পাদকমণ্ডলী)" },
+            { src: councilList2, label: "পৃষ্ঠা ২", caption: "ক্রমিক ২১–৪০ (বিষয়ভিত্তিক সম্পাদকমণ্ডলী)" },
+            { src: councilList3, label: "পৃষ্ঠা ৩", caption: "ক্রমিক ৪১–৬০ (সম্পাদক ও সদস্যবৃন্দ)" },
+            { src: councilList4, label: "পৃষ্ঠা ৪", caption: "ক্রমিক ৬০–৬৮ ও অনুমোদন স্বাক্ষর" },
+          ].map((doc) => (
+            <a
+              key={doc.label}
+              href={doc.src}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group rounded-2xl border border-border bg-card shadow-card card-hover overflow-hidden flex flex-col"
+            >
+              <div className="aspect-[3/4] overflow-hidden bg-primary-soft">
+                <img
+                  src={doc.src}
+                  alt={`পাবনা নাগরিক কমিটি — ${doc.label}: ${doc.caption}`}
+                  loading="lazy"
+                  className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                />
+              </div>
+              <div className="p-4">
+                <div className="text-xs font-semibold uppercase tracking-wide text-[var(--gold)]">
+                  {doc.label}
+                </div>
+                <div className="mt-1 text-sm font-medium text-foreground">
+                  {doc.caption}
+                </div>
+                <div className="mt-2 text-xs text-muted-foreground">
+                  বড় করে দেখতে ক্লিক করুন →
+                </div>
+              </div>
+            </a>
+          ))}
+        </div>
+      </section>
     </>
   );
 }
