@@ -1,86 +1,100 @@
-# ইস্যু রেজোলিউশন ট্র্যাকিং + ইমেইল নোটিফিকেশন
+# AI-Powered Content Studio
 
-বিদ্যমান `event_registrations` টেবিলকে "ইস্যু/আবেদন" হিসেবে ব্যবহার করে স্ট্যাটাস ট্র্যাকিং, আপভোট ও ইমেইল আপডেট যোগ করব।
-
----
-
-## ১. ডাটাবেস পরিবর্তন
-
-**`event_registrations`-এ নতুন কলাম:**
-- `status` (text, default `'pending'`) — `pending` / `in_review` / `in_progress` / `resolved` / `rejected`
-- `status_note` (text, nullable) — অ্যাডমিনের মন্তব্য
-- `status_updated_at` (timestamptz)
-- `last_notified_status` (text, nullable) — ইমেইল ডুপ্লিকেট ঠেকাতে
-
-**নতুন টেবিল `issue_upvotes`:**
-- `id`, `registration_id` (FK→event_registrations), `voter_email` (text), `created_at`
-- UNIQUE (registration_id, voter_email)
-- public INSERT, public SELECT (count দেখানোর জন্য)
-
-**RLS:**
-- `event_registrations`: admin ALL (আছে), public SELECT যোগ — শুধু `email` মিললে নিজের আবেদন দেখা যাবে (Public Status Page)
-- `issue_upvotes`: public SELECT + INSERT, admin ALL
+অ্যাডমিন একসাথে অনেক ছবি + caption upload করবেন → Lovable AI (Gemini) প্রতিটাকে পড়ে category, title, summary, tags suggest করবে → অ্যাডমিন review/edit করে publish বাটনে চাপলে সঠিক section-এ লাইভ যাবে।
 
 ---
 
-## ২. ইমেইল ইনফ্রা (Lovable built-in)
+## ১. ডাটাবেস
 
-ধাপ:
-1. সেন্ডার ডোমেইন সেটআপ ডায়লগ (নিচে বাটন)
-2. `email_domain--setup_email_infra` — queue + cron job
-3. `email_domain--scaffold_transactional_email` — sender route
-4. নতুন টেমপ্লেট `issue-status-update.tsx` (বাংলা, সবুজ-সোনালি ব্র্যান্ডিং)
+**নতুন টেবিল `content_drafts`:**
+- `id`, `image_path` (storage), `original_caption` (FB-এর raw text)
+- `ai_category` — `gallery` / `news` / `activity` / `notice`
+- `ai_title_bn`, `ai_summary_bn`, `ai_body_bn`, `ai_tags` (text[])
+- `ai_confidence` (0-1), `ai_model`, `ai_raw_response` (jsonb — debugging)
+- `admin_status` — `pending` / `approved` / `rejected` / `published`
+- `final_category`, `final_title_bn`, `final_body_bn`, `final_date` (edit-able)
+- `published_record_id` (publish হলে কোন target table-এ গেছে তার ref)
+- `created_by`, `created_at`, `updated_at`
 
-**ট্রিগার:** Admin UI থেকে status বদলালে server function → submitter (`event_registrations.email`) + সব `issue_upvotes.voter_email`-কে আলাদা আলাদা ইমেইল enqueue করবে; `last_notified_status` আপডেট হবে যাতে রিসেন্ড না হয়।
+**নতুন টেবিল `news` ও `notices`** (পূর্বের প্ল্যান থেকে): publish target।
+**বিদ্যমান `gallery_images`-এ কলাম যোগ:** `caption_bn`, `event_date`, `display_order` (পূর্ব প্ল্যান অনুযায়ী)।
 
----
+**Storage bucket** `gallery` (আছে) — drafts-ও এখানেই, একই path publish-এর পরও থাকবে (move দরকার নেই)।
 
-## ৩. UI পরিবর্তন
-
-**Admin (`/admin`) — নতুন ট্যাব "আবেদন/ইস্যু":**
-- সব registrations টেবিল: name, phone, event, status badge, upvote count
-- প্রতি সারিতে status dropdown + note ইনপুট → Save → server fn কল
-- Filter: status, event
-
-**Public — নতুন পেজ `/issues/$id`:**
-- টাইটেল, বর্তমান স্ট্যাটাস (timeline), অ্যাডমিনের নোট
-- আপভোট বাটন — visitor email + click → `issue_upvotes` insert
-- ইমেইল আপডেট সাবস্ক্রিপশন (upvote-ই subscription হিসেবে কাজ করে)
-
-**Public — `/issues` (লিস্ট):**
-- সব registration কার্ড: title (event name), status badge, upvote count
-- শুধু সাম্প্রতিক ৫০টা, status filter
-
-**Registration form-এ note:** "স্ট্যাটাস আপডেট আপনার ইমেইলে পাঠানো হবে।"
+**RLS:** `content_drafts` admin-only ALL। `news`/`notices` public SELECT + admin ALL।
 
 ---
 
-## ৪. টেকনিক্যাল
+## ২. AI Categorization (Lovable AI — free Gemini)
 
-**Server functions** (`src/lib/issues.functions.ts`):
-- `updateIssueStatus({ id, status, note })` — admin only (`requireSupabaseAuth` + `has_role` check), Supabase update + enqueue emails via `enqueue_email` RPC
-- `upvoteIssue({ registrationId, email })` — public, insert into `issue_upvotes`
-- `getPublicIssue({ id })` — public read
+Server function `categorizeContent({ image_url, caption })`:
+- Gemini-2.5-flash কে structured JSON output দিতে বলবে
+- Schema: `{ category, title_bn, summary_bn, body_bn, tags[], event_date?, confidence }`
+- বাংলায় output, caption ইংরেজি হলেও বাংলা সংস্করণ তৈরি করবে
+- ছবি analyze করে context-aware decision (ভিড়, ব্যানার, ইনডোর সভা, প্রেস কভারেজ ইত্যাদি)
 
-**Email template** `issue-status-update.tsx`:
-- Props: `issueTitle`, `oldStatus`, `newStatus`, `note`, `viewUrl`
-- Subject: `আপনার আবেদনের স্ট্যাটাস: <newStatus_bn>`
+**Routing logic (prompt-এ):**
+- ব্যানার + লোক + কোনো নির্দিষ্ট তারিখের event → **activity**
+- সাংবাদিক/প্রেস উল্লেখ, ঘোষণা, বিবৃতি → **news**
+- নিছক ছবি/মুহূর্ত (caption ছোট, descriptive) → **gallery**
+- "জরুরি", "সবার অবগতির জন্য", তারিখ-নির্ভর alert → **notice**
 
-**Status বাংলা ম্যাপিং:** pending→অপেক্ষমাণ, in_review→যাচাই হচ্ছে, in_progress→কাজ চলছে, resolved→সমাধান হয়েছে, rejected→অগ্রহণযোগ্য।
+---
+
+## ৩. অ্যাডমিন UI (`/admin` → নতুন ট্যাব "Content Studio")
+
+**Step 1 — Bulk Upload:**
+- Drag-drop zone (একসাথে ২০টা পর্যন্ত ছবি)
+- প্রতি ছবির পাশে textarea — caption paste করার জন্য
+- "Analyze with AI" বাটন → server fn loop চালাবে, progress bar
+
+**Step 2 — Review Grid:**
+- প্রতিটা draft কার্ড: ছবি + AI-suggested category badge + title + summary + tags
+- Inline edit (title, body, category dropdown, date)
+- Buttons: ✅ Approve & Publish | ✏️ Save Draft | ❌ Reject
+- Bulk action: "Approve all in News category"
+
+**Step 3 — Publish:**
+- Approve চাপলে server fn target table-এ insert করে (`final_category` অনুযায়ী)
+- `content_drafts.admin_status='published'`, `published_record_id` সেট
+- ৩ সেকেন্ডে লাইভ পেজে দৃশ্যমান
+
+---
+
+## ৪. পাবলিক পেজ আপডেট
+
+- `/news` — `news` টেবিল থেকে dynamic, category filter, search
+- `/activities` ও `/events` — `events` টেবিল (publish target)
+- `/gallery` — `gallery_images` থেকে category tab + lightbox + caption
+- `হোম` — `notices` থেকে highlight strip + সাম্প্রতিক ৩টা news + ৬টা gallery thumb
+
+---
+
+## ৫. টেকনিক্যাল
+
+**Server functions** (`src/lib/content-studio.functions.ts`):
+- `analyzeDrafts({ drafts: [{image_path, caption}] })` — admin, Gemini call, drafts insert
+- `updateDraft({ id, fields })` — admin
+- `publishDraft({ id })` — admin, target table-এ insert
+- `rejectDraft({ id })` — admin
+
+**AI call:** Lovable AI Gateway, model `google/gemini-2.5-flash` (cost-efficient, multimodal), JSON mode। কোনো user secret লাগবে না।
+
+**Rate limiting:** একসাথে ৫টার বেশি concurrent call না, queue-style sequential।
 
 ---
 
 ## বিল্ড অর্ডার
 
-1. মাইগ্রেশন (কলাম + `issue_upvotes` + RLS)
-2. ইমেইল ডোমেইন সেটআপ → infra → scaffold
-3. ইমেইল টেমপ্লেট + server functions
-4. Admin "ইস্যু" ট্যাব
-5. Public `/issues` ও `/issues/$id` পেজ + আপভোট
-6. Registration form-এ আপডেট-নোটিস
+1. মাইগ্রেশন (`content_drafts`, `news`, `notices`, `gallery_images` কলাম)
+2. `categorizeContent` server fn + JSON schema
+3. Admin "Content Studio" ট্যাব (upload + analyze + review grid)
+4. Publish flow (target table insert)
+5. পাবলিক পেজ wiring (`/news`, `/gallery`, হোম)
+6. আপনার দেওয়া FB caption + ছবি দিয়ে seed run
 
 ---
 
-## প্রথম স্টেপ যা এখনই দরকার
+## আপনার থেকে যা লাগবে (build শেষ হলে)
 
-ইমেইল পাঠাতে একটা sender ডোমেইন setup করতে হবে। সেটা শেষ হলে বাকি সব auto-build হবে।
+ছবিগুলো + প্রতিটার caption text (Facebook থেকে কপি)। বাকি AI সাজাবে, আপনি শুধু review করবেন।

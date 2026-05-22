@@ -74,6 +74,81 @@ export type Database = {
         }
         Relationships: []
       }
+      content_drafts: {
+        Row: {
+          admin_status: string
+          ai_body_bn: string | null
+          ai_category: string | null
+          ai_confidence: number | null
+          ai_event_date: string | null
+          ai_model: string | null
+          ai_raw_response: Json | null
+          ai_summary_bn: string | null
+          ai_tags: string[] | null
+          ai_title_bn: string | null
+          created_at: string
+          created_by: string | null
+          final_body_bn: string | null
+          final_category: string | null
+          final_date: string | null
+          final_title_bn: string | null
+          id: string
+          image_path: string | null
+          original_caption: string
+          published_record_id: string | null
+          published_record_table: string | null
+          updated_at: string
+        }
+        Insert: {
+          admin_status?: string
+          ai_body_bn?: string | null
+          ai_category?: string | null
+          ai_confidence?: number | null
+          ai_event_date?: string | null
+          ai_model?: string | null
+          ai_raw_response?: Json | null
+          ai_summary_bn?: string | null
+          ai_tags?: string[] | null
+          ai_title_bn?: string | null
+          created_at?: string
+          created_by?: string | null
+          final_body_bn?: string | null
+          final_category?: string | null
+          final_date?: string | null
+          final_title_bn?: string | null
+          id?: string
+          image_path?: string | null
+          original_caption: string
+          published_record_id?: string | null
+          published_record_table?: string | null
+          updated_at?: string
+        }
+        Update: {
+          admin_status?: string
+          ai_body_bn?: string | null
+          ai_category?: string | null
+          ai_confidence?: number | null
+          ai_event_date?: string | null
+          ai_model?: string | null
+          ai_raw_response?: Json | null
+          ai_summary_bn?: string | null
+          ai_tags?: string[] | null
+          ai_title_bn?: string | null
+          created_at?: string
+          created_by?: string | null
+          final_body_bn?: string | null
+          final_category?: string | null
+          final_date?: string | null
+          final_title_bn?: string | null
+          id?: string
+          image_path?: string | null
+          original_caption?: string
+          published_record_id?: string | null
+          published_record_table?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       event_registrations: {
         Row: {
           created_at: string
@@ -165,25 +240,34 @@ export type Database = {
       }
       gallery_images: {
         Row: {
+          caption_bn: string | null
           category: string
           created_at: string
           created_by: string | null
+          display_order: number
+          event_date: string | null
           id: string
           image_path: string
           title: string
         }
         Insert: {
+          caption_bn?: string | null
           category: string
           created_at?: string
           created_by?: string | null
+          display_order?: number
+          event_date?: string | null
           id?: string
           image_path: string
           title: string
         }
         Update: {
+          caption_bn?: string | null
           category?: string
           created_at?: string
           created_by?: string | null
+          display_order?: number
+          event_date?: string | null
           id?: string
           image_path?: string
           title?: string
@@ -218,6 +302,90 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      news: {
+        Row: {
+          body_bn: string | null
+          category: string
+          cover_image_path: string | null
+          created_at: string
+          created_by: string | null
+          id: string
+          is_published: boolean
+          published_at: string
+          source_url: string | null
+          summary_bn: string | null
+          title_bn: string
+          updated_at: string
+        }
+        Insert: {
+          body_bn?: string | null
+          category?: string
+          cover_image_path?: string | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          is_published?: boolean
+          published_at?: string
+          source_url?: string | null
+          summary_bn?: string | null
+          title_bn: string
+          updated_at?: string
+        }
+        Update: {
+          body_bn?: string | null
+          category?: string
+          cover_image_path?: string | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          is_published?: boolean
+          published_at?: string
+          source_url?: string | null
+          summary_bn?: string | null
+          title_bn?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      notices: {
+        Row: {
+          body_bn: string | null
+          created_at: string
+          created_by: string | null
+          expires_at: string | null
+          id: string
+          is_active: boolean
+          priority: number
+          starts_at: string
+          title_bn: string
+          updated_at: string
+        }
+        Insert: {
+          body_bn?: string | null
+          created_at?: string
+          created_by?: string | null
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean
+          priority?: number
+          starts_at?: string
+          title_bn: string
+          updated_at?: string
+        }
+        Update: {
+          body_bn?: string | null
+          created_at?: string
+          created_by?: string | null
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean
+          priority?: number
+          starts_at?: string
+          title_bn?: string
+          updated_at?: string
+        }
+        Relationships: []
       }
       reports: {
         Row: {
