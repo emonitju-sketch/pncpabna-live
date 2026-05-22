@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { PageHeader } from "@/components/site/PageHeader";
 import { supabase } from "@/integrations/supabase/client";
 import { publicUrl } from "@/hooks/use-auth";
@@ -133,6 +133,16 @@ function ActivitiesPage() {
                     <span className="inline-flex items-center gap-1"><Calendar className="h-3.5 w-3.5" /> {fmtDate(a.activity_date)}</span>
                     {a.location && <span className="inline-flex items-center gap-1"><MapPin className="h-3.5 w-3.5" /> {a.location}</span>}
                   </div>
+                  {a.external_url && (
+                    <a
+                      href={a.external_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="mt-3 inline-flex items-center justify-center gap-1.5 rounded-lg bg-primary px-3.5 py-2 text-xs font-semibold text-primary-foreground hover:opacity-90 transition"
+                    >
+                      বিস্তারিত দেখুন <ExternalLink className="h-3.5 w-3.5" />
+                    </a>
+                  )}
                 </div>
               </article>
             ))}
