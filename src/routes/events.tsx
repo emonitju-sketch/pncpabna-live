@@ -101,6 +101,31 @@ function EventsPage() {
         )}
       </section>
 
+      {events.length > 0 && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(
+              events.slice(0, 20).map((e) => ({
+                "@context": "https://schema.org",
+                "@type": "Event",
+                name: e.title,
+                startDate: e.event_date,
+                eventStatus: "https://schema.org/EventScheduled",
+                eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
+                location: {
+                  "@type": "Place",
+                  name: e.location,
+                  address: { "@type": "PostalAddress", addressLocality: e.location, addressCountry: "BD" },
+                },
+                description: e.description || undefined,
+                organizer: { "@type": "Organization", name: "পাবনা নাগরিক কমিটি", url: "https://pncpab.lovable.app/" },
+              })),
+            ),
+          }}
+        />
+      )}
+
       {openEvent && <RegisterModal event={openEvent} onClose={() => setOpenEvent(null)} />}
     </>
   );
