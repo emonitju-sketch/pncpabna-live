@@ -1,36 +1,35 @@
 import { useState, type FormEvent } from "react";
-import { Lock, KeyRound } from "lucide-react";
+import { Lock, KeyRound, Loader2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
-const PASSCODE = "14142164";
-const STORAGE_KEY = "pnc_constitution_unlocked";
-
-export function useConstitutionUnlocked() {
-  const [unlocked, setUnlocked] = useState<boolean>(() => {
-    if (typeof window === "undefined") return false;
-    return sessionStorage.getItem(STORAGE_KEY) === "1";
-  });
-  return {
-    unlocked,
-    unlock: () => {
-      sessionStorage.setItem(STORAGE_KEY, "1");
-      setUnlocked(true);
-    },
-  };
-}
-
-export function ConstitutionGate({ onUnlock }: { onUnlock: () => void }) {
+export function ConstitutionGate({
+  onUnlock,
+  onSubmit,
+}: {
+  onUnlock: () => void;
+  onSubmit: (passcode: string) => Promise<boolean>;
+}) {
   const [code, setCode] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    if (code.trim() === PASSCODE) {
-      setError("");
-      onUnlock();
-    } else {
-      setError("ভুল পাসকোড। অনুগ্রহ করে আবার চেষ্টা করুন।");
+    if (loading) return;
+    setLoading(true);
+    setError("");
+    try {
+      const ok = await onSubmit(code.trim());
+      if (ok) {
+        onUnlock();
+      } else {
+        setError("ভুল পাসকোড। অনুগ্রহ করে আবার চেষ্টা করুন।");
+      }
+    } catch {
+      setError("যাচাই করতে সমস্যা হয়েছে। আবার চেষ্টা করুন।");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -58,10 +57,13 @@ export function ConstitutionGate({ onUnlock }: { onUnlock: () => void }) {
               onChange={(e) => setCode(e.target.value)}
               placeholder="পাসকোড"
               className="pl-9"
+              disabled={loading}
             />
           </div>
           {error && <p className="text-sm text-destructive">{error}</p>}
-          <Button type="submit" className="w-full">আনলক করুন</Button>
+          <Button type="submit" className="w-full" disabled={loading || !code.trim()}>
+            {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : "আনলক করুন"}
+          </Button>
           <p className="text-xs text-muted-foreground text-center pt-2">
             পাসকোড পেতে যোগাযোগ করুন PNC প্রশাসন।
           </p>

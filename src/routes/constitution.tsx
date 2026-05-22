@@ -2,13 +2,13 @@ import { useState, useMemo, useEffect } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { QRCodeSVG } from "qrcode.react";
 import jsPDF from "jspdf";
-import { Download, Share2, Search, BookOpen, FileText } from "lucide-react";
+import { Download, Share2, Search, BookOpen, FileText, Loader2 } from "lucide-react";
 import { PageHeader } from "@/components/site/PageHeader";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { supabase } from "@/integrations/supabase/client";
-import constitution from "@/data/constitution.json";
-import { ConstitutionGate, useConstitutionUnlocked } from "@/components/site/ConstitutionGate";
+import { ConstitutionGate } from "@/components/site/ConstitutionGate";
+import { unlockConstitution } from "@/lib/constitution.functions";
 
 type Chapter = { num: string; title: string; body: string };
 type Amendment = { id: string; version: string; change_summary_bn: string; effective_date: string };
@@ -27,16 +27,10 @@ export const Route = createFileRoute("/constitution")({
   component: ConstitutionPage,
 });
 
-const data = constitution as { preamble: string; chapters: Chapter[] };
-const allChapters: Chapter[] = [
-  { num: "০", title: "ভূমিকা (Preamble)", body: data.preamble },
-  ...data.chapters,
-];
-
 function ConstitutionPage() {
-  const { unlocked, unlock } = useConstitutionUnlocked();
+  const [chapters, setChapters] = useState<Chapter[] | null>(null);
   const [query, setQuery] = useState("");
-  const [activeNum, setActiveNum] = useState<string>(allChapters[0].num);
+  const [activeNum, setActiveNum] = useState<string>("০");
   const [amendments, setAmendments] = useState<Amendment[]>([]);
   const [shareUrl, setShareUrl] = useState("");
 
@@ -49,18 +43,34 @@ function ConstitutionPage() {
       .then(({ data }) => setAmendments((data as Amendment[]) ?? []));
   }, []);
 
+  const handleUnlock = async (passcode: string) => {
+    const res = await unlockConstitution({ data: { passcode } });
+    if (res.ok) {
+      const all: Chapter[] = [
+        { num: "০", title: "ভূমিকা (Preamble)", body: res.data.preamble },
+        ...res.data.chapters,
+      ];
+      setChapters(all);
+      setActiveNum(all[0].num);
+      return true;
+    }
+    return false;
+  };
+
   const filtered = useMemo(() => {
-    if (!query.trim()) return allChapters;
+    if (!chapters) return [];
+    if (!query.trim()) return chapters;
     const q = query.toLowerCase();
-    return allChapters.filter(
+    return chapters.filter(
       (c) => c.title.toLowerCase().includes(q) || c.body.toLowerCase().includes(q),
     );
-  }, [query]);
+  }, [query, chapters]);
 
-  const active = allChapters.find((c) => c.num === activeNum) ?? allChapters[0];
+  const active = chapters?.find((c) => c.num === activeNum) ?? chapters?.[0];
   const latestVersion = amendments[0]?.version ?? "v1.0";
 
   const downloadPDF = () => {
+    if (!chapters) return;
     const doc = new jsPDF({ unit: "pt", format: "a4" });
     const margin = 40;
     const width = doc.internal.pageSize.getWidth() - margin * 2;
@@ -76,7 +86,7 @@ function ConstitutionPage() {
     doc.text("Bengali text below — render with Unicode-capable viewer.", margin, y);
     y += 24;
 
-    allChapters.forEach((c) => {
+    chapters.forEach((c) => {
       const heading = `অধ্যায় ${c.num}: ${c.title}`;
       const lines = doc.splitTextToSize(`${heading}\n\n${c.body}\n\n`, width);
       lines.forEach((line: string) => {
@@ -105,10 +115,26 @@ function ConstitutionPage() {
     window.open(`https://wa.me/?text=${encodeURIComponent(`${text} ${shareUrl}`)}`, "_blank");
   };
 
+  if (!chapters || !active) {
+    return (
+      <>
+        <ConstitutionGate onUnlock={() => {}} onSubmit={handleUnlock} />
+        <div aria-hidden className="pointer-events-none select-none blur-md">
+          <PageHeader
+            eyebrow="সংস্করণ v1.0"
+            title="পূর্ণাঙ্গ গঠনতন্ত্র"
+            description="পাবনা নাগরিক কমিটির সাংগঠনিক মূল দলিল - অধ্যায়, ধারা ও ব্যাখ্যা সহ।"
+          />
+          <section className="container-pnc py-10 flex items-center justify-center">
+            <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+          </section>
+        </div>
+      </>
+    );
+  }
+
   return (
-    <>
-      {!unlocked && <ConstitutionGate onUnlock={unlock} />}
-      <div className={!unlocked ? "pointer-events-none select-none blur-md" : undefined} aria-hidden={!unlocked}>
+    <div>
       <PageHeader
         eyebrow={`সংস্করণ ${latestVersion}`}
         title="পূর্ণাঙ্গ গঠনতন্ত্র"
@@ -117,7 +143,6 @@ function ConstitutionPage() {
 
       <section className="container-pnc py-10">
         <div className="grid gap-6 lg:grid-cols-[280px_1fr]">
-          {/* Sidebar */}
           <aside className="lg:sticky lg:top-24 lg:self-start space-y-4">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -173,7 +198,6 @@ function ConstitutionPage() {
             </div>
           </aside>
 
-          {/* Main content */}
           <div>
             <Tabs defaultValue="legal" className="w-full">
               <TabsList>
@@ -225,7 +249,6 @@ function ConstitutionPage() {
           </div>
         </div>
       </section>
-      </div>
-    </>
+    </div>
   );
 }
