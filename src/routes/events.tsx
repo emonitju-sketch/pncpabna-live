@@ -186,7 +186,7 @@ function RegisterModal({ event, onClose }: { event: Event; onClose: () => void }
             <h3 className="font-bold text-foreground text-lg">নিবন্ধন: {event.title}</h3>
             <p className="text-xs text-muted-foreground mt-0.5">{fmtDate(event.event_date)}</p>
           </div>
-          <button onClick={onClose} className="text-muted-foreground hover:text-foreground"><X className="h-5 w-5" /></button>
+          <button type="button" onClick={onClose} aria-label="ফর্ম বন্ধ করুন" className="text-muted-foreground hover:text-foreground"><X className="h-5 w-5" /></button>
         </div>
         <form onSubmit={submit} className="mt-5 space-y-4">
           <div><Label htmlFor="full_name">পূর্ণ নাম *</Label><Input id="full_name" name="full_name" className="mt-1.5" required /></div>
