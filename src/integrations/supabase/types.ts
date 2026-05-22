@@ -512,7 +512,21 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      issue_upvote_counts: {
+        Row: {
+          registration_id: string | null
+          upvote_count: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "issue_upvotes_registration_id_fkey"
+            columns: ["registration_id"]
+            isOneToOne: false
+            referencedRelation: "event_registrations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Functions: {
       has_role: {
