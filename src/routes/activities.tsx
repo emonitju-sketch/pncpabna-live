@@ -15,7 +15,9 @@ export const Route = createFileRoute("/activities")({
       { name: "description", content: "সামাজিক সচেতনতা, নাগরিক সংলাপ, যুব নেতৃত্ব, মানবিক সহায়তা — পিএনসি-র বিভিন্ন কার্যক্রম ও প্রকল্প।" },
       { property: "og:title", content: "আমাদের কার্যক্রম — পিএনসি" },
       { property: "og:description", content: "পাবনার জন্য নাগরিক উদ্যোগ ও কর্মসূচি।" },
+      { property: "og:url", content: "https://pncpab.lovable.app/activities" },
     ],
+    links: [{ rel: "canonical", href: "https://pncpab.lovable.app/activities" }],
   }),
   component: ActivitiesPage,
 });
@@ -214,7 +216,7 @@ function DetailsModal({ item, onClose }: { item: Pillar; onClose: () => void }) 
               <p className="text-xs text-muted-foreground mt-1">পিএনসি কার্যক্রম</p>
             </div>
           </div>
-          <button onClick={onClose} className="text-muted-foreground hover:text-foreground"><X className="h-5 w-5" /></button>
+          <button type="button" onClick={onClose} aria-label="বিস্তারিত বন্ধ করুন" className="text-muted-foreground hover:text-foreground"><X className="h-5 w-5" /></button>
         </div>
         <p className="mt-5 text-sm text-foreground/85 leading-relaxed">{item.details}</p>
         <div className="mt-5">

@@ -16,7 +16,9 @@ export const Route = createFileRoute("/events")({
       { name: "description", content: "পিএনসি-র আসন্ন সভা, কর্মসূচি ও কমিউনিটি ইভেন্টের তারিখ, স্থান ও নিবন্ধন।" },
       { property: "og:title", content: "ইভেন্ট ক্যালেন্ডার — পিএনসি" },
       { property: "og:description", content: "আসন্ন কর্মসূচি ও নিবন্ধন।" },
+      { property: "og:url", content: "https://pncpab.lovable.app/events" },
     ],
+    links: [{ rel: "canonical", href: "https://pncpab.lovable.app/events" }],
   }),
   component: EventsPage,
 });
@@ -99,6 +101,31 @@ function EventsPage() {
         )}
       </section>
 
+      {events.length > 0 && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(
+              events.slice(0, 20).map((e) => ({
+                "@context": "https://schema.org",
+                "@type": "Event",
+                name: e.title,
+                startDate: e.event_date,
+                eventStatus: "https://schema.org/EventScheduled",
+                eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
+                location: {
+                  "@type": "Place",
+                  name: e.location,
+                  address: { "@type": "PostalAddress", addressLocality: e.location, addressCountry: "BD" },
+                },
+                description: e.description || undefined,
+                organizer: { "@type": "Organization", name: "পাবনা নাগরিক কমিটি", url: "https://pncpab.lovable.app/" },
+              })),
+            ),
+          }}
+        />
+      )}
+
       {openEvent && <RegisterModal event={openEvent} onClose={() => setOpenEvent(null)} />}
     </>
   );
@@ -159,7 +186,7 @@ function RegisterModal({ event, onClose }: { event: Event; onClose: () => void }
             <h3 className="font-bold text-foreground text-lg">নিবন্ধন: {event.title}</h3>
             <p className="text-xs text-muted-foreground mt-0.5">{fmtDate(event.event_date)}</p>
           </div>
-          <button onClick={onClose} className="text-muted-foreground hover:text-foreground"><X className="h-5 w-5" /></button>
+          <button type="button" onClick={onClose} aria-label="ফর্ম বন্ধ করুন" className="text-muted-foreground hover:text-foreground"><X className="h-5 w-5" /></button>
         </div>
         <form onSubmit={submit} className="mt-5 space-y-4">
           <div><Label htmlFor="full_name">পূর্ণ নাম *</Label><Input id="full_name" name="full_name" className="mt-1.5" required /></div>

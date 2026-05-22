@@ -15,7 +15,9 @@ export const Route = createFileRoute("/membership")({
       { name: "description", content: "পাবনার উন্নয়ন ও সামাজিক ঐক্যের কাজে আমাদের সাথে যুক্ত হোন। পিএনসি সদস্যপদের জন্য আবেদন করুন।" },
       { property: "og:title", content: "সদস্য হোন — পিএনসি" },
       { property: "og:description", content: "পাবনার নাগরিক উদ্যোগে অংশ নিন।" },
+      { property: "og:url", content: "https://pncpab.lovable.app/membership" },
     ],
+    links: [{ rel: "canonical", href: "https://pncpab.lovable.app/membership" }],
   }),
   component: MembershipPage,
 });
@@ -65,6 +67,7 @@ function MembershipPage() {
       />
       <section className="container-pnc py-14 md:py-20 grid gap-10 lg:grid-cols-5">
         <aside className="lg:col-span-2 space-y-4">
+          <h2 className="text-xl md:text-2xl font-bold text-foreground">সদস্যপদের সুবিধা</h2>
           {benefits.map((b) => (
             <div key={b.title} className="rounded-2xl border border-border bg-card p-6 shadow-card flex gap-4">
               <div className="inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-primary-soft text-primary">

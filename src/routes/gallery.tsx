@@ -11,7 +11,20 @@ export const Route = createFileRoute("/gallery")({
       { name: "description", content: "পিএনসি-র সভা, সামাজিক উদ্যোগ, মানবিক কার্যক্রম ও পাবনার মুহূর্তের ছবি।" },
       { property: "og:title", content: "গ্যালারি — পিএনসি" },
       { property: "og:description", content: "আমাদের কাজের মুহূর্তগুলো।" },
+      { property: "og:url", content: "https://pncpab.lovable.app/gallery" },
     ],
+    links: [{ rel: "canonical", href: "https://pncpab.lovable.app/gallery" }],
+    scripts: [{
+      type: "application/ld+json",
+      children: JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "CollectionPage",
+        name: "গ্যালারি — পাবনা নাগরিক কমিটি",
+        url: "https://pncpab.lovable.app/gallery",
+        inLanguage: "bn",
+        isPartOf: { "@type": "WebSite", name: "PNC Pabna", url: "https://pncpab.lovable.app/" },
+      }),
+    }],
   }),
   component: GalleryPage,
 });
