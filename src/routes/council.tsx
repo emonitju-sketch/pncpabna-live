@@ -4,8 +4,6 @@ import { Quote, Users } from "lucide-react";
 import bishu from "@/assets/leader-bishu.webp";
 import mukul from "@/assets/leader-mukul.webp";
 import jewel from "@/assets/leader-jewel.webp";
-import mpSelim from "@/assets/mp-selim-reza-habib.avif";
-import mpShimul from "@/assets/mp-shimul-biswas.avif";
 
 export const Route = createFileRoute("/council")({
   head: () => ({
@@ -66,27 +64,6 @@ const executive: { role: string; name: string }[] = [
   { role: "সমাজকল্যাণ সম্পাদক", name: "—" },
   { role: "ক্রীড়া সম্পাদক", name: "—" },
   { role: "নারী বিষয়ক সম্পাদক", name: "—" },
-];
-
-const mps = [
-  {
-    name: "জনাব এ কে এম সেলিম রেজা হাবিব",
-    title: "মাননীয় সংসদ সদস্য",
-    constituency: "পাবনা-২ (সুজানগর ও আংশিক বেড়া)",
-    party: "বাংলাদেশ জাতীয়তাবাদী দল (বিএনপি)",
-    photo: mpSelim,
-    quote:
-      "পাবনার নাগরিক উন্নয়ন ও সুশাসনভিত্তিক কার্যক্রমে পাবনা নাগরিক কমিটি অগ্রণী ভূমিকা পালন করবে বলে আমি আশাবাদী।",
-  },
-  {
-    name: "জনাব শামছুর রহমান শিমুল বিশ্বাস",
-    title: "মাননীয় সংসদ সদস্য",
-    constituency: "পাবনা-৪",
-    party: "বাংলাদেশ জাতীয়তাবাদী দল (বিএনপি)",
-    photo: mpShimul,
-    quote:
-      "নাগরিক সচেতনতা ও সামাজিক উন্নয়নে পিএনসি-এর ইতিবাচক ভূমিকার পাশে আমরা আছি।",
-  },
 ];
 
 function CouncilPage() {
@@ -177,48 +154,6 @@ function CouncilPage() {
         </div>
       </section>
 
-      {/* MP greetings */}
-      <section className="container-pnc py-14 md:py-20">
-        <div className="mb-8">
-          <div className="text-xs font-semibold uppercase tracking-wide text-primary">
-            শুভেচ্ছা বাণী
-          </div>
-          <h2 className="mt-1 text-2xl md:text-3xl font-bold text-foreground">
-            মাননীয় সংসদ সদস্যদের বাণী
-          </h2>
-        </div>
-
-        <div className="grid gap-6 md:grid-cols-2">
-          {mps.map((m) => (
-            <article
-              key={m.name}
-              className="rounded-2xl border border-border bg-card shadow-card overflow-hidden flex flex-col sm:flex-row"
-            >
-              <div className="sm:w-44 shrink-0 aspect-square sm:aspect-auto bg-primary-soft">
-                <img
-                  src={m.photo}
-                  alt={m.name}
-                  loading="lazy"
-                  className="h-full w-full object-cover"
-                />
-              </div>
-              <div className="p-5 flex flex-col gap-2">
-                <h3 className="font-display text-base font-bold text-foreground leading-snug">
-                  {m.name}
-                </h3>
-                <div className="text-xs text-muted-foreground space-y-0.5">
-                  <div>{m.title} — {m.constituency}</div>
-                  <div>দল: {m.party}</div>
-                </div>
-                <p className="mt-2 text-sm text-muted-foreground leading-relaxed relative pl-5">
-                  <Quote className="absolute left-0 top-0 h-3.5 w-3.5 text-primary/60" />
-                  {m.quote}
-                </p>
-              </div>
-            </article>
-          ))}
-        </div>
-      </section>
     </>
   );
 }
