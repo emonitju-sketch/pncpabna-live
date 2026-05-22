@@ -110,7 +110,7 @@ export const analyzeDrafts = createServerFn({ method: "POST" })
   )
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context as any;
-    await assertAdmin(supabase, userId);
+    await assertAdmin(userId);
 
     const results: any[] = [];
     for (const item of data.items) {
@@ -164,7 +164,7 @@ export const updateDraft = createServerFn({ method: "POST" })
   )
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context as any;
-    await assertAdmin(supabase, userId);
+    await assertAdmin(userId);
     const { id, ...patch } = data;
     const { error } = await supabase.from("content_drafts").update(patch).eq("id", id);
     if (error) throw new Error(error.message);
@@ -176,7 +176,7 @@ export const rejectDraft = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => z.object({ id: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context as any;
-    await assertAdmin(supabase, userId);
+    await assertAdmin(userId);
     const { error } = await supabase
       .from("content_drafts")
       .update({ admin_status: "rejected" })
@@ -190,7 +190,7 @@ export const publishDraft = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => z.object({ id: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context as any;
-    await assertAdmin(supabase, userId);
+    await assertAdmin(userId);
 
     const { data: d, error: e1 } = await supabase
       .from("content_drafts")
