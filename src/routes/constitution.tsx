@@ -225,6 +225,7 @@ function ConstitutionPage() {
           </main>
         </div>
       </section>
+      </div>
     </>
   );
 }
