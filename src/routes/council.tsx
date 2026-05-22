@@ -155,48 +155,6 @@ function CouncilPage() {
         </div>
       </section>
 
-      {/* MP greetings */}
-      <section className="container-pnc py-14 md:py-20">
-        <div className="mb-8">
-          <div className="text-xs font-semibold uppercase tracking-wide text-primary">
-            শুভেচ্ছা বাণী
-          </div>
-          <h2 className="mt-1 text-2xl md:text-3xl font-bold text-foreground">
-            মাননীয় সংসদ সদস্যদের বাণী
-          </h2>
-        </div>
-
-        <div className="grid gap-6 md:grid-cols-2">
-          {mps.map((m) => (
-            <article
-              key={m.name}
-              className="rounded-2xl border border-border bg-card shadow-card overflow-hidden flex flex-col sm:flex-row"
-            >
-              <div className="sm:w-44 shrink-0 aspect-square sm:aspect-auto bg-primary-soft">
-                <img
-                  src={m.photo}
-                  alt={m.name}
-                  loading="lazy"
-                  className="h-full w-full object-cover"
-                />
-              </div>
-              <div className="p-5 flex flex-col gap-2">
-                <h3 className="font-display text-base font-bold text-foreground leading-snug">
-                  {m.name}
-                </h3>
-                <div className="text-xs text-muted-foreground space-y-0.5">
-                  <div>{m.title} — {m.constituency}</div>
-                  <div>দল: {m.party}</div>
-                </div>
-                <p className="mt-2 text-sm text-muted-foreground leading-relaxed relative pl-5">
-                  <Quote className="absolute left-0 top-0 h-3.5 w-3.5 text-primary/60" />
-                  {m.quote}
-                </p>
-              </div>
-            </article>
-          ))}
-        </div>
-      </section>
     </>
   );
 }
