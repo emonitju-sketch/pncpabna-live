@@ -98,3 +98,18 @@ jobs:
       - uses: gitleaks/gitleaks-action@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # ---------------------------------------------------------------------------
+  # Live security-header smoke test — verifies HSTS, CSP, redirects on every
+  # important route of the published site. Runs on schedule + manual trigger.
+  # ---------------------------------------------------------------------------
+  headers:
+    name: Live security headers
+    runs-on: ubuntu-latest
+    # Only run against the live deployment (not on PRs from forks)
+    if: github.event_name == 'schedule' || github.event_name == 'push'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Probe headers across all routes
+        run: node scripts/verify-security-headers.mjs https://pncpabna.live
+
