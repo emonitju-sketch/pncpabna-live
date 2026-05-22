@@ -101,22 +101,9 @@ function NewsPage() {
             <h2 className="sr-only">সকল সংবাদ</h2>
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
               {filtered.map((n) => (
-                <article key={n.id} className="card-hover rounded-2xl border border-border bg-card shadow-card flex flex-col overflow-hidden">
-                  {n.cover_image_path && (
-                    <div className="aspect-video bg-muted">
-                      <img src={publicUrl("gallery", n.cover_image_path)} alt={n.title_bn} className="h-full w-full object-cover" loading="lazy" />
-                    </div>
-                  )}
-                  <div className="p-6 flex flex-col flex-1">
-                    <div className="flex items-center justify-between text-xs text-muted-foreground">
-                      <span className="inline-flex items-center gap-1.5 text-red-accent font-semibold"><Tag className="h-3.5 w-3.5" /> {n.category}</span>
-                      <span className="inline-flex items-center gap-1.5"><Calendar className="h-3.5 w-3.5" /> {new Date(n.published_at).toLocaleDateString("bn-BD")}</span>
-                    </div>
-                    <h3 className="mt-3 text-lg font-bold text-foreground">{n.title_bn}</h3>
-                    <p className="mt-2 text-sm text-muted-foreground line-clamp-5 flex-1">{n.body_bn || n.summary_bn}</p>
-                  </div>
-                </article>
+                <NewsCard key={n.id} n={n} />
               ))}
+
             </div>
             <script
               type="application/ld+json"
