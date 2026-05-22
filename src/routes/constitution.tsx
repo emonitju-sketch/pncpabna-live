@@ -107,6 +107,8 @@ function ConstitutionPage() {
 
   return (
     <>
+      {!unlocked && <ConstitutionGate onUnlock={unlock} />}
+      <div className={!unlocked ? "pointer-events-none select-none blur-md" : undefined} aria-hidden={!unlocked}>
       <PageHeader
         eyebrow={`সংস্করণ ${latestVersion}`}
         title="পূর্ণাঙ্গ গঠনতন্ত্র"
