@@ -58,9 +58,9 @@ function GalleryPage() {
   return (
     <>
       <PageHeader
-        eyebrow="গ্যালারি"
-        title="আমাদের কাজের মুহূর্তগুলো"
-        description="পিএনসি-র বিভিন্ন কার্যক্রম, সভা, সামাজিক উদ্যোগ ও পাবনার গর্বের মুহূর্ত।"
+        eyebrow="নির্বাচিত মুহূর্ত"
+        title="আমাদের কাজের কিছু উল্লেখযোগ্য মুহূর্ত"
+        description="পিএনসি-র গুরুত্বপূর্ণ কার্যক্রম থেকে বাছাই করা কিছু ছবি — সংখ্যায় কম, কিন্তু অর্থে গভীর।"
       />
       <section className="container-pnc py-12 md:py-16">
         <div className="flex flex-wrap gap-2 mb-8">
