@@ -1,9 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { PageHeader } from "@/components/site/PageHeader";
-import { Calendar, Tag } from "lucide-react";
+import { Calendar, Tag, Loader2, ChevronDown } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { publicUrl } from "@/hooks/use-auth";
+
+const BATCH = 9;
 
 export const Route = createFileRoute("/news")({
   head: () => ({
@@ -47,22 +49,53 @@ function NewsPage() {
   const [items, setItems] = useState<News[]>([]);
   const [active, setActive] = useState("সকল");
   const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
+  const [offset, setOffset] = useState(0);
+
+  const fetchBatch = useCallback(async (currentOffset: number, append: boolean) => {
+    const { data } = await supabase
+      .from("news")
+      .select("id, title_bn, summary_bn, body_bn, cover_image_path, category, published_at")
+      .eq("is_published", true)
+      .order("published_at", { ascending: false })
+      .range(currentOffset, currentOffset + BATCH - 1);
+
+    const batch = (data as News[]) || [];
+    setHasMore(batch.length === BATCH);
+
+    if (append) {
+      setItems((prev) => {
+        const existingIds = new Set(prev.map((i) => i.id));
+        const newItems = batch.filter((i) => !existingIds.has(i.id));
+        return [...prev, ...newItems];
+      });
+    } else {
+      setItems(batch);
+    }
+  }, []);
 
   useEffect(() => {
     (async () => {
-      const { data } = await supabase
-        .from("news")
-        .select("id, title_bn, summary_bn, body_bn, cover_image_path, category, published_at")
-        .eq("is_published", true)
-        .order("published_at", { ascending: false })
-        .limit(100);
-      setItems((data as News[]) || []);
+      setLoading(true);
+      await fetchBatch(0, false);
+      setOffset(BATCH);
       setLoading(false);
     })();
-  }, []);
+  }, [fetchBatch]);
+
+  const handleLoadMore = async () => {
+    if (loadingMore || !hasMore) return;
+    setLoadingMore(true);
+    await fetchBatch(offset, true);
+    setOffset((prev) => prev + BATCH);
+    setLoadingMore(false);
+  };
 
   const categories = ["সকল", ...Array.from(new Set(items.map((i) => i.category)))];
   const filtered = active === "সকল" ? items : items.filter((i) => i.category === active);
+  const showEmpty = !loading && filtered.length === 0;
+  const showLoadMore = !loading && !showEmpty && hasMore;
 
   return (
     <>
@@ -91,8 +124,11 @@ function NewsPage() {
         )}
 
         {loading ? (
-          <p className="text-muted-foreground">লোড হচ্ছে...</p>
-        ) : filtered.length === 0 ? (
+          <div className="flex items-center gap-2 text-muted-foreground py-10">
+            <Loader2 className="h-5 w-5 animate-spin" />
+            <span>লোড হচ্ছে...</span>
+          </div>
+        ) : showEmpty ? (
           <p className="text-muted-foreground rounded-2xl border border-dashed border-border bg-card p-10 text-center">
             এখনো কোনো সংবাদ প্রকাশিত হয়নি।
           </p>
@@ -103,8 +139,30 @@ function NewsPage() {
               {filtered.map((n) => (
                 <NewsCard key={n.id} n={n} />
               ))}
-
             </div>
+
+            {showLoadMore && (
+              <div className="flex justify-center mt-10">
+                <button
+                  onClick={handleLoadMore}
+                  disabled={loadingMore}
+                  className="inline-flex items-center gap-2 px-6 py-3 rounded-full border border-border bg-card text-foreground font-semibold hover:bg-muted hover:border-primary transition disabled:opacity-60"
+                >
+                  {loadingMore ? (
+                    <>
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                      লোড হচ্ছে...
+                    </>
+                  ) : (
+                    <>
+                      <ChevronDown className="h-4 w-4" />
+                      আরও সংবাদ লোড করুন
+                    </>
+                  )}
+                </button>
+              </div>
+            )}
+
             <script
               type="application/ld+json"
               dangerouslySetInnerHTML={{
@@ -165,4 +223,5 @@ function NewsCard({ n }: { n: News }) {
     </article>
   );
 }
+
 
