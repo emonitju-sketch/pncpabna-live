@@ -6,7 +6,8 @@ import { PageHeader } from "@/components/site/PageHeader";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Phone, Mail, MapPin, Facebook, MessageCircle } from "lucide-react";
+import { Phone, Mail, MapPin, Facebook, MessageCircle, Send, Clock } from "lucide-react";
+import contactIllustration from "@/assets/contact-illustration.jpg";
 
 export const Route = createFileRoute("/contact")({
   head: () => ({
@@ -54,6 +55,44 @@ function ContactPage() {
         title="যোগাযোগ করুন"
         description="যেকোনো প্রশ্ন, পরামর্শ বা সহযোগিতার জন্য আমাদের সাথে যোগাযোগ করুন।"
       />
+
+      {/* Hero illustration band */}
+      <section className="container-pnc pt-10 md:pt-14">
+        <div className="grid gap-8 lg:grid-cols-2 items-center rounded-3xl border border-border bg-gradient-to-br from-primary-soft/60 via-card to-primary-soft/30 overflow-hidden shadow-card">
+          <div className="p-8 md:p-12">
+            <h2 className="text-2xl md:text-3xl font-bold text-foreground leading-snug">
+              একটি বার্তা — হাজারো সম্ভাবনা
+            </h2>
+            <p className="mt-3 text-foreground/75 leading-relaxed">
+              পাবনার যেকোনো নাগরিক সমস্যা, পরামর্শ বা সহযোগিতার আগ্রহ — সরাসরি আমাদের জানান।
+              পিএনসি প্রতিটি বার্তা গুরুত্ব সহকারে পড়ে এবং দ্রুত সাড়া দেয়।
+            </p>
+            <div className="mt-6 grid grid-cols-2 gap-3 text-sm">
+              <div className="rounded-xl bg-card/70 backdrop-blur p-3 border border-border/60">
+                <Clock className="h-4 w-4 text-primary mb-1.5" />
+                <div className="font-semibold text-foreground">২৪ ঘণ্টায়</div>
+                <div className="text-xs text-muted-foreground">গড় উত্তর</div>
+              </div>
+              <div className="rounded-xl bg-card/70 backdrop-blur p-3 border border-border/60">
+                <MessageCircle className="h-4 w-4 text-primary mb-1.5" />
+                <div className="font-semibold text-foreground">সরাসরি</div>
+                <div className="text-xs text-muted-foreground">Messenger সাপোর্ট</div>
+              </div>
+            </div>
+          </div>
+          <div className="relative h-full min-h-[280px] md:min-h-[360px]">
+            <img
+              src={contactIllustration}
+              alt="পিএনসি নাগরিক সংলাপ"
+              loading="lazy"
+              width={1024}
+              height={1024}
+              className="absolute inset-0 h-full w-full object-cover"
+            />
+          </div>
+        </div>
+      </section>
+
       <section className="container-pnc py-14 md:py-20 grid gap-10 lg:grid-cols-5">
         <aside className="lg:col-span-2 space-y-4">
           <div className="rounded-2xl bg-primary text-primary-foreground p-6 shadow-elegant space-y-4">
@@ -85,6 +124,10 @@ function ContactPage() {
         </aside>
 
         <form onSubmit={onSubmit} className="lg:col-span-3 rounded-2xl border border-border bg-card p-6 md:p-8 shadow-card space-y-5">
+          <div>
+            <h3 className="text-xl font-bold text-foreground">আমাদের বার্তা পাঠান</h3>
+            <p className="text-sm text-muted-foreground mt-1">নিচের ফর্মটি পূরণ করুন — আমরা যোগাযোগ করব।</p>
+          </div>
           <div className="grid gap-5 sm:grid-cols-2">
             <Field name="name" label="নাম *" />
             <Field name="phone" label="মোবাইল *" type="tel" />
@@ -101,7 +144,7 @@ function ContactPage() {
               disabled={submitting}
               className="inline-flex items-center gap-2 rounded-lg bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground hover:opacity-90 transition disabled:opacity-60"
             >
-              {submitting ? "পাঠানো হচ্ছে..." : "বার্তা পাঠান"}
+              <Send className="h-4 w-4" /> {submitting ? "পাঠানো হচ্ছে..." : "বার্তা পাঠান"}
             </button>
             <a href="https://m.me/pncpabna" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 rounded-lg bg-red-accent px-6 py-3 text-sm font-semibold text-red-accent-foreground hover:opacity-90 transition">
               <MessageCircle className="h-4 w-4" /> Messenger-এ যোগাযোগ

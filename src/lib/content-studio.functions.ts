@@ -235,22 +235,21 @@ export const publishDraft = createServerFn({ method: "POST" })
       targetTable = "notices";
       recordId = row.id;
     } else if (cat === "activity") {
-      const eventDate = date ? new Date(date).toISOString() : new Date().toISOString();
       const { data: row, error } = await supabase
-        .from("events")
+        .from("activities")
         .insert({
-          title,
-          description: body,
-          event_date: eventDate,
+          title_bn: title,
+          description_bn: body,
+          activity_date: date,
           location: "পাবনা",
+          category: "সামাজিক",
           cover_image_path: d.image_path,
-          registration_open: false,
           created_by: userId,
         })
         .select("id")
         .single();
       if (error) throw new Error(error.message);
-      targetTable = "events";
+      targetTable = "activities";
       recordId = row.id;
     } else {
       // gallery
