@@ -1,9 +1,14 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { PageHeader } from "@/components/site/PageHeader";
-import { Quote, Users } from "lucide-react";
+import { Quote, Users, FileCheck2 } from "lucide-react";
 import bishu from "@/assets/leader-bishu.webp";
 import mukul from "@/assets/leader-mukul.webp";
 import jewel from "@/assets/leader-jewel.webp";
+import pressRelease from "@/assets/council-press-release.jpeg";
+import councilList1 from "@/assets/council-list-1.jpeg";
+import councilList2 from "@/assets/council-list-2.jpeg";
+import councilList3 from "@/assets/council-list-3.jpeg";
+import councilList4 from "@/assets/council-list-4.jpeg";
 
 export const Route = createFileRoute("/council")({
   head: () => ({
