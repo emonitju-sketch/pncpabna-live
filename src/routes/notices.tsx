@@ -1,7 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { PageHeader } from "@/components/site/PageHeader";
-import { Calendar, FileText, X, ExternalLink } from "lucide-react";
+import { Calendar, FileText, X, ExternalLink, Search } from "lucide-react";
+
 
 export const Route = createFileRoute("/notices")({
   head: () => ({
