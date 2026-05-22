@@ -42,8 +42,10 @@ function GalleryPage() {
       const { data } = await supabase
         .from("gallery_images")
         .select("id, title, category, image_path, caption_bn")
+        .eq("is_featured", true)
         .order("display_order", { ascending: false })
-        .order("created_at", { ascending: false });
+        .order("created_at", { ascending: false })
+        .limit(12);
       setImages((data as Img[]) || []);
       setLoading(false);
     })();
