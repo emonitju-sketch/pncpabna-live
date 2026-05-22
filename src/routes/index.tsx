@@ -133,8 +133,6 @@ function HomePage() {
         </div>
       </section>
 
-      {/* AI-generated news showcase */}
-      <AiNewsSection />
 
       {/* CTA STRIP */}
       <section className="container-pnc py-16 md:py-20">
