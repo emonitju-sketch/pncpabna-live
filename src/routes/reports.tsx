@@ -33,7 +33,7 @@ function ReportsPage() {
         .from("reports")
         .select("id, title, year, description, file_path, published_at")
         .order("year", { ascending: false });
-      if (error) toast.error(error.message);
+      if (error) { console.error(error); toast.error("প্রতিবেদন লোড করা যায়নি।"); }
       setReports((data as Report[]) || []);
       setLoading(false);
     })();
