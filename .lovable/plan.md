@@ -1,70 +1,73 @@
-# Plan: Constitution & Governance System for PNC
+# PNC Website — Integration Plan (v2 main + new prompt extras)
 
-Build a digital constitution + civic engagement layer on top of the existing PNC site. Scope is intentionally split into phases so we ship value early.
+বর্তমান সাইটটাই (v2 remix — সবুজ/সোনালি/সাদা সিভিক ডিজাইন, বাংলা UI, হোম + /about + /activities + /events + /news + /gallery + /reports + /membership + /contact + /constitution + /admin) **main** হিসেবে থাকবে। ডিজাইন, রঙ, টাইপোগ্রাফি, রাউটিং কাঠামো — কিছুই বদলাবে না।
 
-## Phase 1 — Constitution System (digital gothontontro)
+নতুন prompt থেকে যেগুলো এই কাঠামোর উপর **add-on** হিসেবে যুক্ত হবে শুধু সেগুলোই নিচে আছে। ডুপ্লিকেট পেজ (যেমন `/updates`, `/executive-council` আলাদা রুট) তৈরি হবে না — বিদ্যমান রুটেই বসবে।
 
-**New public route: `/constitution`**
-- Chapter navigation sidebar (অধ্যায় ১–N) parsed from the uploaded `পাবনা_নাগরিক_কমিটি_PNC.txt`
-- Two view modes toggle: **Legal version** (full text) and **Simple version** (plain-language summary per chapter — admin editable later, start with legal only)
-- Sticky table of contents, in-page anchor scroll, search within constitution
-- **Download PDF** button (generated client-side from the content)
-- **QR code** block on the page for quick mobile access to `/constitution`
-- **WhatsApp share** button
-- Version badge (v1.0) + "last updated" date
+---
 
-**Data**
-- Store chapters in a new `constitution_chapters` table: chapter_number, title_bn, body_bn, summary_bn, order, version
-- Public read, admin write (RLS following existing pattern)
-- Seed from the uploaded file in a migration
+## যা যা যুক্ত হবে
 
-**Admin tab in `/admin`:** manage chapters + amendments log (`constitution_amendments` table: version, change_summary, effective_date)
+### ১. নোটিশ বোর্ড (হোমপেজের শীর্ষে)
+- হোমের হিরো-এর ঠিক নিচে একটা হাইলাইট স্ট্রিপ — জরুরি ঘোষণা/ইস্যু
+- অ্যাডমিন থেকে যোগ/সম্পাদনা/মেয়াদ-শেষের তারিখ
+- নতুন টেবিল: `notices` (title_bn, body_bn, priority, starts_at, expires_at, is_active)
 
-## Phase 2 — Public Engagement (Civic Issues)
+### ২. গ্যালারি পুনর্গঠন (ব্যবহারকারী ছবি + FB লিংক দেবেন)
+- বিদ্যমান `/gallery` পেজেই — category ট্যাব (কর্মসূচি / সভা / সামাজিক / সংবাদ-কভারেজ / অন্যান্য)
+- প্রতি ছবিতে: caption_bn, তারিখ, FB পোস্ট লিংক (থাকলে)
+- বিদ্যমান `gallery_images` টেবিলে কলাম যোগ: `caption_bn`, `event_date`, `facebook_url`, `display_order`
 
-**New public route: `/issues`** + `/issues/$id`
-- Citizens submit issues (title, description, category, location, optional photo upload to a new `issues` storage bucket)
-- Public list with filter by status: Reported → Under Review → Action → Resolved
-- Upvote/"vote problems" (one vote per device via localStorage initially; later per-account)
-- Status timeline on detail page
+### ৩. নিউজ / কর্মসূচি কন্টেন্ট সাজানো (ব্যবহারকারীর FB পোস্ট/caption থেকে)
+- ব্যবহারকারী যা FB লিংক/caption/ছবি দেবেন সেগুলো ম্যানুয়ালি `news` ও `events` টেবিলে বসানো হবে
+- নতুন টেবিল `news` (title_bn, summary_bn, body_bn, cover_image, source_url, published_at, category)
+- বিদ্যমান `events` টেবিল ব্যবহার — শুধু seed/ম্যানুয়াল এন্ট্রি
 
-**Data**
-- `issues` table (status enum, vote_count, reporter_name, reporter_phone, etc.)
-- `issue_updates` table (status changes + notes, admin authored)
-- `issue_votes` table (device_id, issue_id) — RLS public insert with rate-limit check
-- Admin tab: triage, update status, add resolution notes — every change auto-logged to existing `audit_logs`
+### ৪. অ্যাডমিন প্যানেল সম্প্রসারণ (বিদ্যমান `/admin`-এ ট্যাব যোগ)
+নতুন ট্যাব: **নোটিশ**, **নিউজ**, **গ্যালারি ক্যাপশন/ক্রম**, **গঠনতন্ত্র সংশোধনী** (শেষেরটা ইতিমধ্যে আছে)
+- বিদ্যমান অ্যাডমিন স্টাইল ও auth (`has_role('admin')`) reuse
 
-## Phase 3 — Governance Decision Log
+---
 
-**Admin-only route: `/admin` → Decisions tab**
-- Log every decision with: level (1 Normal / 2 Strategic / 3 Emergency), title, description, vote_for, vote_against, abstain, outcome, decided_by, ratified (for emergency)
-- Validation: Level 2 needs ≥ 2/3 yes; Level 3 marked "pending ratification" until ratified flag set
-- Conflict-of-interest checkbox per voter (logged, not enforced)
-- Public read-only summary at `/decisions` (title, level, date, outcome) — full vote breakdown admin-only
+## নতুন prompt-এর যেসব আইটেম **এই ধাপে যুক্ত হবে না** (পরে আলাদা প্ল্যানে)
 
-**Data:** `decisions` table + `decision_votes` table, both audit-logged via existing trigger
+| আইটেম | কেন এখন না |
+|---|---|
+| Facebook auto-sync (Graph API + page token) | আলাদা অ্যাপ-রিভিউ + টোকেন প্রসেস; ম্যানুয়াল ইম্পোর্ট দিয়ে আপাতত চলবে |
+| AI categorization (বাংলা ট্যাগ/সারাংশ) | নিউজ ভলিউম কম থাকা পর্যন্ত ম্যানুয়ালই যথেষ্ট |
+| Dynamic Executive Council from DB | বর্তমানে স্ট্যাটিক — চাইলে পরে `leaders` টেবিলে নেওয়া যাবে |
+| sync_attempts / sync_state / backoff | শুধু auto-sync চালু হলে দরকার |
+| Email greetings module | আলাদা ফিচার, পরে |
 
-## Out of scope (deferred — confirm in a follow-up)
+লঞ্চের আগে চাইলে এগুলো আলাদা প্ল্যানে তোলা যাবে।
 
-These are listed in your message but each is a multi-week build. I'll flag for a separate plan:
-- Financial system / treasurer module / annual audit reports
-- Real digital election / voting engine
-- Membership onboarding flow + show-cause / no-confidence workflow
-- Native mobile app
-- Notification system (push / email / WhatsApp broadcast)
+---
 
-## Technical notes
+## টেকনিক্যাল সারাংশ
 
-- All new tables get RLS: public read where appropriate, admin write via existing `has_role(auth.uid(),'admin')`
-- Audit trigger `log_audit_event` attached to all new admin-managed tables
-- PDF generation: `jspdf` + Bengali font (Noto Sans Bengali) bundled in `src/assets`
-- QR codes: `qrcode.react` (no server needed)
-- All routes follow existing TanStack file-route pattern with proper `head()` SEO metadata in Bengali
+**নতুন টেবিল (২টা):** `notices`, `news`
+**আলটার (১টা):** `gallery_images` — `caption_bn`, `event_date`, `facebook_url`, `display_order`
+**RLS:** public SELECT, admin ALL (বিদ্যমান `has_role()` ফাংশন reuse)
+**ফাইল স্টোরেজ:** বিদ্যমান `gallery` bucket reuse
+**রাউট:** কোনো নতুন রাউট নেই — সব বিদ্যমান পেজে inject
+**অ্যাডমিন:** বিদ্যমান `/admin`-এ ৩টা নতুন ট্যাব
 
-## Build order
+---
 
-1. Phase 1 (Constitution) — ship first, biggest user-visible win
-2. Phase 2 (Issues) — public engagement loop
-3. Phase 3 (Decisions) — internal governance
+## বিল্ড অর্ডার
 
-Confirm and I'll start with Phase 1.
+1. মাইগ্রেশন: `notices`, `news` টেবিল + `gallery_images` কলাম
+2. অ্যাডমিনে নোটিশ ট্যাব + হোমপেজ স্ট্রিপ
+3. অ্যাডমিনে নিউজ ট্যাব + `/news` পেজ লাইভ ডেটা থেকে
+4. অ্যাডমিনে গ্যালারি ক্যাপশন/ক্রম ট্যাব + `/gallery` ক্যাটেগরি ট্যাব
+5. ব্যবহারকারী যেসব FB লিংক/ছবি/caption দেবেন সেগুলো seed হিসেবে বসানো
+
+---
+
+## পরের ধাপে আপনার থেকে যা লাগবে
+
+- নোটিশ বোর্ডের জন্য প্রথম ২-৩টা ঘোষণার বাংলা টেক্সট
+- গ্যালারির জন্য ছবি (আপলোড) + প্রতিটার caption + কোন category
+- নিউজ/কর্মসূচির জন্য FB পোস্ট URL বা caption টেক্সট
+
+প্ল্যান approve করলে মাইগ্রেশন দিয়ে শুরু করব।
