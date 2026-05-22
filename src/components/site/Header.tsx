@@ -6,6 +6,7 @@ import logo from "@/assets/pnc-logo.png";
 const nav = [
   { to: "/", label: "হোম" },
   { to: "/about", label: "আমাদের সম্পর্কে" },
+  { to: "/council", label: "কমিটি" },
   { to: "/activities", label: "কার্যক্রম" },
   { to: "/events", label: "ইভেন্ট" },
   { to: "/news", label: "সংবাদ" },
