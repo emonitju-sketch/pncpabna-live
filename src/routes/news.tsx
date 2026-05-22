@@ -97,25 +97,51 @@ function NewsPage() {
             এখনো কোনো সংবাদ প্রকাশিত হয়নি।
           </p>
         ) : (
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {filtered.map((n) => (
-              <article key={n.id} className="card-hover rounded-2xl border border-border bg-card shadow-card flex flex-col overflow-hidden">
-                {n.cover_image_path && (
-                  <div className="aspect-video bg-muted">
-                    <img src={publicUrl("gallery", n.cover_image_path)} alt={n.title_bn} className="h-full w-full object-cover" loading="lazy" />
+          <>
+            <h2 className="sr-only">সকল সংবাদ</h2>
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+              {filtered.map((n) => (
+                <article key={n.id} className="card-hover rounded-2xl border border-border bg-card shadow-card flex flex-col overflow-hidden">
+                  {n.cover_image_path && (
+                    <div className="aspect-video bg-muted">
+                      <img src={publicUrl("gallery", n.cover_image_path)} alt={n.title_bn} className="h-full w-full object-cover" loading="lazy" />
+                    </div>
+                  )}
+                  <div className="p-6 flex flex-col flex-1">
+                    <div className="flex items-center justify-between text-xs text-muted-foreground">
+                      <span className="inline-flex items-center gap-1.5 text-red-accent font-semibold"><Tag className="h-3.5 w-3.5" /> {n.category}</span>
+                      <span className="inline-flex items-center gap-1.5"><Calendar className="h-3.5 w-3.5" /> {new Date(n.published_at).toLocaleDateString("bn-BD")}</span>
+                    </div>
+                    <h3 className="mt-3 text-lg font-bold text-foreground">{n.title_bn}</h3>
+                    <p className="mt-2 text-sm text-muted-foreground line-clamp-5 flex-1">{n.body_bn || n.summary_bn}</p>
                   </div>
-                )}
-                <div className="p-6 flex flex-col flex-1">
-                  <div className="flex items-center justify-between text-xs text-muted-foreground">
-                    <span className="inline-flex items-center gap-1.5 text-red-accent font-semibold"><Tag className="h-3.5 w-3.5" /> {n.category}</span>
-                    <span className="inline-flex items-center gap-1.5"><Calendar className="h-3.5 w-3.5" /> {new Date(n.published_at).toLocaleDateString("bn-BD")}</span>
-                  </div>
-                  <h3 className="mt-3 text-lg font-bold text-foreground">{n.title_bn}</h3>
-                  <p className="mt-2 text-sm text-muted-foreground line-clamp-5 flex-1">{n.body_bn || n.summary_bn}</p>
-                </div>
-              </article>
-            ))}
-          </div>
+                </article>
+              ))}
+            </div>
+            <script
+              type="application/ld+json"
+              dangerouslySetInnerHTML={{
+                __html: JSON.stringify({
+                  "@context": "https://schema.org",
+                  "@type": "ItemList",
+                  itemListElement: filtered.slice(0, 20).map((n, i) => ({
+                    "@type": "ListItem",
+                    position: i + 1,
+                    item: {
+                      "@type": "NewsArticle",
+                      headline: n.title_bn,
+                      datePublished: n.published_at,
+                      articleSection: n.category,
+                      ...(n.cover_image_path
+                        ? { image: publicUrl("gallery", n.cover_image_path) }
+                        : {}),
+                      description: n.summary_bn || (n.body_bn ? n.body_bn.slice(0, 160) : undefined),
+                    },
+                  })),
+                }),
+              }}
+            />
+          </>
         )}
       </section>
     </>
