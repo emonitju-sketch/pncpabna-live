@@ -160,7 +160,7 @@ export function ContentStudio() {
             <Sparkles className="h-5 w-5 text-primary" /> AI কন্টেন্ট স্টুডিও
           </h2>
           <p className="text-xs text-muted-foreground">
-            Facebook ছবি + caption দিন → AI সেকশন বেছে বাংলা শিরোনাম/সারাংশ লিখে দেবে
+            ৫টি ছবি upload করুন (caption ঐচ্ছিক) → AI ছবি দেখে বাংলা সংবাদ draft তৈরি করবে → review করে publish করুন
           </p>
         </div>
 
