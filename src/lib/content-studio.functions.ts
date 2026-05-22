@@ -217,7 +217,11 @@ export const publishDraft = createServerFn({ method: "POST" })
       throw new Error("এই draft আগেই প্রকাশিত বা বাতিল হয়েছে।");
     }
 
+    const VALID_CATS = ["news", "notice", "activity", "gallery"] as const;
     const cat = d.final_category || d.ai_category;
+    if (!VALID_CATS.includes(cat as typeof VALID_CATS[number])) {
+      throw new Error("Invalid category");
+    }
     const title = d.final_title_bn || d.ai_title_bn || "শিরোনাম";
     const body = d.final_body_bn || d.ai_body_bn || d.original_caption;
     const date = d.final_date || d.ai_event_date || null;
