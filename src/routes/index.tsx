@@ -8,10 +8,13 @@ export const Route = createFileRoute("/")({
     meta: [
       { title: "পাবনা নাগরিক কমিটি - পিএনসি | নাগরিক ঐক্যেই বদলাবে পাবনা" },
       { name: "description", content: "পাবনা নাগরিক কমিটি - পিএনসি একটি নাগরিকভিত্তিক সামাজিক সংগঠন। পাবনার উন্নয়ন, সামাজিক সচেতনতা ও মানবিক উদ্যোগে আমাদের সাথে যুক্ত হোন।" },
-      { property: "og:title", content: "পাবনা নাগরিক কমিটি - পিএনসি" },
-      { property: "og:description", content: "নাগরিক ঐক্যেই বদলাবে পাবনা।" },
+      { property: "og:title", content: "পাবনা নাগরিক কমিটি - পিএনসি | নাগরিক ঐক্যেই বদলাবে পাবনা" },
+      { property: "og:description", content: "পাবনা নাগরিক কমিটি (পিএনসি) — পাবনার উন্নয়ন, সামাজিক সচেতনতা, যুব নেতৃত্ব ও মানবিক উদ্যোগে কাজ করা একটি নাগরিকভিত্তিক সামাজিক সংগঠন।" },
+      { property: "og:url", content: "https://pncpab.lovable.app/" },
       { property: "og:image", content: hero },
+      { name: "twitter:image", content: hero },
     ],
+    links: [{ rel: "canonical", href: "https://pncpab.lovable.app/" }],
   }),
   component: HomePage,
 });
