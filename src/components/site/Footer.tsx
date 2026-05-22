@@ -36,7 +36,7 @@ export function Footer() {
               ["/", "হোম"],
               ["/about", "আমাদের সম্পর্কে"],
               ["/activities", "কার্যক্রম"],
-              ["/news", "সংবাদ"],
+              
               ["/membership", "সদস্য হোন"],
               ["/contact", "যোগাযোগ"],
             ].map(([to, label]) => (
