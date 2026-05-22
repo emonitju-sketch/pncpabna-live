@@ -4,8 +4,6 @@ import { Quote, Users } from "lucide-react";
 import bishu from "@/assets/leader-bishu.webp";
 import mukul from "@/assets/leader-mukul.webp";
 import jewel from "@/assets/leader-jewel.webp";
-import mpSelim from "@/assets/mp-selim-reza-habib.avif";
-import mpShimul from "@/assets/mp-shimul-biswas.avif";
 
 export const Route = createFileRoute("/council")({
   head: () => ({
