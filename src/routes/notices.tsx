@@ -121,9 +121,9 @@ function NoticesPage() {
   const [open, setOpen] = useState<Notice | null>(null);
 
   const updateSearch = useCallback(
-    (patch: Partial<typeof search>) => {
+    (patch: Partial<z.infer<typeof noticeSearchSchema>>) => {
       navigate({
-        search: (prev) => ({ ...prev, ...patch }),
+        search: (prev: z.infer<typeof noticeSearchSchema>) => ({ ...prev, ...patch }),
       });
     },
     [navigate]
