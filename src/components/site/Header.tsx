@@ -20,8 +20,8 @@ export function Header() {
   const [open, setOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border bg-background/90 backdrop-blur supports-[backdrop-filter]:bg-background/75">
-      <div className="bg-primary text-primary-foreground text-xs">
+    <header className="sticky top-0 z-50 w-full border-b border-border bg-background/85 backdrop-blur-md supports-[backdrop-filter]:bg-background/70 shadow-[0_1px_0_0_color-mix(in_oklab,var(--primary)_8%,transparent)]">
+      <div className="gradient-hero text-primary-foreground text-xs">
         <div className="container-pnc flex h-9 items-center justify-between">
           <span className="hidden sm:inline">পাবনা সদর, পাবনা, বাংলাদেশ</span>
           <span className="sm:hidden">পিএনসি · পাবনা</span>
@@ -31,6 +31,7 @@ export function Header() {
           </div>
         </div>
       </div>
+      <div className="gold-strip" />
 
       <div className="container-pnc flex h-20 items-center justify-between gap-4">
         <Link to="/" className="flex items-center gap-3">
@@ -47,7 +48,7 @@ export function Header() {
               key={item.to}
               to={item.to}
               activeOptions={{ exact: item.to === "/" }}
-              className="px-3 py-2 text-sm font-medium text-foreground/80 rounded-md hover:text-primary hover:bg-primary-soft transition-colors data-[status=active]:text-primary data-[status=active]:bg-primary-soft"
+              className="relative px-3 py-2 text-sm font-medium text-foreground/80 rounded-md hover:text-primary transition-colors data-[status=active]:text-primary after:content-[''] after:absolute after:left-3 after:right-3 after:-bottom-0.5 after:h-0.5 after:bg-[var(--gold)] after:scale-x-0 after:origin-left after:transition-transform after:duration-300 hover:after:scale-x-100 data-[status=active]:after:scale-x-100"
             >
               {item.label}
             </Link>
@@ -57,7 +58,7 @@ export function Header() {
         <div className="flex items-center gap-2">
           <Link
             to="/membership"
-            className="hidden sm:inline-flex items-center gap-2 rounded-md bg-red-accent px-4 py-2 text-sm font-semibold text-red-accent-foreground hover:opacity-90 transition"
+            className="shine-on-hover hidden sm:inline-flex items-center gap-2 rounded-lg bg-red-accent px-4 py-2 text-sm font-semibold text-red-accent-foreground hover:opacity-95 transition shadow-elegant"
           >
             <Users className="h-4 w-4" /> আমাদের সাথে যুক্ত হোন
           </Link>
