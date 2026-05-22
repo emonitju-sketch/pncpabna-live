@@ -57,6 +57,16 @@ function fmtDate(iso: string | null) {
   return new Date(iso).toLocaleDateString("bn-BD", { day: "numeric", month: "long", year: "numeric" });
 }
 
+function isSafeUrl(url: string | null): url is string {
+  if (!url) return false;
+  try {
+    const u = new URL(url);
+    return u.protocol === "https:" || u.protocol === "http:";
+  } catch {
+    return false;
+  }
+}
+
 function ActivitiesPage() {
   const [active, setActive] = useState<Pillar | null>(null);
   const [activities, setActivities] = useState<Activity[]>([]);
@@ -133,7 +143,7 @@ function ActivitiesPage() {
                     <span className="inline-flex items-center gap-1"><Calendar className="h-3.5 w-3.5" /> {fmtDate(a.activity_date)}</span>
                     {a.location && <span className="inline-flex items-center gap-1"><MapPin className="h-3.5 w-3.5" /> {a.location}</span>}
                   </div>
-                  {a.external_url && (
+                  {isSafeUrl(a.external_url) && (
                     <a
                       href={a.external_url}
                       target="_blank"
