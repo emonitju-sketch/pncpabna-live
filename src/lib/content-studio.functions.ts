@@ -79,9 +79,10 @@ async function categorizeOne(caption: string, imageUrl: string | null) {
 
   if (!res.ok) {
     const body = await res.text();
+    console.error("AI gateway error", res.status, body.slice(0, 500));
     if (res.status === 429) throw new Error("AI rate-limit, একটু পরে চেষ্টা করুন");
     if (res.status === 402) throw new Error("AI credit ফুরিয়েছে — Lovable workspace-এ যোগ করুন");
-    throw new Error(`AI error ${res.status}: ${body.slice(0, 200)}`);
+    throw new Error("AI সার্ভিস সাময়িকভাবে অনুপলব্ধ।");
   }
 
   const json: any = await res.json();
