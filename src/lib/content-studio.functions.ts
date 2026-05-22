@@ -209,12 +209,13 @@ export const publishDraft = createServerFn({ method: "POST" })
       .select("*")
       .eq("id", data.id)
       .single();
-    if (e1 || !d) throw new Error(e1?.message || "Draft not found");
-
-    const cat = d.final_category || d.ai_category;
-    const title = d.final_title_bn || d.ai_title_bn || "শিরোনাম";
-    const body = d.final_body_bn || d.ai_body_bn || d.original_caption;
-    const date = d.final_date || d.ai_event_date || null;
+    if (e1 || !d) {
+      console.error("publishDraft load failed", e1);
+      throw new Error("Draft not found");
+    }
+    if (d.admin_status !== "pending") {
+      throw new Error("এই draft আগেই প্রকাশিত বা বাতিল হয়েছে।");
+    }
 
     let targetTable = "";
     let recordId = "";
