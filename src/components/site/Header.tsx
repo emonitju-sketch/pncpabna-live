@@ -9,7 +9,7 @@ const nav = [
   { to: "/council", label: "কমিটি" },
   { to: "/activities", label: "কার্যক্রম" },
   { to: "/events", label: "ইভেন্ট" },
-  { to: "/news", label: "সংবাদ" },
+  
   { to: "/notices", label: "নোটিশ" },
   { to: "/gallery", label: "গ্যালারি" },
   { to: "/reports", label: "প্রতিবেদন" },
