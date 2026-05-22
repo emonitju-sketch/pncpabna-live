@@ -81,8 +81,12 @@ export type Database = {
           event_id: string
           full_name: string
           id: string
+          last_notified_status: string | null
           notes: string | null
           phone: string
+          status: string
+          status_note: string | null
+          status_updated_at: string
         }
         Insert: {
           created_at?: string
@@ -90,8 +94,12 @@ export type Database = {
           event_id: string
           full_name: string
           id?: string
+          last_notified_status?: string | null
           notes?: string | null
           phone: string
+          status?: string
+          status_note?: string | null
+          status_updated_at?: string
         }
         Update: {
           created_at?: string
@@ -99,8 +107,12 @@ export type Database = {
           event_id?: string
           full_name?: string
           id?: string
+          last_notified_status?: string | null
           notes?: string | null
           phone?: string
+          status?: string
+          status_note?: string | null
+          status_updated_at?: string
         }
         Relationships: [
           {
@@ -177,6 +189,35 @@ export type Database = {
           title?: string
         }
         Relationships: []
+      }
+      issue_upvotes: {
+        Row: {
+          created_at: string
+          id: string
+          registration_id: string
+          voter_email: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          registration_id: string
+          voter_email: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          registration_id?: string
+          voter_email?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "issue_upvotes_registration_id_fkey"
+            columns: ["registration_id"]
+            isOneToOne: false
+            referencedRelation: "event_registrations"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       reports: {
         Row: {
