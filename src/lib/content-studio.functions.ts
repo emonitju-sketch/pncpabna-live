@@ -96,7 +96,7 @@ export const analyzeDrafts = createServerFn({ method: "POST" })
           .array(
             z.object({
               image_path: z.string().nullable().optional(),
-              caption: z.string().min(1).max(8000),
+              caption: z.string().max(8000).optional().default(""),
             })
           )
           .min(1)

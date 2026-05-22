@@ -79,9 +79,9 @@ export function ContentStudio() {
     setItems((p) => p.map((i) => (i.id === id ? { ...i, caption } : i)));
 
   const runAnalyze = async () => {
-    const valid = items.filter((i) => i.caption.trim().length > 0);
+    const valid = items;
     if (valid.length === 0) {
-      toast.error("প্রতিটি ছবির caption দিন");
+      toast.error("কমপক্ষে একটি ছবি যোগ করুন");
       return;
     }
     setBusy(true);
@@ -160,7 +160,7 @@ export function ContentStudio() {
             <Sparkles className="h-5 w-5 text-primary" /> AI কন্টেন্ট স্টুডিও
           </h2>
           <p className="text-xs text-muted-foreground">
-            Facebook ছবি + caption দিন → AI সেকশন বেছে বাংলা শিরোনাম/সারাংশ লিখে দেবে
+            ৫টি ছবি upload করুন (caption ঐচ্ছিক) → AI ছবি দেখে বাংলা সংবাদ draft তৈরি করবে → review করে publish করুন
           </p>
         </div>
 
@@ -205,7 +205,7 @@ export function ContentStudio() {
                     )}
                   </div>
                   <Textarea
-                    placeholder="Facebook caption এখানে paste করুন..."
+                    placeholder="Caption (ঐচ্ছিক) — ছবি থেকে AI নিজেই বুঝে নেবে"
                     value={it.caption}
                     onChange={(e) => setCaption(it.id, e.target.value)}
                     rows={3}
