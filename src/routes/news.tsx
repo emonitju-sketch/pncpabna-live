@@ -12,6 +12,22 @@ export const Route = createFileRoute("/news")({
       { name: "description", content: "পিএনসি-র সাম্প্রতিক সংবাদ, কার্যক্রমের আপডেট, অভিনন্দন ও সামাজিক উদ্যোগের খবর।" },
       { property: "og:title", content: "সংবাদ ও আপডেট — পিএনসি" },
       { property: "og:description", content: "পাবনা নাগরিক কমিটির সর্বশেষ খবর।" },
+      { property: "og:url", content: "https://pncpab.lovable.app/news" },
+    ],
+    links: [{ rel: "canonical", href: "https://pncpab.lovable.app/news" }],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "CollectionPage",
+          name: "সংবাদ ও আপডেট — পাবনা নাগরিক কমিটি",
+          description: "পিএনসি-র সাম্প্রতিক সংবাদ ও কার্যক্রমের আপডেট।",
+          url: "https://pncpab.lovable.app/news",
+          inLanguage: "bn",
+          isPartOf: { "@type": "WebSite", name: "PNC Pabna", url: "https://pncpab.lovable.app/" },
+        }),
+      },
     ],
   }),
   component: NewsPage,
