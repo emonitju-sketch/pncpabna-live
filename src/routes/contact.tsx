@@ -16,7 +16,9 @@ export const Route = createFileRoute("/contact")({
       { name: "description", content: "পাবনা নাগরিক কমিটি - পিএনসি-র সাথে যোগাযোগ করুন। ফোন, ইমেইল ও ফেসবুক মেসেঞ্জার।" },
       { property: "og:title", content: "যোগাযোগ — পিএনসি" },
       { property: "og:description", content: "আমাদের সাথে যোগাযোগ করুন।" },
+      { property: "og:url", content: "https://pncpab.lovable.app/contact" },
     ],
+    links: [{ rel: "canonical", href: "https://pncpab.lovable.app/contact" }],
   }),
   component: ContactPage,
 });
