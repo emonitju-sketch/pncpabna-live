@@ -121,6 +121,7 @@ function ConstitutionPage() {
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder="অধ্যায় খুঁজুন..."
+                aria-label="গঠনতন্ত্রের অধ্যায় খুঁজুন"
                 className="pl-9"
               />
             </div>
