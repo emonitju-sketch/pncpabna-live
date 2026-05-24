@@ -121,17 +121,20 @@ function ActivitiesPage() {
         <section className="container-pnc pt-10 md:pt-14">
           <div className="overflow-hidden rounded-3xl border border-border bg-gradient-to-br from-primary/95 via-primary to-primary/80 text-primary-foreground shadow-elegant">
             <div className="grid md:grid-cols-5 gap-0">
-              <div className="md:col-span-3 relative bg-black aspect-video md:aspect-auto md:min-h-[420px]">
-                <iframe
-                  src={`https://www.facebook.com/plugins/video.php?href=${encodeURIComponent(hero.external_url!)}&show_text=false&autoplay=false`}
-                  title={hero.title_bn}
+              <div className="md:col-span-2 relative bg-white/5 p-4 md:p-6 flex items-center justify-center md:min-h-[420px] overflow-hidden">
+                <img
+                  src={hero24Dofa}
+                  alt={hero.title_bn}
                   loading="lazy"
-                  allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
-                  allowFullScreen
-                  className="absolute inset-0 h-full w-full border-0"
+                  decoding="async"
+                  onError={(e) => {
+                    const img = e.currentTarget;
+                    if (img.src !== heroFallback) img.src = heroFallback;
+                  }}
+                  className="max-h-[420px] w-full h-full object-contain object-center rounded-2xl shadow-md bg-white/5"
                 />
               </div>
-              <div className="md:col-span-2 p-7 md:p-9 flex flex-col justify-center">
+              <div className="md:col-span-3 p-7 md:p-9 flex flex-col justify-center">
                 <span className="inline-flex w-fit items-center gap-1.5 rounded-full bg-[var(--gold)]/20 text-[var(--gold)] px-3 py-1 text-[11px] font-bold uppercase tracking-wider border border-[var(--gold)]/40">
                   <Flame className="h-3 w-3" /> বিশেষ ফিচার
                 </span>
@@ -147,14 +150,16 @@ function ActivitiesPage() {
                   <span className="inline-flex items-center gap-1.5"><Tag className="h-3.5 w-3.5" />{hero.category}</span>
                   <span className="inline-flex items-center gap-1.5"><Calendar className="h-3.5 w-3.5" />{fmtDate(hero.activity_date)}</span>
                 </div>
-                <a
-                  href={hero.external_url!}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="mt-6 inline-flex w-fit items-center gap-2 rounded-lg bg-[var(--gold)] px-5 py-2.5 text-sm font-bold text-foreground hover:opacity-95 transition shadow-md"
-                >
-                  <PlayCircle className="h-4 w-4" /> ভিডিও দেখুন
-                </a>
+                {hero.external_url && (
+                  <a
+                    href={hero.external_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mt-6 inline-flex w-fit items-center gap-2 rounded-lg bg-[var(--gold)] px-5 py-2.5 text-sm font-bold text-foreground hover:opacity-95 transition shadow-md"
+                  >
+                    <PlayCircle className="h-4 w-4" /> ভিডিও দেখুন
+                  </a>
+                )}
               </div>
             </div>
           </div>
