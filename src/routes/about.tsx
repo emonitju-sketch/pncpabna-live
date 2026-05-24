@@ -9,9 +9,9 @@ export const Route = createFileRoute("/about")({
       { name: "description", content: "পাবনা নাগরিক কমিটি - পিএনসি একটি নাগরিকভিত্তিক সামাজিক সংগঠন, যা পাবনার উন্নয়ন ও জনস্বার্থে কাজ করে।" },
       { property: "og:title", content: "আমাদের সম্পর্কে — পিএনসি" },
       { property: "og:description", content: "পাবনার মানুষের জন্য, পাবনার মানুষের সংগঠন।" },
-      { property: "og:url", content: "https://pncpab.lovable.app/about" },
+      { property: "og:url", content: "https://pncpabna.live/about" },
     ],
-    links: [{ rel: "canonical", href: "https://pncpab.lovable.app/about" }],
+    links: [{ rel: "canonical", href: "https://pncpabna.live/about" }],
   }),
   component: AboutPage,
 });

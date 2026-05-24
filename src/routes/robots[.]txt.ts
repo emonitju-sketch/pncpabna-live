@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 
-const BASE_URL = "https://pncpab.lovable.app";
+const BASE_URL = "https://pncpabna.live";
 
 export const Route = createFileRoute("/robots.txt")({
   server: {

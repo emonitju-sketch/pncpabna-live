@@ -2,6 +2,8 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Users, Megaphone, HeartHandshake, TrendingUp, Facebook, ArrowRight, Target, Eye, Sparkles } from "lucide-react";
 import hero from "@/assets/hero-pnc.jpg";
 import { NoticeStrip } from "@/components/site/NoticeStrip";
+import { AnimatedCounter } from "@/components/site/AnimatedCounter";
+import { Milestones } from "@/components/site/Milestones";
 
 
 export const Route = createFileRoute("/")({
@@ -11,12 +13,12 @@ export const Route = createFileRoute("/")({
       { name: "description", content: "পাবনা নাগরিক কমিটি - পিএনসি একটি নাগরিকভিত্তিক সামাজিক সংগঠন। পাবনার উন্নয়ন, সামাজিক সচেতনতা ও মানবিক উদ্যোগে আমাদের সাথে যুক্ত হোন।" },
       { property: "og:title", content: "পাবনা নাগরিক কমিটি - পিএনসি | নাগরিক ঐক্যেই বদলাবে পাবনা" },
       { property: "og:description", content: "পাবনা নাগরিক কমিটি (পিএনসি) — পাবনার উন্নয়ন, সামাজিক সচেতনতা, যুব নেতৃত্ব ও মানবিক উদ্যোগে কাজ করা একটি নাগরিকভিত্তিক সামাজিক সংগঠন।" },
-      { property: "og:url", content: "https://pncpab.lovable.app/" },
+      { property: "og:url", content: "https://pncpabna.live/" },
       { property: "og:image", content: hero },
       { name: "twitter:image", content: hero },
     ],
     links: [
-      { rel: "canonical", href: "https://pncpab.lovable.app/" },
+      { rel: "canonical", href: "https://pncpabna.live/" },
       // Preload LCP hero image so it starts downloading before React mounts
       { rel: "preload", as: "image", href: hero, fetchpriority: "high" },
     ],
@@ -72,14 +74,16 @@ function HomePage() {
 
           <div className="reveal reveal-delay-4 mt-12 grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl">
             {[
-              ["১০K+", "অনুসারী"],
-              ["নাগরিক", "সংগঠন"],
-              ["সামাজিক", "উন্নয়ন"],
-              ["ঐক্যবদ্ধ", "পাবনার জন্য"],
-            ].map(([n, l]) => (
-              <div key={l} className="card-hover rounded-xl bg-white/10 backdrop-blur border border-white/20 p-4">
-                <div className="text-xl md:text-2xl font-bold">{n}</div>
-                <div className="text-xs md:text-sm opacity-90 mt-1">{l}</div>
+              { n: 10000, suffix: "+", l: "অনুসারী" },
+              { n: 24, suffix: "", l: "দফার নাগরিক সনদ" },
+              { n: 50, suffix: "+", l: "কর্মসূচি ও উদ্যোগ" },
+              { n: 9, suffix: "টি উপজেলা", l: "পাবনা জুড়ে" },
+            ].map((s) => (
+              <div key={s.l} className="card-hover rounded-xl bg-white/10 backdrop-blur border border-white/20 p-4">
+                <div className="text-xl md:text-2xl font-bold">
+                  <AnimatedCounter to={s.n} suffix={s.suffix} />
+                </div>
+                <div className="text-xs md:text-sm opacity-90 mt-1">{s.l}</div>
               </div>
             ))}
           </div>
@@ -132,6 +136,11 @@ function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* MILESTONES TIMELINE */}
+      <Milestones />
+
+
 
 
       {/* CTA STRIP */}

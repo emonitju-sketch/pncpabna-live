@@ -17,9 +17,9 @@ export const Route = createFileRoute("/council")({
       { name: "description", content: "পাবনা নাগরিক কমিটি (পিএনসি)–এর বর্তমান কার্যনির্বাহী কমিটি ও নেতৃবৃন্দের পরিচয়।" },
       { property: "og:title", content: "কার্যনির্বাহী কমিটি — পিএনসি" },
       { property: "og:description", content: "বর্তমান কার্যনির্বাহী কমিটি, কো-চেয়ারম্যানগণ ও সাধারণ সম্পাদক।" },
-      { property: "og:url", content: "https://pncpab.lovable.app/council" },
+      { property: "og:url", content: "https://pncpabna.live/council" },
     ],
-    links: [{ rel: "canonical", href: "https://pncpab.lovable.app/council" }],
+    links: [{ rel: "canonical", href: "https://pncpabna.live/council" }],
   }),
   component: CouncilPage,
 });
