@@ -37,9 +37,9 @@ export const Route = createFileRoute("/notices")({
       { name: "description", content: "পাবনা নাগরিক কমিটি (পিএনসি)-এর অফিসিয়াল নোটিশ, প্রেস বিজ্ঞপ্তি ও ঘোষণাসমূহ — তারিখ অনুসারে সাজানো নোটিশ বোর্ড।" },
       { property: "og:title", content: "নোটিশ বোর্ড — পিএনসি" },
       { property: "og:description", content: "পিএনসি-এর সাম্প্রতিক অফিসিয়াল নোটিশ ও ঘোষণাসমূহ।" },
-      { property: "og:url", content: "https://pncpab.lovable.app/notices" },
+      { property: "og:url", content: "https://pncpabna.live/notices" },
     ],
-    links: [{ rel: "canonical", href: "https://pncpab.lovable.app/notices" }],
+    links: [{ rel: "canonical", href: "https://pncpabna.live/notices" }],
   }),
   validateSearch: zodValidator(noticeSearchSchema),
   component: NoticesPage,
@@ -138,7 +138,7 @@ function NoticesPage() {
 
       <section className="container-pnc py-12">
         {/* Filter Panel */}
-        <div className="mb-8 rounded-2xl border border-border bg-card p-5 shadow-sm">
+        <div className="sticky top-16 z-30 mb-8 rounded-2xl border border-border bg-card/95 backdrop-blur p-5 shadow-sm">
           <div className="flex flex-col gap-5">
             {/* Top row: search + count */}
             <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:justify-between">
