@@ -250,7 +250,55 @@ function NoticesPage() {
           </div>
         </div>
 
-        {loading ? null : paginated.length === 0 ? (
+        {featured && (
+          <Link
+            to={featured.slug ? `/notices/${featured.slug}` : `/notices/${featured.id}`}
+            className="group mb-8 grid overflow-hidden rounded-2xl border border-primary/30 bg-gradient-to-br from-primary-soft/60 to-card shadow-sm transition hover:-translate-y-0.5 hover:shadow-elegant md:grid-cols-5"
+          >
+            {featured.cover_image_path && (
+              <div className="relative md:col-span-2 aspect-[4/3] md:aspect-auto md:min-h-[240px] overflow-hidden bg-gradient-to-br from-primary-soft/40 to-muted">
+                <img
+                  src={publicUrl("gallery", featured.cover_image_path)}
+                  alt={featured.title_bn}
+                  loading="eager"
+                  className="absolute inset-0 h-full w-full object-contain p-2 transition-transform duration-500 group-hover:scale-[1.03]"
+                />
+              </div>
+            )}
+            <div className="md:col-span-3 p-6 md:p-8 flex flex-col justify-center">
+              <span className="inline-flex w-fit items-center gap-1.5 rounded-full bg-[var(--gold)]/20 text-foreground px-3 py-1 text-[11px] font-bold uppercase tracking-wider border border-[var(--gold)]/40">
+                ⭐ ফিচার্ড নোটিশ
+              </span>
+              <h2 className="mt-3 text-xl md:text-2xl font-bold leading-snug text-foreground">{featured.title_bn}</h2>
+              <p className="mt-2 inline-flex items-center gap-1.5 text-xs text-muted-foreground">
+                <CalendarIcon className="h-3.5 w-3.5" /> {bnDate(featured.starts_at)}
+                <span className="mx-1">•</span>
+                <FileText className="h-3.5 w-3.5" /> {featured.category}
+              </p>
+              {featured.body_bn && (
+                <p className="mt-3 text-sm leading-relaxed text-muted-foreground line-clamp-3">{featured.body_bn}</p>
+              )}
+              <span className="mt-4 inline-flex w-fit items-center gap-1.5 text-sm font-semibold text-primary group-hover:gap-2.5 transition-all">
+                বিস্তারিত দেখুন <ArrowRight className="h-3.5 w-3.5" />
+              </span>
+            </div>
+          </Link>
+        )}
+
+        {loading ? (
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <div key={i} className="rounded-2xl border border-border bg-card overflow-hidden animate-pulse">
+                <div className="aspect-[3/4] bg-muted" />
+                <div className="p-5 space-y-2">
+                  <div className="h-3 w-20 bg-muted rounded" />
+                  <div className="h-5 w-3/4 bg-muted rounded" />
+                  <div className="h-3 w-full bg-muted rounded" />
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : paginated.length === 0 ? (
           <div className="rounded-2xl border border-dashed border-border bg-card/50 p-10 text-center">
             <p className="text-sm text-muted-foreground">কোনো নোটিশ পাওয়া যায়নি।</p>
           </div>
