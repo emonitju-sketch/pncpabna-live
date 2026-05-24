@@ -200,38 +200,36 @@ function ActivitiesPage() {
                   key={a.id}
                   className="group rounded-2xl border border-border bg-card overflow-hidden shadow-card flex flex-col transition-all duration-300 hover:-translate-y-1 hover:shadow-elegant"
                 >
-                  <div className="relative aspect-[4/5] overflow-hidden bg-gradient-to-br from-primary-soft/40 to-muted">
-                    {a.cover_image_path ? (
+                  {a.cover_image_path && (
+                    <div className="relative aspect-[4/5] overflow-hidden bg-gradient-to-br from-primary-soft/40 to-muted">
                       <img
                         src={publicUrl("gallery", a.cover_image_path)}
                         alt={a.title_bn}
                         loading="lazy"
+                        onError={(e) => { (e.currentTarget.parentElement as HTMLElement).style.display = "none"; }}
                         className="absolute inset-0 h-full w-full object-contain p-2 transition-transform duration-500 group-hover:scale-[1.03]"
                       />
-                    ) : (
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <Sparkles className="h-10 w-10 text-primary/40" />
+                      {/* Badges */}
+                      <div className="absolute top-3 left-3 flex flex-col gap-1.5">
+                        {a.is_featured && (
+                          <span className="inline-flex items-center gap-1 rounded-full bg-[var(--gold)] text-foreground px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wide shadow-sm">
+                            <Star className="h-2.5 w-2.5" /> Featured
+                          </span>
+                        )}
+                        {hasVideo && (
+                          <span className="inline-flex items-center gap-1 rounded-full bg-red-accent text-red-accent-foreground px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wide shadow-sm">
+                            <PlayCircle className="h-2.5 w-2.5" /> Video
+                          </span>
+                        )}
+                        {fresh && (
+                          <span className="inline-flex items-center gap-1 rounded-full bg-primary text-primary-foreground px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wide shadow-sm">
+                            New
+                          </span>
+                        )}
                       </div>
-                    )}
-                    {/* Badges */}
-                    <div className="absolute top-3 left-3 flex flex-col gap-1.5">
-                      {a.is_featured && (
-                        <span className="inline-flex items-center gap-1 rounded-full bg-[var(--gold)] text-foreground px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wide shadow-sm">
-                          <Star className="h-2.5 w-2.5" /> Featured
-                        </span>
-                      )}
-                      {hasVideo && (
-                        <span className="inline-flex items-center gap-1 rounded-full bg-red-accent text-red-accent-foreground px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wide shadow-sm">
-                          <PlayCircle className="h-2.5 w-2.5" /> Video
-                        </span>
-                      )}
-                      {fresh && (
-                        <span className="inline-flex items-center gap-1 rounded-full bg-primary text-primary-foreground px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wide shadow-sm">
-                          New
-                        </span>
-                      )}
                     </div>
-                  </div>
+                  )}
+
                   <div className="p-5 flex flex-col flex-1">
                     <span className="inline-flex items-center gap-1.5 self-start text-[11px] font-semibold uppercase tracking-wide text-primary bg-primary/10 px-2 py-1 rounded">
                       <Tag className="h-3 w-3" /> {a.category}
