@@ -3,6 +3,8 @@ import { useEffect, useMemo, useState } from "react";
 import { PageHeader } from "@/components/site/PageHeader";
 import { supabase } from "@/integrations/supabase/client";
 import { publicUrl } from "@/hooks/use-auth";
+import hero24Dofa from "@/assets/24-dofa-cover.jpeg";
+import heroFallback from "@/assets/hero-pnc.jpg";
 import {
   Megaphone, MessageSquare, GraduationCap, HeartHandshake,
   Users, Vote, Building2, Sparkles, ArrowRight, X, CheckCircle2,
