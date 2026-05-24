@@ -93,17 +93,26 @@ function TimelineNode({ item, index }: { item: Item; index: number }) {
     <div
       ref={ref}
       className={`relative md:grid md:grid-cols-2 md:gap-12 items-center transition-all duration-700 ease-out ${
-        visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+        visible
+          ? "opacity-100 translate-y-0"
+          : `opacity-0 ${isLeft ? "md:-translate-x-6" : "md:translate-x-6"} translate-y-8`
       }`}
-      style={{ transitionDelay: `${index * 80}ms` }}
+      style={{ transitionDelay: `${index * 90}ms` }}
     >
       {/* Center dot (desktop) */}
       <span className="hidden md:flex absolute left-1/2 top-8 -translate-x-1/2 z-10">
-        <span className={`relative inline-flex h-14 w-14 items-center justify-center rounded-full ring-4 ring-background shadow-elegant ${
-          item.featured ? "bg-gradient-to-br from-red-accent to-primary text-white" : "bg-primary-soft text-primary"
-        }`}>
+        <span
+          className={`relative inline-flex h-14 w-14 items-center justify-center rounded-full ring-4 ring-background shadow-elegant ${
+            item.featured
+              ? "bg-gradient-to-br from-red-accent to-primary text-white"
+              : "bg-primary-soft text-primary"
+          }`}
+        >
           {item.featured && (
-            <span className="absolute inset-0 rounded-full animate-ping bg-red-accent/40" />
+            <>
+              <span className="absolute inset-0 rounded-full animate-ping bg-red-accent/40" />
+              <span className="absolute -inset-2 rounded-full bg-[var(--gold)]/30 blur-xl animate-pulse" />
+            </>
           )}
           <Icon className="h-6 w-6 relative" />
         </span>
@@ -111,18 +120,27 @@ function TimelineNode({ item, index }: { item: Item; index: number }) {
 
       {/* Mobile dot */}
       <span className="md:hidden absolute -left-[34px] top-6 z-10">
-        <span className={`inline-flex h-11 w-11 items-center justify-center rounded-full ring-4 ring-background shadow-card ${
-          item.featured ? "bg-gradient-to-br from-red-accent to-primary text-white" : "bg-primary-soft text-primary"
-        }`}>
-          <Icon className="h-5 w-5" />
+        <span
+          className={`relative inline-flex h-11 w-11 items-center justify-center rounded-full ring-4 ring-background shadow-card ${
+            item.featured
+              ? "bg-gradient-to-br from-red-accent to-primary text-white"
+              : "bg-primary-soft text-primary"
+          }`}
+        >
+          {item.featured && (
+            <span className="absolute -inset-1.5 rounded-full bg-[var(--gold)]/30 blur-md animate-pulse" />
+          )}
+          <Icon className="h-5 w-5 relative" />
         </span>
       </span>
 
       {/* Card */}
       <div className={`${isLeft ? "md:col-start-1 md:pr-8 md:text-right" : "md:col-start-2 md:pl-8"}`}>
         <article
-          className={`group relative rounded-2xl border border-border bg-card p-6 md:p-7 shadow-card transition-all duration-300 hover:-translate-y-1 hover:shadow-elegant ${
-            item.featured ? "md:p-8 ring-1 ring-[var(--gold)]/40 bg-gradient-to-br from-card to-primary-soft/30" : ""
+          className={`group relative rounded-2xl border border-border/70 bg-card/70 backdrop-blur-xl p-6 md:p-7 shadow-card transition-all duration-300 hover:-translate-y-1 hover:shadow-elegant ${
+            item.featured
+              ? "md:p-8 ring-1 ring-[var(--gold)]/50 bg-gradient-to-br from-card/90 to-primary-soft/40 shadow-[0_0_40px_-12px_var(--gold)]"
+              : ""
           }`}
         >
           {item.featured && (
@@ -131,7 +149,7 @@ function TimelineNode({ item, index }: { item: Item; index: number }) {
             </span>
           )}
 
-          <div className={`flex items-center gap-2 ${isLeft ? "md:justify-end" : ""}`}>
+          <div className={`flex flex-wrap items-center gap-2 ${isLeft ? "md:justify-end" : ""}`}>
             <span className="inline-flex items-center rounded-full bg-primary px-3 py-1 text-xs font-semibold text-primary-foreground shadow-sm">
               {item.date}
             </span>
@@ -140,13 +158,15 @@ function TimelineNode({ item, index }: { item: Item; index: number }) {
             </span>
           </div>
 
-          <h3 className={`mt-3 font-bold text-foreground ${item.featured ? "text-xl md:text-2xl" : "text-lg md:text-xl"}`}>
+          <h3
+            className={`mt-3 font-bold text-foreground heading-display ${
+              item.featured ? "text-xl md:text-2xl" : "text-lg md:text-xl"
+            }`}
+          >
             <span className="mr-2">{item.emoji}</span>
             {item.title}
           </h3>
-          <p className="mt-2 text-sm md:text-base text-muted-foreground leading-relaxed">
-            {item.text}
-          </p>
+          <p className="mt-2 text-sm md:text-base text-muted-foreground leading-relaxed">{item.text}</p>
 
           {/* Connector arrow */}
           <span
@@ -162,9 +182,45 @@ function TimelineNode({ item, index }: { item: Item; index: number }) {
 }
 
 export function Milestones() {
+  const trackRef = useRef<HTMLDivElement>(null);
+  const [progress, setProgress] = useState(0);
+
+  useEffect(() => {
+    const onScroll = () => {
+      const el = trackRef.current;
+      if (!el) return;
+      const rect = el.getBoundingClientRect();
+      const vh = window.innerHeight;
+      const total = rect.height + vh * 0.4;
+      const passed = vh - rect.top;
+      const p = Math.max(0, Math.min(1, passed / total));
+      setProgress(p);
+    };
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    };
+  }, []);
+
   return (
     <section className="relative overflow-hidden bg-gradient-to-b from-background via-surface to-background">
-      <div aria-hidden className="absolute inset-0 pattern-dots text-primary/5 pointer-events-none" />
+      {/* Animated background blobs */}
+      <div aria-hidden className="absolute inset-0 pointer-events-none">
+        <div className="absolute -top-24 -left-24 h-80 w-80 rounded-full bg-primary/10 blur-3xl animate-pulse" />
+        <div
+          className="absolute top-1/3 -right-24 h-96 w-96 rounded-full bg-red-accent/10 blur-3xl animate-pulse"
+          style={{ animationDelay: "1.2s" }}
+        />
+        <div
+          className="absolute bottom-0 left-1/3 h-72 w-72 rounded-full bg-[var(--gold)]/10 blur-3xl animate-pulse"
+          style={{ animationDelay: "2.4s" }}
+        />
+        <div className="absolute inset-0 pattern-dots text-primary/5" />
+      </div>
+
       <div className="container-pnc py-16 md:py-24 relative">
         {/* Header */}
         <div className="max-w-3xl mx-auto text-center">
@@ -187,8 +243,11 @@ export function Milestones() {
             { n: 12, suffix: "+", l: "চলমান কার্যক্রম" },
             { n: 10000, suffix: "+", l: "নাগরিক সম্পৃক্ততা" },
           ].map((s) => (
-            <div key={s.l} className="rounded-2xl border border-border bg-card p-6 text-center shadow-card card-hover">
-              <div className="text-3xl md:text-4xl font-bold text-primary">
+            <div
+              key={s.l}
+              className="rounded-2xl border border-border/70 bg-card/70 backdrop-blur-xl p-6 text-center shadow-card card-hover"
+            >
+              <div className="text-3xl md:text-4xl font-bold text-primary heading-display">
                 <AnimatedCounter to={s.n} suffix={s.suffix} />
               </div>
               <div className="mt-1.5 text-sm text-muted-foreground">{s.l}</div>
@@ -197,20 +256,28 @@ export function Milestones() {
         </div>
 
         {/* Timeline */}
-        <div className="relative mt-16 md:mt-20">
-          {/* Center animated line (desktop) */}
+        <div ref={trackRef} className="relative mt-16 md:mt-20">
+          {/* Center track (desktop) */}
           <div
             aria-hidden
-            className="hidden md:block absolute left-1/2 top-0 bottom-0 -translate-x-1/2 w-[3px] bg-gradient-to-b from-transparent via-primary/40 to-transparent"
+            className="hidden md:block absolute left-1/2 top-0 bottom-0 -translate-x-1/2 w-[3px] bg-border/60 rounded-full overflow-hidden"
           >
-            <span className="absolute inset-0 bg-gradient-to-b from-red-accent via-primary to-[var(--gold)] opacity-70 animate-pulse" />
+            <span
+              className="absolute top-0 left-0 right-0 bg-gradient-to-b from-red-accent via-primary to-[var(--gold)] transition-[height] duration-150 ease-out"
+              style={{ height: `${progress * 100}%` }}
+            />
           </div>
 
-          {/* Mobile left line */}
+          {/* Mobile left track */}
           <div
             aria-hidden
-            className="md:hidden absolute left-[6px] top-0 bottom-0 w-[2px] bg-gradient-to-b from-red-accent via-primary to-[var(--gold)] opacity-50"
-          />
+            className="md:hidden absolute left-[6px] top-0 bottom-0 w-[2px] bg-border/60 rounded-full overflow-hidden"
+          >
+            <span
+              className="absolute top-0 left-0 right-0 bg-gradient-to-b from-red-accent via-primary to-[var(--gold)] transition-[height] duration-150 ease-out"
+              style={{ height: `${progress * 100}%` }}
+            />
+          </div>
 
           <div className="space-y-12 md:space-y-16 pl-10 md:pl-0">
             {items.map((it, i) => (
@@ -221,8 +288,12 @@ export function Milestones() {
 
         {/* Closing message */}
         <div className="mt-20 max-w-3xl mx-auto text-center">
-          <div className="rounded-3xl gradient-hero text-primary-foreground p-8 md:p-10 shadow-elegant">
-            <p className="text-lg md:text-2xl font-semibold leading-relaxed">
+          <div className="relative rounded-3xl gradient-hero text-primary-foreground p-8 md:p-10 shadow-elegant overflow-hidden">
+            <span
+              aria-hidden
+              className="absolute -top-16 -right-16 h-48 w-48 rounded-full bg-[var(--gold)]/30 blur-2xl animate-pulse"
+            />
+            <p className="relative text-lg md:text-2xl font-semibold leading-relaxed">
               "আমরা শুধু একটি সংগঠন নই — আমরা পাবনার মানুষের সম্মিলিত কণ্ঠস্বর।"
             </p>
           </div>
