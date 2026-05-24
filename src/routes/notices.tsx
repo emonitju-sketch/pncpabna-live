@@ -116,11 +116,15 @@ function NoticesPage() {
     return result;
   }, [notices, query, category, sort, dateFrom, dateTo]);
 
-  const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
-  const safePage = Math.min(page, totalPages);
-  const paginated = filtered.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE);
-
   const hasActiveFilters = query || category !== "সব" || sort !== "newest" || dateFrom || dateTo;
+
+  // Featured = highest priority notice (only show when no active filters & first page)
+  const featured = !hasActiveFilters && safePageOnly1(page) ? notices.slice().sort((a, b) => b.priority - a.priority || b.starts_at.localeCompare(a.starts_at))[0] : null;
+  const visibleList = featured ? filtered.filter((n) => n.id !== featured.id) : filtered;
+  const totalPages = Math.max(1, Math.ceil(visibleList.length / PAGE_SIZE));
+  const safePage = Math.min(page, totalPages);
+  const paginated = visibleList.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE);
+
   const dateFromObj = dateFrom ? parseISO(dateFrom) : undefined;
   const dateToObj = dateTo ? parseISO(dateTo) : undefined;
 
