@@ -6,7 +6,7 @@ import { PageHeader } from "@/components/site/PageHeader";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Phone, Mail, MapPin, Facebook, MessageCircle, Send, Clock } from "lucide-react";
+import { Phone, Mail, MapPin, Facebook, MessageCircle, Send, Clock, Building2, Navigation } from "lucide-react";
 import contactIllustration from "@/assets/contact-illustration.jpg";
 
 export const Route = createFileRoute("/contact")({
@@ -155,20 +155,72 @@ function ContactPage() {
         </form>
       </section>
 
-      <section className="container-pnc pb-20">
-        <div className="overflow-hidden rounded-2xl border border-border shadow-card">
-          <iframe
-            title="Pabna Map"
-            src="https://www.google.com/maps?q=Pabna,Bangladesh&output=embed"
-            width="100%"
-            height="380"
-            loading="lazy"
-            referrerPolicy="no-referrer-when-downgrade"
-            className="block w-full"
+      {/* Office Locations */}
+      <section className="container-pnc py-10 md:py-14">
+        <div className="text-center mb-10">
+          <p className="text-xs uppercase tracking-[0.2em] text-primary font-semibold mb-2">আমাদের অফিস</p>
+          <h2 className="text-2xl md:text-3xl font-bold text-foreground">যেখানে আমরা আছি</h2>
+        </div>
+        <div className="grid gap-6 md:grid-cols-2">
+          <OfficeCard
+            badge="হেড অফিস"
+            name='"মেঘনা হাইটস" (Meghna Heights)'
+            address="মহিলা কলেজ রোড, দিলালপুর, পাবনা"
+            mapQuery="Meghna Heights, Mohila College Road, Dilalpur, Pabna, Bangladesh"
+          />
+          <OfficeCard
+            badge="ঢাকা অফিস"
+            name="২৮ দিলকুশা সেন্টার"
+            address="মতিঝিল, ঢাকা"
+            mapQuery="28 Dilkusha Center, Motijheel, Dhaka, Bangladesh"
           />
         </div>
       </section>
     </>
+  );
+}
+
+function OfficeCard({ badge, name, address, mapQuery }: { badge: string; name: string; address: string; mapQuery: string }) {
+  const embedSrc = `https://www.google.com/maps?q=${encodeURIComponent(mapQuery)}&output=embed`;
+  const directionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(mapQuery)}`;
+  return (
+    <article className="group rounded-2xl border border-border bg-card shadow-card overflow-hidden transition-all duration-300 hover:shadow-elegant hover:-translate-y-1">
+      <div className="p-6 md:p-7 border-b border-border bg-gradient-to-br from-primary-soft/40 via-card to-transparent">
+        <div className="flex items-start gap-4">
+          <div className="shrink-0 h-12 w-12 rounded-xl bg-primary text-primary-foreground flex items-center justify-center shadow-sm">
+            <Building2 className="h-6 w-6" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <span className="inline-block text-[11px] font-semibold uppercase tracking-wider text-red-accent bg-red-accent/10 px-2 py-0.5 rounded-full mb-2">
+              {badge}
+            </span>
+            <h3 className="text-lg md:text-xl font-bold text-foreground leading-snug">{name}</h3>
+            <p className="mt-1.5 text-sm text-foreground/75 flex items-start gap-1.5">
+              <MapPin className="h-4 w-4 mt-0.5 shrink-0 text-primary" />
+              <span>{address}</span>
+            </p>
+          </div>
+        </div>
+        <a
+          href={directionsUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mt-5 inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground hover:opacity-90 transition"
+        >
+          <Navigation className="h-4 w-4" /> Get Directions
+        </a>
+      </div>
+      <div className="aspect-[16/10] w-full bg-muted">
+        <iframe
+          title={`${badge} মানচিত্র`}
+          src={embedSrc}
+          loading="lazy"
+          referrerPolicy="no-referrer-when-downgrade"
+          className="block w-full h-full border-0"
+          allowFullScreen
+        />
+      </div>
+    </article>
   );
 }
 
