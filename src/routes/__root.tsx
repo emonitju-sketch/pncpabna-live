@@ -69,7 +69,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       // cannot be set via meta — they remain in src/lib/security-headers.ts.
       { httpEquiv: "Content-Security-Policy", content: META_CSP },
       { name: "referrer", content: "strict-origin-when-cross-origin" },
-      { title: "PNC Pabna — পাবনা নাগরিক কমিটি" },
+      { title: "পাবনা নাগরিক কমিটি - নাগরিক ঐক্যেই বদলাবে পাবনা" },
       {
         name: "description",
         content:
@@ -81,17 +81,17 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { httpEquiv: "Cache-Control", content: "no-cache, no-store, must-revalidate" },
       { httpEquiv: "Pragma", content: "no-cache" },
       { httpEquiv: "Expires", content: "0" },
-      { property: "og:title", content: "PNC Pabna — পাবনা নাগরিক কমিটি" },
+      { property: "og:title", content: "পাবনা নাগরিক কমিটি - নাগরিক ঐক্যেই বদলাবে পাবনা" },
       { property: "og:description", content: "নাগরিক ঐক্যেই বদলাবে পাবনা: পাবনার উন্নয়ন, সামাজিক সচেতনতা, নাগরিক অধিকার এবং মানবিক উদ্যোগে আমরা একসাথে কাজ করি।" },
       { property: "og:type", content: "website" },
       { property: "og:site_name", content: "PNC Pabna" },
       { property: "og:locale", content: "bn_BD" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "PNC Pabna — পাবনা নাগরিক কমিটি" },
+      { name: "twitter:title", content: "পাবনা নাগরিক কমিটি - নাগরিক ঐক্যেই বদলাবে পাবনা" },
       { name: "twitter:description", content: "নাগরিক ঐক্যেই বদলাবে পাবনা: পাবনার উন্নয়ন, সামাজিক সচেতনতা, নাগরিক অধিকার এবং মানবিক উদ্যোগে আমরা একসাথে কাজ করি।" },
       { name: "description", content: "নাগরিক ঐক্যেই বদলাবে পাবনা: পাবনার উন্নয়ন, সামাজিক সচেতনতা, নাগরিক অধিকার এবং মানবিক উদ্যোগে আমরা একসাথে কাজ করি।" },
-      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/273f3a7e-ed91-4e29-a20e-b6b87f85b19f" },
-      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/273f3a7e-ed91-4e29-a20e-b6b87f85b19f" },
+      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/4168303a-be3c-48f4-9ef6-58b5744d52f2" },
+      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/4168303a-be3c-48f4-9ef6-58b5744d52f2" },
     ],
     scripts: [
       {
