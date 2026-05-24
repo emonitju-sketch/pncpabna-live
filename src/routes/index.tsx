@@ -137,6 +137,11 @@ function HomePage() {
         </div>
       </section>
 
+      {/* MILESTONES TIMELINE */}
+      <Milestones />
+
+
+
 
       {/* CTA STRIP */}
       <section className="container-pnc py-16 md:py-20">
