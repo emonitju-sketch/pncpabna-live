@@ -1,0 +1,16 @@
+DELETE FROM public.activities WHERE id IN (
+  'f7309628-3afc-46c2-89dc-6ebb7bf3e04d',
+  'ae2e369d-2332-4757-ac6a-d30d0c301248',
+  'a0b96c12-c2ce-4198-a973-ec8d763292f5',
+  '7575a557-03e4-44de-9189-7bd02440d319',
+  '3db4c7a1-f5c1-442d-a532-7c2a0bf98424',
+  '3b9eb5af-2d72-43ae-b0e0-20c5c1ba4609',
+  '257ed67f-964d-4927-92d7-b9ae618633ed',
+  '1f53b97f-d8e8-4a08-8cc7-c2e7eeed0f8c',
+  '8c114940-c8de-4226-92ad-dd060f356f05',
+  'd0b0e1e5-3e99-4869-8581-ae769312f067',
+  '0c4de687-8f63-4e4f-976a-ac3a3cf526e9',
+  'd726fc54-df5c-4d11-be1c-e78cebe23f9f',
+  '0d63c25e-0c7d-466c-9720-c37b73cf4878',
+  '71d8e549-5e97-4390-98e5-3d066a4cde45'
+);
