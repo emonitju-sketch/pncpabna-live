@@ -168,7 +168,7 @@ function ActivitiesPage() {
                   )}
                 </div>
               </article>
-            ))}
+            );})}
           </div>
         )}
       </section>
