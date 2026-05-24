@@ -63,6 +63,7 @@ function GalleryPage() {
         description="পিএনসি-র গুরুত্বপূর্ণ কার্যক্রম থেকে বাছাই করা কিছু ছবি — সংখ্যায় কম, কিন্তু অর্থে গভীর।"
       />
       <section className="container-pnc py-12 md:py-16">
+        <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-6">গ্যালারি</h2>
         <div className="flex flex-wrap gap-2 mb-8">
           {categories.map((c) => (
             <button
@@ -100,15 +101,17 @@ function GalleryPage() {
               <figure
                 key={it.id}
                 onClick={() => setLightbox(it)}
-                className="group relative overflow-hidden rounded-2xl border border-border bg-card shadow-card aspect-[4/3] cursor-pointer"
+                className="group relative overflow-hidden rounded-2xl border border-border bg-card shadow-card cursor-pointer transition-all duration-300 hover:shadow-elegant hover:-translate-y-1"
               >
-                <img
-                  src={publicUrl("gallery", it.image_path)}
-                  alt={it.caption_bn || it.title}
-                  loading="lazy"
-                  className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                />
-                <figcaption className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent p-4 text-white">
+                <div className="aspect-[4/3] w-full bg-gradient-to-br from-primary-soft/40 to-muted flex items-center justify-center overflow-hidden">
+                  <img
+                    src={publicUrl("gallery", it.image_path)}
+                    alt={it.caption_bn || it.title}
+                    loading="lazy"
+                    className="max-h-full max-w-full object-contain transition-transform duration-500 group-hover:scale-[1.03]"
+                  />
+                </div>
+                <figcaption className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent p-4 text-white pointer-events-none">
                   <p className="text-xs opacity-90">{it.category}</p>
                   <p className="font-semibold line-clamp-2">{it.caption_bn || it.title}</p>
                 </figcaption>
