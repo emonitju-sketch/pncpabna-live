@@ -20,7 +20,7 @@ export const Route = createFileRoute("/")({
     links: [
       { rel: "canonical", href: "https://pncpabna.live/" },
       // Preload LCP hero image so it starts downloading before React mounts
-      { rel: "preload", as: "image", href: hero, fetchpriority: "high" },
+      { rel: "preload", as: "image", href: hero, fetchPriority: "high" },
     ],
   }),
 
