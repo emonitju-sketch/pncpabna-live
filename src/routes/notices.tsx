@@ -258,12 +258,12 @@ function NoticesPage() {
               return (
                 <article key={n.id} className="group flex flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
                   {n.cover_image_path && (
-                    <Link to={detailTo} className="block aspect-[3/4] overflow-hidden bg-muted">
+                    <Link to={detailTo} className="relative block aspect-[3/4] overflow-hidden bg-gradient-to-br from-primary-soft/40 to-muted">
                       <img
                         src={publicUrl("gallery", n.cover_image_path)}
                         alt={n.title_bn}
                         loading="lazy"
-                        className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                        className="absolute inset-0 h-full w-full object-contain p-2 transition-transform duration-500 group-hover:scale-[1.03]"
                       />
                     </Link>
                   )}

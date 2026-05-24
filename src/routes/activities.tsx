@@ -120,16 +120,16 @@ function ActivitiesPage() {
               return (
               <article key={a.id} className="card-hover group rounded-2xl border border-border bg-card overflow-hidden shadow-card flex flex-col">
                 {a.cover_image_path ? (
-                  <div className="aspect-[16/10] overflow-hidden bg-muted">
+                  <div className="relative aspect-[4/5] overflow-hidden bg-gradient-to-br from-primary-soft/40 to-muted">
                     <img
                       src={publicUrl("gallery", a.cover_image_path)}
                       alt={a.title_bn}
                       loading="lazy"
-                      className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      className="absolute inset-0 h-full w-full object-contain p-2 transition-transform duration-500 group-hover:scale-[1.03]"
                     />
                   </div>
                 ) : fbVideo ? (
-                  <div className="aspect-[16/10] bg-black">
+                  <div className="aspect-[4/5] bg-black">
                     <iframe
                       src={`https://www.facebook.com/plugins/video.php?href=${encodeURIComponent(fbVideo)}&show_text=false&autoplay=false`}
                       title={a.title_bn}
@@ -140,7 +140,7 @@ function ActivitiesPage() {
                     />
                   </div>
                 ) : (
-                  <div className="aspect-[16/10] bg-gradient-to-br from-primary-soft to-primary/10 flex items-center justify-center">
+                  <div className="aspect-[4/5] bg-gradient-to-br from-primary-soft to-primary/10 flex items-center justify-center">
                     <Sparkles className="h-10 w-10 text-primary/40" />
                   </div>
                 )}
