@@ -10,7 +10,7 @@ export const Route = createFileRoute("/notices/$slug")({
       { title: `নোটিশ — পাবনা নাগরিক কমিটি` },
       { name: "description", content: "পাবনা নাগরিক কমিটির অফিসিয়াল নোটিশ ও বিজ্ঞপ্তির বিস্তারিত।" },
       { property: "og:title", content: "নোটিশ — পিএনসি" },
-      { property: "og:url", content: `https://pncpab.lovable.app/notices/${params.slug}` },
+      { property: "og:url", content: `https://pncpabna.live/notices/${params.slug}` },
     ],
   }),
   component: NoticeDetailPage,

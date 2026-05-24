@@ -13,10 +13,10 @@ export const Route = createFileRoute("/reports")({
       { name: "description", content: "পিএনসি-র বার্ষিক কার্যক্রম প্রতিবেদন ও নিউজলেটার ডাউনলোড করুন।" },
       { property: "og:title", content: "প্রতিবেদন — পিএনসি" },
       { property: "og:description", content: "বার্ষিক কার্যক্রম প্রতিবেদন ও নিউজলেটার।" },
-      { property: "og:url", content: "https://pncpab.lovable.app/reports" },
+      { property: "og:url", content: "https://pncpabna.live/reports" },
       { property: "og:type", content: "website" },
     ],
-    links: [{ rel: "canonical", href: "https://pncpab.lovable.app/reports" }],
+    links: [{ rel: "canonical", href: "https://pncpabna.live/reports" }],
   }),
   component: ReportsPage,
 });

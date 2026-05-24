@@ -15,9 +15,9 @@ export const Route = createFileRoute("/membership")({
       { name: "description", content: "পাবনার উন্নয়ন ও সামাজিক ঐক্যের কাজে আমাদের সাথে যুক্ত হোন। পিএনসি সদস্যপদের জন্য আবেদন করুন।" },
       { property: "og:title", content: "সদস্য হোন — পিএনসি" },
       { property: "og:description", content: "পাবনার নাগরিক উদ্যোগে অংশ নিন।" },
-      { property: "og:url", content: "https://pncpab.lovable.app/membership" },
+      { property: "og:url", content: "https://pncpabna.live/membership" },
     ],
-    links: [{ rel: "canonical", href: "https://pncpab.lovable.app/membership" }],
+    links: [{ rel: "canonical", href: "https://pncpabna.live/membership" }],
   }),
   component: MembershipPage,
 });

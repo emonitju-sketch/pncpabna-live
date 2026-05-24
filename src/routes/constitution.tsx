@@ -20,9 +20,9 @@ export const Route = createFileRoute("/constitution")({
       { name: "description", content: "পাবনা নাগরিক কমিটির পূর্ণাঙ্গ গঠনতন্ত্র - অধ্যায় ভিত্তিক, খোঁজযোগ্য, PDF ডাউনলোড এবং QR অ্যাক্সেস সহ।" },
       { property: "og:title", content: "গঠনতন্ত্র - পাবনা নাগরিক কমিটি (PNC)" },
       { property: "og:description", content: "নাগরিক ঐক্যেই বদলাবে পাবনা - পিএনসি গঠনতন্ত্র v1.0" },
-      { property: "og:url", content: "https://pncpab.lovable.app/constitution" },
+      { property: "og:url", content: "https://pncpabna.live/constitution" },
     ],
-    links: [{ rel: "canonical", href: "https://pncpab.lovable.app/constitution" }],
+    links: [{ rel: "canonical", href: "https://pncpabna.live/constitution" }],
   }),
   component: ConstitutionPage,
 });
