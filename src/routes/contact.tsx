@@ -210,19 +210,10 @@ function OfficeCard({ badge, name, address, mapQuery }: { badge: string; name: s
           <Navigation className="h-4 w-4" /> Get Directions
         </a>
       </div>
-      <div className="aspect-[16/10] w-full bg-muted">
-        <iframe
-          title={`${badge} মানচিত্র`}
-          src={embedSrc}
-          loading="lazy"
-          referrerPolicy="no-referrer-when-downgrade"
-          className="block w-full h-full border-0"
-          allowFullScreen
-        />
-      </div>
     </article>
   );
 }
+
 
 function Field({ name, label, type = "text" }: { name: string; label: string; type?: string }) {
   return (
