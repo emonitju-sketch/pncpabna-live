@@ -266,7 +266,7 @@ function ActivitiesPage() {
       <section className="container-pnc py-16 md:py-20">
         <div className="mb-8">
           <h2 className="text-2xl md:text-3xl font-bold text-foreground">আমাদের কাজের ক্ষেত্র</h2>
-          <p className="text-sm text-muted-foreground mt-1">যে আটটি স্তম্ভের উপর গড়ে উঠেছে পিএনসি-র কার্যক্রম।</p>
+          <p className="text-sm text-muted-foreground mt-1">যে স্তম্ভগুলোর উপর গড়ে উঠেছে পিএনসি-র কার্যক্রম।</p>
         </div>
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
           {pillars.map((it) => (
