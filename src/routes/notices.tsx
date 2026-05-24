@@ -56,7 +56,7 @@ type Notice = {
   cover_image_path: string | null;
 };
 
-const CATEGORIES = ["সব", "ঘোষণা", "নোটিশ", "সভা", "কমিটি"] as const;
+const CATEGORIES = ["সব", "ঘোষণা", "নোটিশ", "সভা"] as const;
 const PAGE_SIZE = 6;
 
 const bnDate = (iso: string) =>
@@ -133,91 +133,116 @@ function NoticesPage() {
       />
 
       <section className="container-pnc py-12">
-        <div className="mb-8 flex flex-col gap-4">
-          <label className="relative block">
-            <span className="sr-only">নোটিশ খুঁজুন</span>
-            <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-            <input
-              type="search"
-              value={query}
-              onChange={(e) => updateSearch({ query: e.target.value, page: 1 })}
-              placeholder="শিরোনাম বা বিষয় দিয়ে খুঁজুন…"
-              className="w-full rounded-xl border border-border bg-card pl-10 pr-4 py-2.5 text-sm shadow-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20"
-            />
-          </label>
+        {/* Filter Panel */}
+        <div className="mb-8 rounded-2xl border border-border bg-card p-5 shadow-sm">
+          <div className="flex flex-col gap-5">
+            {/* Top row: search + count */}
+            <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:justify-between">
+              <label className="relative block flex-1 max-w-xl">
+                <span className="sr-only">নোটিশ খুঁজুন</span>
+                <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                <input
+                  type="search"
+                  value={query}
+                  onChange={(e) => updateSearch({ query: e.target.value, page: 1 })}
+                  placeholder="শিরোনাম বা বিষয় দিয়ে খুঁজুন…"
+                  className="w-full rounded-xl border border-border bg-background pl-10 pr-4 py-2.5 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20"
+                />
+              </label>
+              <div className="shrink-0 text-sm text-muted-foreground">
+                {loading ? "লোড হচ্ছে…" : (
+                  <span className="inline-flex items-center gap-1.5">
+                    <span className="inline-flex h-6 min-w-[1.5rem] items-center justify-center rounded-full bg-primary/10 px-2 text-xs font-semibold text-primary">
+                      {filtered.length.toLocaleString("bn-BD")}
+                    </span>
+                    টি নোটিশ
+                  </span>
+                )}
+              </div>
+            </div>
 
-          <div className="flex flex-wrap gap-2">
-            {CATEGORIES.map((c) => {
-              const active = c === category;
-              return (
+            {/* Category chips */}
+            <div>
+              <p className="mb-2 text-xs font-medium uppercase tracking-wider text-muted-foreground">বিভাগ</p>
+              <div className="flex flex-wrap gap-2">
+                {CATEGORIES.map((c) => {
+                  const active = c === category;
+                  return (
+                    <button
+                      key={c}
+                      type="button"
+                      onClick={() => updateSearch({ category: c, page: 1 })}
+                      className={cn(
+                        "rounded-full border px-4 py-1.5 text-sm font-medium transition",
+                        active
+                          ? "border-primary bg-primary text-primary-foreground shadow-sm"
+                          : "border-border bg-background text-muted-foreground hover:border-primary/40 hover:text-foreground"
+                      )}
+                    >
+                      {c}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Date range + sort + reset */}
+            <div className="flex flex-wrap items-end gap-3">
+              <div className="flex flex-col gap-1">
+                <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">শুরুর তারিখ</p>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button variant="outline" size="sm" className={cn("h-9 gap-1.5 rounded-lg text-xs font-normal", !dateFrom && "text-muted-foreground")}>
+                      <CalendarIcon className="h-3.5 w-3.5" />
+                      {dateFromObj && isValid(dateFromObj) ? format(dateFromObj, "dd MMM yyyy") : "সিলেক্ট করুন"}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar mode="single" selected={dateFromObj} onSelect={(d) => updateSearch({ dateFrom: d ? format(d, "yyyy-MM-dd") : undefined, page: 1 })} initialFocus className="p-3 pointer-events-auto" />
+                  </PopoverContent>
+                </Popover>
+              </div>
+
+              <div className="flex flex-col gap-1">
+                <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">শেষ তারিখ</p>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button variant="outline" size="sm" className={cn("h-9 gap-1.5 rounded-lg text-xs font-normal", !dateTo && "text-muted-foreground")}>
+                      <CalendarIcon className="h-3.5 w-3.5" />
+                      {dateToObj && isValid(dateToObj) ? format(dateToObj, "dd MMM yyyy") : "সিলেক্ট করুন"}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar mode="single" selected={dateToObj} onSelect={(d) => updateSearch({ dateTo: d ? format(d, "yyyy-MM-dd") : undefined, page: 1 })} initialFocus className="p-3 pointer-events-auto" />
+                  </PopoverContent>
+                </Popover>
+              </div>
+
+              <div className="flex flex-col gap-1">
+                <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">সাজানো</p>
                 <button
-                  key={c}
                   type="button"
-                  onClick={() => updateSearch({ category: c, page: 1 })}
-                  className={cn(
-                    "rounded-full border px-3.5 py-1.5 text-xs font-medium transition",
-                    active
-                      ? "border-primary bg-primary text-primary-foreground shadow-sm"
-                      : "border-border bg-card text-muted-foreground hover:border-primary/40 hover:text-foreground"
-                  )}
+                  onClick={() => updateSearch({ sort: sort === "newest" ? "oldest" : "newest" })}
+                  className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-border bg-background px-3 text-xs font-medium text-muted-foreground transition hover:border-primary/40 hover:text-foreground"
                 >
-                  {c}
+                  {sort === "newest" ? (
+                    <><ArrowDown className="h-3.5 w-3.5" />নতুন → পুরাতন</>
+                  ) : (
+                    <><ArrowUp className="h-3.5 w-3.5" />পুরাতন → নতুন</>
+                  )}
                 </button>
-              );
-            })}
-          </div>
+              </div>
 
-          <div className="flex flex-wrap items-center gap-3">
-            <button
-              type="button"
-              onClick={() => updateSearch({ sort: sort === "newest" ? "oldest" : "newest" })}
-              className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-card px-3 py-2 text-xs font-medium text-muted-foreground transition hover:border-primary/40 hover:text-foreground"
-            >
-              {sort === "newest" ? (
-                <><ArrowDown className="h-3.5 w-3.5" />নতুন → পুরাতন</>
-              ) : (
-                <><ArrowUp className="h-3.5 w-3.5" />পুরাতন → নতুন</>
+              {hasActiveFilters && (
+                <button
+                  type="button"
+                  onClick={() => updateSearch({ query: "", category: "সব", sort: "newest", dateFrom: undefined, dateTo: undefined, page: 1 })}
+                  className="mb-0.5 text-xs text-destructive hover:underline"
+                >
+                  ফিল্টার রিসেট
+                </button>
               )}
-            </button>
-
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button variant="outline" size="sm" className={cn("h-9 gap-1.5 rounded-lg text-xs font-normal", !dateFrom && "text-muted-foreground")}>
-                  <CalendarIcon className="h-3.5 w-3.5" />
-                  {dateFromObj && isValid(dateFromObj) ? format(dateFromObj, "dd MMM yyyy") : "শুরুর তারিখ"}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-0" align="start">
-                <Calendar mode="single" selected={dateFromObj} onSelect={(d) => updateSearch({ dateFrom: d ? format(d, "yyyy-MM-dd") : undefined, page: 1 })} initialFocus className="p-3 pointer-events-auto" />
-              </PopoverContent>
-            </Popover>
-
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button variant="outline" size="sm" className={cn("h-9 gap-1.5 rounded-lg text-xs font-normal", !dateTo && "text-muted-foreground")}>
-                  <CalendarIcon className="h-3.5 w-3.5" />
-                  {dateToObj && isValid(dateToObj) ? format(dateToObj, "dd MMM yyyy") : "শেষ তারিখ"}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-0" align="start">
-                <Calendar mode="single" selected={dateToObj} onSelect={(d) => updateSearch({ dateTo: d ? format(d, "yyyy-MM-dd") : undefined, page: 1 })} initialFocus className="p-3 pointer-events-auto" />
-              </PopoverContent>
-            </Popover>
-
-            {hasActiveFilters && (
-              <button
-                type="button"
-                onClick={() => updateSearch({ query: "", category: "সব", sort: "newest", dateFrom: undefined, dateTo: undefined, page: 1 })}
-                className="text-xs text-primary hover:underline"
-              >
-                ফিল্টার রিসেট
-              </button>
-            )}
-          </div>
-
-          <div className="text-xs text-muted-foreground">
-            {loading ? "লোড হচ্ছে…" : `${filtered.length.toLocaleString("bn-BD")} টি নোটিশ`}
-            {totalPages > 1 && ` · পৃষ্ঠা ${safePage.toLocaleString("bn-BD")} / ${totalPages.toLocaleString("bn-BD")}`}
+            </div>
           </div>
         </div>
 
