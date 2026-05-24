@@ -1,0 +1,1 @@
+UPDATE public.activities SET cover_image_path='activities/24-dofa-cover.png' WHERE id='3f1621ae-add4-438d-8039-7f47e5eb2b42';
