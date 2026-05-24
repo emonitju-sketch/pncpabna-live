@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Users, Megaphone, HeartHandshake, TrendingUp, Facebook, ArrowRight, Target, Eye, Sparkles } from "lucide-react";
 import hero from "@/assets/hero-pnc.jpg";
-import { NoticeStrip } from "@/components/site/NoticeStrip";
+
 import { AnimatedCounter } from "@/components/site/AnimatedCounter";
 import { Milestones } from "@/components/site/Milestones";
 
@@ -91,7 +91,7 @@ function HomePage() {
         <div className="absolute bottom-0 left-0 right-0 gold-strip" />
       </section>
 
-      <NoticeStrip />
+
 
 
       {/* ABOUT / FEATURES */}
