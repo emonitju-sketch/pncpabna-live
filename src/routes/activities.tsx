@@ -115,7 +115,9 @@ function ActivitiesPage() {
           </div>
         ) : (
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {filtered.map((a) => (
+            {filtered.map((a) => {
+              const fbVideo = !a.cover_image_path && a.external_url && /facebook\.com/.test(a.external_url) ? a.external_url : null;
+              return (
               <article key={a.id} className="card-hover group rounded-2xl border border-border bg-card overflow-hidden shadow-card flex flex-col">
                 {a.cover_image_path ? (
                   <div className="aspect-[16/10] overflow-hidden bg-muted">
@@ -124,6 +126,17 @@ function ActivitiesPage() {
                       alt={a.title_bn}
                       loading="lazy"
                       className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
+                  </div>
+                ) : fbVideo ? (
+                  <div className="aspect-[16/10] bg-black">
+                    <iframe
+                      src={`https://www.facebook.com/plugins/video.php?href=${encodeURIComponent(fbVideo)}&show_text=false&autoplay=false`}
+                      title={a.title_bn}
+                      loading="lazy"
+                      allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
+                      allowFullScreen
+                      className="h-full w-full border-0"
                     />
                   </div>
                 ) : (
