@@ -405,36 +405,45 @@ export type Database = {
       notices: {
         Row: {
           body_bn: string | null
+          category: string
+          cover_image_path: string | null
           created_at: string
           created_by: string | null
           expires_at: string | null
           id: string
           is_active: boolean
           priority: number
+          slug: string | null
           starts_at: string
           title_bn: string
           updated_at: string
         }
         Insert: {
           body_bn?: string | null
+          category?: string
+          cover_image_path?: string | null
           created_at?: string
           created_by?: string | null
           expires_at?: string | null
           id?: string
           is_active?: boolean
           priority?: number
+          slug?: string | null
           starts_at?: string
           title_bn: string
           updated_at?: string
         }
         Update: {
           body_bn?: string | null
+          category?: string
+          cover_image_path?: string | null
           created_at?: string
           created_by?: string | null
           expires_at?: string | null
           id?: string
           is_active?: boolean
           priority?: number
+          slug?: string | null
           starts_at?: string
           title_bn?: string
           updated_at?: string
