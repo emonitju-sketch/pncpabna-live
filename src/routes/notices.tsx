@@ -56,7 +56,7 @@ type Notice = {
   cover_image_path: string | null;
 };
 
-const CATEGORIES = ["সব", "ঘোষণা", "নোটিশ", "সভা", "কমিটি"] as const;
+const CATEGORIES = ["সব", "ঘোষণা", "নোটিশ", "সভা"] as const;
 const PAGE_SIZE = 6;
 
 const bnDate = (iso: string) =>
