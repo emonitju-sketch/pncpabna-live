@@ -91,7 +91,7 @@ function HomePage() {
         <div className="absolute bottom-0 left-0 right-0 gold-strip" />
       </section>
 
-      <NoticeStrip />
+
 
 
       {/* ABOUT / FEATURES */}
