@@ -450,45 +450,6 @@ export type Database = {
         }
         Relationships: []
       }
-      program_registrations: {
-        Row: {
-          comment: string | null
-          created_at: string
-          email: string
-          id: string
-          ip_address: string | null
-          name: string
-          phone: string
-          source: string
-          status: string
-          user_agent: string | null
-        }
-        Insert: {
-          comment?: string | null
-          created_at?: string
-          email: string
-          id?: string
-          ip_address?: string | null
-          name: string
-          phone: string
-          source?: string
-          status?: string
-          user_agent?: string | null
-        }
-        Update: {
-          comment?: string | null
-          created_at?: string
-          email?: string
-          id?: string
-          ip_address?: string | null
-          name?: string
-          phone?: string
-          source?: string
-          status?: string
-          user_agent?: string | null
-        }
-        Relationships: []
-      }
       reports: {
         Row: {
           created_at: string

@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 
 const BASE_URL = "https://pncpabna.live";
-const ROUTES = ["/", "/about", "/council", "/activities", "/notices", "/events", "/gallery", "/reports", "/constitution", "/membership", "/contact", "/nagorik-songlap-2026"];
+const ROUTES = ["/", "/about", "/council", "/activities", "/notices", "/events", "/gallery", "/reports", "/constitution", "/membership", "/contact"];
 
 export const Route = createFileRoute("/sitemap.xml")({
   server: {

@@ -13,7 +13,6 @@ import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as RobotsDottxtRouteImport } from './routes/robots[.]txt'
 import { Route as ReportsRouteImport } from './routes/reports'
 import { Route as NoticesRouteImport } from './routes/notices'
-import { Route as NagorikSonglap2026RouteImport } from './routes/nagorik-songlap-2026'
 import { Route as MembershipRouteImport } from './routes/membership'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as GalleryRouteImport } from './routes/gallery'
@@ -26,7 +25,6 @@ import { Route as ActivitiesRouteImport } from './routes/activities'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as NoticesSlugRouteImport } from './routes/notices.$slug'
-import { Route as ApiPublicNagorikSonglap2026RouteImport } from './routes/api/public/nagorik-songlap-2026'
 
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
@@ -46,11 +44,6 @@ const ReportsRoute = ReportsRouteImport.update({
 const NoticesRoute = NoticesRouteImport.update({
   id: '/notices',
   path: '/notices',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const NagorikSonglap2026Route = NagorikSonglap2026RouteImport.update({
-  id: '/nagorik-songlap-2026',
-  path: '/nagorik-songlap-2026',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MembershipRoute = MembershipRouteImport.update({
@@ -113,12 +106,6 @@ const NoticesSlugRoute = NoticesSlugRouteImport.update({
   path: '/$slug',
   getParentRoute: () => NoticesRoute,
 } as any)
-const ApiPublicNagorikSonglap2026Route =
-  ApiPublicNagorikSonglap2026RouteImport.update({
-    id: '/api/public/nagorik-songlap-2026',
-    path: '/api/public/nagorik-songlap-2026',
-    getParentRoute: () => rootRouteImport,
-  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -132,13 +119,11 @@ export interface FileRoutesByFullPath {
   '/gallery': typeof GalleryRoute
   '/login': typeof LoginRoute
   '/membership': typeof MembershipRoute
-  '/nagorik-songlap-2026': typeof NagorikSonglap2026Route
   '/notices': typeof NoticesRouteWithChildren
   '/reports': typeof ReportsRoute
   '/robots.txt': typeof RobotsDottxtRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/notices/$slug': typeof NoticesSlugRoute
-  '/api/public/nagorik-songlap-2026': typeof ApiPublicNagorikSonglap2026Route
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -152,13 +137,11 @@ export interface FileRoutesByTo {
   '/gallery': typeof GalleryRoute
   '/login': typeof LoginRoute
   '/membership': typeof MembershipRoute
-  '/nagorik-songlap-2026': typeof NagorikSonglap2026Route
   '/notices': typeof NoticesRouteWithChildren
   '/reports': typeof ReportsRoute
   '/robots.txt': typeof RobotsDottxtRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/notices/$slug': typeof NoticesSlugRoute
-  '/api/public/nagorik-songlap-2026': typeof ApiPublicNagorikSonglap2026Route
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -173,13 +156,11 @@ export interface FileRoutesById {
   '/gallery': typeof GalleryRoute
   '/login': typeof LoginRoute
   '/membership': typeof MembershipRoute
-  '/nagorik-songlap-2026': typeof NagorikSonglap2026Route
   '/notices': typeof NoticesRouteWithChildren
   '/reports': typeof ReportsRoute
   '/robots.txt': typeof RobotsDottxtRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/notices/$slug': typeof NoticesSlugRoute
-  '/api/public/nagorik-songlap-2026': typeof ApiPublicNagorikSonglap2026Route
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -195,13 +176,11 @@ export interface FileRouteTypes {
     | '/gallery'
     | '/login'
     | '/membership'
-    | '/nagorik-songlap-2026'
     | '/notices'
     | '/reports'
     | '/robots.txt'
     | '/sitemap.xml'
     | '/notices/$slug'
-    | '/api/public/nagorik-songlap-2026'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -215,13 +194,11 @@ export interface FileRouteTypes {
     | '/gallery'
     | '/login'
     | '/membership'
-    | '/nagorik-songlap-2026'
     | '/notices'
     | '/reports'
     | '/robots.txt'
     | '/sitemap.xml'
     | '/notices/$slug'
-    | '/api/public/nagorik-songlap-2026'
   id:
     | '__root__'
     | '/'
@@ -235,13 +212,11 @@ export interface FileRouteTypes {
     | '/gallery'
     | '/login'
     | '/membership'
-    | '/nagorik-songlap-2026'
     | '/notices'
     | '/reports'
     | '/robots.txt'
     | '/sitemap.xml'
     | '/notices/$slug'
-    | '/api/public/nagorik-songlap-2026'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -256,12 +231,10 @@ export interface RootRouteChildren {
   GalleryRoute: typeof GalleryRoute
   LoginRoute: typeof LoginRoute
   MembershipRoute: typeof MembershipRoute
-  NagorikSonglap2026Route: typeof NagorikSonglap2026Route
   NoticesRoute: typeof NoticesRouteWithChildren
   ReportsRoute: typeof ReportsRoute
   RobotsDottxtRoute: typeof RobotsDottxtRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
-  ApiPublicNagorikSonglap2026Route: typeof ApiPublicNagorikSonglap2026Route
 }
 
 declare module '@tanstack/react-router' {
@@ -292,13 +265,6 @@ declare module '@tanstack/react-router' {
       path: '/notices'
       fullPath: '/notices'
       preLoaderRoute: typeof NoticesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/nagorik-songlap-2026': {
-      id: '/nagorik-songlap-2026'
-      path: '/nagorik-songlap-2026'
-      fullPath: '/nagorik-songlap-2026'
-      preLoaderRoute: typeof NagorikSonglap2026RouteImport
       parentRoute: typeof rootRouteImport
     }
     '/membership': {
@@ -385,13 +351,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof NoticesSlugRouteImport
       parentRoute: typeof NoticesRoute
     }
-    '/api/public/nagorik-songlap-2026': {
-      id: '/api/public/nagorik-songlap-2026'
-      path: '/api/public/nagorik-songlap-2026'
-      fullPath: '/api/public/nagorik-songlap-2026'
-      preLoaderRoute: typeof ApiPublicNagorikSonglap2026RouteImport
-      parentRoute: typeof rootRouteImport
-    }
   }
 }
 
@@ -418,12 +377,10 @@ const rootRouteChildren: RootRouteChildren = {
   GalleryRoute: GalleryRoute,
   LoginRoute: LoginRoute,
   MembershipRoute: MembershipRoute,
-  NagorikSonglap2026Route: NagorikSonglap2026Route,
   NoticesRoute: NoticesRouteWithChildren,
   ReportsRoute: ReportsRoute,
   RobotsDottxtRoute: RobotsDottxtRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
-  ApiPublicNagorikSonglap2026Route: ApiPublicNagorikSonglap2026Route,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

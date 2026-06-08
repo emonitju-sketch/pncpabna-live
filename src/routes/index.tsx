@@ -4,7 +4,6 @@ import hero from "@/assets/hero-pnc.jpg";
 
 import { AnimatedCounter } from "@/components/site/AnimatedCounter";
 import { Milestones } from "@/components/site/Milestones";
-import { NagorikSonglapPopup } from "@/components/site/NagorikSonglapPopup";
 
 
 export const Route = createFileRoute("/")({
@@ -38,7 +37,6 @@ const features = [
 function HomePage() {
   return (
     <>
-      <NagorikSonglapPopup />
       {/* HERO */}
       <section className="relative overflow-hidden">
         <img
