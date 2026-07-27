@@ -16,6 +16,7 @@ const nav = [
   { to: "/constitution", label: "গঠনতন্ত্র" },
   { to: "/membership", label: "সদস্য হোন" },
   { to: "/contact", label: "যোগাযোগ" },
+  { to: "/mcp-guide", label: "MCP গাইড" },
 ] as const;
 
 export function Header() {
