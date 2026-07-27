@@ -190,6 +190,179 @@ function AuditAdmin() {
   );
 }
 
+/* ============ MCP MONITOR ============ */
+type MCPLog = {
+  id: string;
+  created_at: string;
+  tool_name: string;
+  user_id: string | null;
+  user_email: string | null;
+  client_id: string | null;
+  success: boolean;
+  error_message: string | null;
+  duration_ms: number | null;
+  input_summary: Record<string, unknown> | null;
+};
+
+function MCPMonitor() {
+  const [logs, setLogs] = useState<MCPLog[]>([]);
+  const [statusFilter, setStatusFilter] = useState<"all" | "success" | "error">("all");
+  const [toolFilter, setToolFilter] = useState<string>("all");
+  const [loading, setLoading] = useState(true);
+  const [expanded, setExpanded] = useState<string | null>(null);
+
+  const load = async () => {
+    setLoading(true);
+    let q = (supabase as any)
+      .from("mcp_audit_logs")
+      .select("*")
+      .order("created_at", { ascending: false })
+      .limit(300);
+    if (statusFilter === "success") q = q.eq("success", true);
+    if (statusFilter === "error") q = q.eq("success", false);
+    if (toolFilter !== "all") q = q.eq("tool_name", toolFilter);
+    const { data, error } = await q;
+    if (error) toast.error("MCP লগ লোড করা যায়নি");
+    setLogs((data as MCPLog[]) || []);
+    setLoading(false);
+  };
+
+  useEffect(() => { load(); /* eslint-disable-next-line react-hooks/exhaustive-deps */ }, [statusFilter, toolFilter]);
+
+  const toolNames = Array.from(new Set(logs.map((l) => l.tool_name))).sort();
+
+  const total = logs.length;
+  const errors = logs.filter((l) => !l.success).length;
+  const avgDuration = total
+    ? Math.round(logs.reduce((s, l) => s + (l.duration_ms || 0), 0) / total)
+    : 0;
+  const uniqueUsers = new Set(logs.map((l) => l.user_id).filter(Boolean)).size;
+
+  return (
+    <div className="space-y-4">
+      {/* Stats */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        <div className="rounded-lg border border-border bg-card p-4">
+          <p className="text-xs text-muted-foreground">মোট কল</p>
+          <p className="text-2xl font-bold">{total}</p>
+        </div>
+        <div className="rounded-lg border border-border bg-card p-4">
+          <p className="text-xs text-muted-foreground">ত্রুটি</p>
+          <p className="text-2xl font-bold text-red-600">{errors}</p>
+        </div>
+        <div className="rounded-lg border border-border bg-card p-4">
+          <p className="text-xs text-muted-foreground">গড় সময়</p>
+          <p className="text-2xl font-bold">{avgDuration}ms</p>
+        </div>
+        <div className="rounded-lg border border-border bg-card p-4">
+          <p className="text-xs text-muted-foreground">ব্যবহারকারী</p>
+          <p className="text-2xl font-bold">{uniqueUsers}</p>
+        </div>
+      </div>
+
+      {/* Filters */}
+      <div className="flex flex-wrap items-center gap-2">
+        {(["all", "success", "error"] as const).map((f) => (
+          <button
+            key={f}
+            onClick={() => setStatusFilter(f)}
+            className={`rounded-md px-3 py-1.5 text-sm ${statusFilter === f ? "bg-primary text-primary-foreground" : "bg-muted hover:bg-muted/80"}`}
+          >
+            {f === "all" ? "সব" : f === "success" ? "সফল" : "ব্যর্থ"}
+          </button>
+        ))}
+        <select
+          value={toolFilter}
+          onChange={(e) => setToolFilter(e.target.value)}
+          className="rounded-md border border-border bg-background px-3 py-1.5 text-sm"
+        >
+          <option value="all">সব টুল</option>
+          {toolNames.map((t) => (
+            <option key={t} value={t}>{t}</option>
+          ))}
+        </select>
+        <button
+          onClick={load}
+          className="rounded-md bg-muted hover:bg-muted/80 px-3 py-1.5 text-sm"
+        >
+          রিফ্রেশ
+        </button>
+      </div>
+
+      {loading ? (
+        <p className="text-sm text-muted-foreground">লোড হচ্ছে...</p>
+      ) : logs.length === 0 ? (
+        <p className="text-sm text-muted-foreground">এখনো কোনো MCP কল রেকর্ড নেই।</p>
+      ) : (
+        <div className="overflow-x-auto rounded-lg border border-border">
+          <table className="w-full text-sm">
+            <thead className="bg-muted/50">
+              <tr className="text-left">
+                <th className="px-3 py-2 font-medium">সময়</th>
+                <th className="px-3 py-2 font-medium">টুল</th>
+                <th className="px-3 py-2 font-medium">স্ট্যাটাস</th>
+                <th className="px-3 py-2 font-medium">সময়কাল</th>
+                <th className="px-3 py-2 font-medium">ব্যবহারকারী</th>
+                <th className="px-3 py-2 font-medium">বিস্তারিত</th>
+              </tr>
+            </thead>
+            <tbody>
+              {logs.map((l) => (
+                <>
+                  <tr key={l.id} className="border-t border-border">
+                    <td className="px-3 py-2 whitespace-nowrap text-muted-foreground">
+                      {new Date(l.created_at).toLocaleString("bn-BD")}
+                    </td>
+                    <td className="px-3 py-2 font-mono text-xs">{l.tool_name}</td>
+                    <td className="px-3 py-2">
+                      {l.success ? (
+                        <span className="inline-block rounded px-2 py-0.5 text-xs font-medium bg-green-500/15 text-green-700 dark:text-green-400">সফল</span>
+                      ) : (
+                        <span className="inline-block rounded px-2 py-0.5 text-xs font-medium bg-red-500/15 text-red-700 dark:text-red-400">ব্যর্থ</span>
+                      )}
+                    </td>
+                    <td className="px-3 py-2 text-muted-foreground">{l.duration_ms ?? "—"}ms</td>
+                    <td className="px-3 py-2 text-muted-foreground max-w-[180px] truncate">{l.user_email || l.user_id?.slice(0, 8) || "—"}</td>
+                    <td className="px-3 py-2">
+                      <button
+                        onClick={() => setExpanded(expanded === l.id ? null : l.id)}
+                        className="text-primary hover:underline text-xs"
+                      >
+                        {expanded === l.id ? "লুকান" : "দেখুন"}
+                      </button>
+                    </td>
+                  </tr>
+                  {expanded === l.id && (
+                    <tr className="border-t border-border bg-muted/30">
+                      <td colSpan={6} className="px-3 py-3">
+                        <div className="space-y-2 text-xs">
+                          {l.error_message && (
+                            <div><span className="font-medium text-red-600">Error:</span> {l.error_message}</div>
+                          )}
+                          {l.client_id && (
+                            <div><span className="font-medium">Client:</span> <code>{l.client_id}</code></div>
+                          )}
+                          <div>
+                            <span className="font-medium">Input:</span>
+                            <pre className="mt-1 rounded bg-background border border-border p-2 overflow-x-auto">
+{JSON.stringify(l.input_summary, null, 2)}
+                            </pre>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  )}
+                </>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </div>
+  );
+}
+
+
 /* ============ EVENTS ============ */
 const eventSchema = z.object({
   title: z.string().trim().min(2).max(200),
