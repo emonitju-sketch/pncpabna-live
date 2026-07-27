@@ -2,13 +2,15 @@ import { createClient } from "@supabase/supabase-js";
 import type { ToolContext } from "@lovable.dev/mcp-js";
 import type { Database } from "@/integrations/supabase/types";
 
-// Use the SDK's own return type so wrapped handlers stay assignable.
-type ToolResult = Awaited<ReturnType<Parameters<typeof import("@lovable.dev/mcp-js").defineTool>[0]["handler"]>>;
+// Structural view of a tool result — enough to inspect isError/content
+// without depending on the SDK's exact ContentBlock union.
+type ToolResultLike = {
+  content?: ReadonlyArray<{ type?: string; text?: string } & Record<string, unknown>>;
+  isError?: boolean;
+  structuredContent?: unknown;
+};
 
-type ToolHandler<I> = (
-  input: I,
-  ctx: ToolContext,
-) => Promise<ToolResult> | ToolResult;
+type ToolHandler<I, R> = (input: I, ctx: ToolContext) => Promise<R> | R;
 
 function adminClient() {
   const url = process.env.SUPABASE_URL;
