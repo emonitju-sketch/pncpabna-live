@@ -61,13 +61,13 @@ async function writeLog(row: Record<string, unknown>) {
  * success/error, and a redacted summary of the input. Logging failures are
  * swallowed — auditing must never break a tool call.
  */
-export function withAudit<I, R extends ToolResultLike>(
+export function withAudit<H extends (input: any, ctx: ToolContext) => any>(
   toolName: string,
-  handler: ToolHandler<I, R>,
-): ToolHandler<I, R> {
-  return async (input: I, ctx: ToolContext) => {
+  handler: H,
+): H {
+  const wrapped = async (input: Parameters<H>[0], ctx: ToolContext) => {
     const startedAt = Date.now();
-    let result: R;
+    let result: ToolResultLike;
     let threw: unknown = null;
     try {
       result = await handler(input, ctx);
