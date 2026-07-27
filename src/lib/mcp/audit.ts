@@ -2,11 +2,8 @@ import { createClient } from "@supabase/supabase-js";
 import type { ToolContext } from "@lovable.dev/mcp-js";
 import type { Database } from "@/integrations/supabase/types";
 
-type ToolResult = {
-  content: Array<{ type: string; text?: string } | Record<string, unknown>>;
-  isError?: boolean;
-  structuredContent?: unknown;
-};
+// Use the SDK's own return type so wrapped handlers stay assignable.
+type ToolResult = Awaited<ReturnType<Parameters<typeof import("@lovable.dev/mcp-js").defineTool>[0]["handler"]>>;
 
 type ToolHandler<I> = (
   input: I,
