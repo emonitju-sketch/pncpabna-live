@@ -80,10 +80,10 @@ export function withAudit<I, R>(
     }
     const asLike = result as unknown as ToolResultLike;
     const durationMs = Date.now() - startedAt;
-    const success = !result.isError && !threw;
+    const success = !asLike.isError && !threw;
     const errorMessage = threw
       ? (threw instanceof Error ? threw.message : String(threw)).slice(0, 500)
-      : extractError(result);
+      : extractError(asLike);
 
     // Structured console line — surfaced in Worker logs for real-time monitoring.
     console.log(
