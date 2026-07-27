@@ -76,8 +76,9 @@ export function withAudit<I, R>(
       result = {
         content: [{ type: "text", text: err instanceof Error ? err.message : "Internal error" }],
         isError: true,
-      };
+      } as unknown as R;
     }
+    const asLike = result as unknown as ToolResultLike;
     const durationMs = Date.now() - startedAt;
     const success = !result.isError && !threw;
     const errorMessage = threw
