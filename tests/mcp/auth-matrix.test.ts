@@ -1,4 +1,5 @@
-import { describe, expect, it } from "vitest";
+import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
+import { REGISTRATION_DEADLINE } from "@/lib/nagorik-songlap";
 import whoami from "@/lib/mcp/tools/whoami";
 import listActivities from "@/lib/mcp/tools/list-activities";
 import listNotices from "@/lib/mcp/tools/list-notices";
