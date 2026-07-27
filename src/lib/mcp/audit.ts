@@ -38,9 +38,9 @@ function summarizeInput(input: unknown): Record<string, unknown> | null {
   return out;
 }
 
-function extractError(result: ToolResult): string | null {
+function extractError(result: ToolResultLike): string | null {
   if (!result?.isError) return null;
-  const first = result.content?.[0] as { text?: string } | undefined;
+  const first = result.content?.[0];
   return first?.text?.slice(0, 500) ?? "unknown error";
 }
 
