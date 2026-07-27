@@ -20,7 +20,204 @@ import {
   MessageSquare,
   Play,
   Loader2,
+  Code2,
 } from "lucide-react";
+
+/* ============ Complete Tool Reference data ============ */
+type ParamRow = {
+  name: string;
+  type: string;
+  required: boolean;
+  desc: string;
+};
+
+type ToolReference = {
+  name: string;
+  title: string;
+  purpose: string;
+  auth: string;
+  returns: string;
+  params: ParamRow[];
+  prompts: string[];
+  jsonExample: object;
+  curlExample?: string;
+};
+
+const TOOL_REFERENCE: ToolReference[] = [
+  {
+    name: "whoami",
+    title: "আমি কে?",
+    purpose:
+      "বর্তমান MCP সংযোগে কোন পিএনসি user sign-in করা আছে তা যাচাই করে — সংযোগ ও authentication debug করার প্রথম টুল।",
+    auth: "Sign-in আবশ্যক",
+    returns: "user_id (UUID), email",
+    params: [],
+    prompts: ["আমি কে হিসেবে sign in করা আছি?", "MCP সংযোগ ঠিক আছে কিনা যাচাই কর"],
+    jsonExample: { name: "whoami", arguments: {} },
+  },
+  {
+    name: "list_activities",
+    title: "কার্যক্রম তালিকা",
+    purpose:
+      "পিএনসি-র প্রকাশিত সব কার্যক্রম (activities) সর্বশেষ তারিখ অনুযায়ী তালিকা আকারে আনে — featured কার্যক্রম উপরে থাকে।",
+    auth: "Sign-in আবশ্যক",
+    returns: "id, title_bn, description_bn, category, activity_date, location, is_featured, external_url, cover_image_path",
+    params: [
+      {
+        name: "category",
+        type: "string (optional)",
+        required: false,
+        desc: "ক্যাটেগরি ফিল্টার — যেমন: জনস্বার্থ, নাগরিক মতামত, নাগরিক সমর্থন।",
+      },
+      {
+        name: "limit",
+        type: "number 1–50 (optional)",
+        required: false,
+        desc: "সর্বাধিক কতটি row ফেরত দিবে। ডিফল্ট: 20।",
+      },
+    ],
+    prompts: [
+      "পিএনসি-র সাম্প্রতিক ১০টি কার্যক্রম দেখাও",
+      "জনস্বার্থ ক্যাটেগরির কার্যক্রমগুলো তালিকা কর",
+      "সাম্প্রতিক featured কার্যক্রম কী কী?",
+    ],
+    jsonExample: {
+      name: "list_activities",
+      arguments: { category: "জনস্বার্থ", limit: 10 },
+    },
+  },
+  {
+    name: "list_notices",
+    title: "নোটিশ তালিকা",
+    purpose:
+      "নোটিশ বোর্ডের সক্রিয় ঘোষণা/নোটিশ — priority ও starts_at অনুযায়ী সাজানো।",
+    auth: "Sign-in আবশ্যক",
+    returns: "id, slug, title_bn, category, priority, starts_at, expires_at, cover_image_path",
+    params: [
+      {
+        name: "category",
+        type: "string (optional)",
+        required: false,
+        desc: "ক্যাটেগরি — ঘোষণা, নোটিশ, সভা ইত্যাদি।",
+      },
+      {
+        name: "search",
+        type: "string (optional)",
+        required: false,
+        desc: "শিরোনামে টেক্সট খোঁজে (case-insensitive)।",
+      },
+      {
+        name: "limit",
+        type: "number 1–50 (optional)",
+        required: false,
+        desc: "সর্বাধিক row। ডিফল্ট: 20।",
+      },
+    ],
+    prompts: [
+      "সর্বশেষ ৫টি নোটিশ দেখাও",
+      "‘সভা’ ক্যাটেগরির সব নোটিশ তালিকা কর",
+      "‘সংলাপ’ শব্দ আছে এমন নোটিশ খোঁজো",
+    ],
+    jsonExample: {
+      name: "list_notices",
+      arguments: { category: "সভা", limit: 5 },
+    },
+  },
+  {
+    name: "get_notice",
+    title: "নোটিশ বিস্তারিত",
+    purpose:
+      "একটি নির্দিষ্ট নোটিশের সম্পূর্ণ body সহ বিবরণ ফেরত দেয় — slug দিয়ে খোঁজা হয়। list_notices থেকে slug পাওয়া যায়।",
+    auth: "Sign-in আবশ্যক",
+    returns: "id, slug, title_bn, body_bn (full), category, priority, starts_at, expires_at, cover_image_path, is_active",
+    params: [
+      {
+        name: "slug",
+        type: "string (required)",
+        required: true,
+        desc: "নোটিশের unique slug — যেমন: nagorik-songlap-2026।",
+      },
+    ],
+    prompts: [
+      "‘nagorik-songlap-2026’ নোটিশটি সম্পূর্ণ পড়ে শোনাও",
+      "সর্বশেষ নোটিশটির বিস্তারিত বিবরণ দাও",
+    ],
+    jsonExample: {
+      name: "get_notice",
+      arguments: { slug: "nagorik-songlap-2026" },
+    },
+  },
+  {
+    name: "list_events",
+    title: "ইভেন্ট তালিকা",
+    purpose:
+      "আসন্ন ও অতীত ইভেন্ট — event_date অনুযায়ী ascending। চাইলে শুধু open registration-এর ইভেন্ট আনা যায়।",
+    auth: "Sign-in আবশ্যক",
+    returns: "id, title, description, event_date, location, registration_open, cover_image_path",
+    params: [
+      {
+        name: "only_open",
+        type: "boolean (optional)",
+        required: false,
+        desc: "true দিলে শুধু registration_open = true ইভেন্ট।",
+      },
+      {
+        name: "limit",
+        type: "number 1–50 (optional)",
+        required: false,
+        desc: "সর্বাধিক row। ডিফল্ট: 20।",
+      },
+    ],
+    prompts: [
+      "সামনের ইভেন্টগুলো কী কী?",
+      "যেসব ইভেন্টে registration খোলা আছে সেগুলো দেখাও",
+    ],
+    jsonExample: {
+      name: "list_events",
+      arguments: { only_open: true, limit: 10 },
+    },
+  },
+  {
+    name: "register_nagorik_songlap_2026",
+    title: "নাগরিক সংলাপ ২০২৬ রেজিস্ট্রেশন",
+    purpose:
+      "Sign-in করা user-কে নাগরিক সংলাপ ২০২৬ কর্মসূচিতে নিবন্ধন করে। Deadline ২৬ জুন ২০২৬ — server-side enforce করা।",
+    auth: "Sign-in আবশ্যক · Deadline: ২৬ জুন ২০২৬",
+    returns: "success (bool), message (bn)",
+    params: [
+      {
+        name: "name",
+        type: "string (required, 2–100)",
+        required: true,
+        desc: "নিবন্ধনকারীর পূর্ণ নাম।",
+      },
+      {
+        name: "phone",
+        type: "string (required, 10–20)",
+        required: true,
+        desc: "মোবাইল নম্বর — digits, +, -, space, () allowed।",
+      },
+      {
+        name: "comment",
+        type: "string (optional, ≤1000)",
+        required: false,
+        desc: "ঐচ্ছিক মন্তব্য বা প্রশ্ন।",
+      },
+    ],
+    prompts: [
+      "আমাকে নাগরিক সংলাপ ২০২৬-এ registration করে দাও — নাম: রফিকুল ইসলাম, ফোন: 01711223344",
+      "নাগরিক সংলাপে যোগ দিতে চাই",
+    ],
+    jsonExample: {
+      name: "register_nagorik_songlap_2026",
+      arguments: {
+        name: "রফিকুল ইসলাম",
+        phone: "01711223344",
+        comment: "পানি নিষ্কাশন নিয়ে কথা বলতে চাই",
+      },
+    },
+  },
+];
 
 export const Route = createFileRoute("/mcp-guide")({
   component: McpGuidePage,
@@ -262,6 +459,9 @@ function McpGuidePage() {
           </div>
         </section>
 
+        {/* Complete Tool Reference */}
+        <ToolReferenceSection />
+
         {/* Interactive Playground */}
         <ToolPlayground />
 
@@ -500,6 +700,156 @@ function ToolPlayground() {
           )}
         </div>
       )}
+    </section>
+  );
+}
+
+/* ============ Complete Tool Reference Section ============ */
+function ToolReferenceSection() {
+  const [copiedName, setCopiedName] = useState<string | null>(null);
+
+  const copyJson = async (name: string, obj: object) => {
+    try {
+      await navigator.clipboard.writeText(JSON.stringify(obj, null, 2));
+      setCopiedName(name);
+      setTimeout(() => setCopiedName(null), 1600);
+    } catch {}
+  };
+
+  return (
+    <section>
+      <h2 className="heading-display text-2xl md:text-3xl font-bold text-primary flex items-center gap-2">
+        <Code2 className="h-6 w-6 text-[var(--gold)]" />
+        সম্পূর্ণ টুল রেফারেন্স
+      </h2>
+      <p className="mt-2 text-muted-foreground text-sm">
+        প্রতিটি MCP টুলের উদ্দেশ্য, প্রয়োজনীয় parameter, return field, এবং পিএনসি-র জন্য প্রস্তুত উদাহরণ call — এক জায়গায়।
+      </p>
+
+      <div className="mt-6 space-y-6">
+        {TOOL_REFERENCE.map((t) => (
+          <article
+            key={t.name}
+            id={`tool-${t.name}`}
+            className="rounded-2xl border border-border bg-background overflow-hidden"
+          >
+            {/* Header */}
+            <div className="p-5 md:p-6 border-b border-border bg-gradient-to-br from-primary-soft/40 to-background">
+              <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                <h3 className="text-lg md:text-xl font-bold text-primary">{t.title}</h3>
+                <code className="font-mono text-sm text-foreground/70">{t.name}</code>
+              </div>
+              <p className="mt-2 text-sm text-foreground/85">{t.purpose}</p>
+              <div className="mt-3 flex flex-wrap gap-2 text-xs">
+                <span className="inline-flex items-center gap-1 rounded-full bg-primary/10 text-primary px-3 py-1">
+                  <ShieldCheck className="h-3 w-3" />
+                  {t.auth}
+                </span>
+              </div>
+            </div>
+
+            {/* Parameters */}
+            <div className="p-5 md:p-6 space-y-5">
+              <div>
+                <div className="text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-2">
+                  Parameters
+                </div>
+                {t.params.length === 0 ? (
+                  <p className="text-sm text-muted-foreground italic">কোনো parameter নেই।</p>
+                ) : (
+                  <div className="overflow-x-auto rounded-lg border border-border">
+                    <table className="w-full text-sm">
+                      <thead className="bg-muted/50">
+                        <tr>
+                          <th className="text-left px-3 py-2 font-semibold">Name</th>
+                          <th className="text-left px-3 py-2 font-semibold">Type</th>
+                          <th className="text-left px-3 py-2 font-semibold">বিবরণ</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {t.params.map((p) => (
+                          <tr key={p.name} className="border-t border-border align-top">
+                            <td className="px-3 py-2 font-mono text-xs">
+                              {p.name}
+                              {p.required && (
+                                <span className="ml-1 text-red-600 dark:text-red-400">*</span>
+                              )}
+                            </td>
+                            <td className="px-3 py-2 text-xs text-muted-foreground whitespace-nowrap">
+                              {p.type}
+                            </td>
+                            <td className="px-3 py-2 text-foreground/85">{p.desc}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+              </div>
+
+              {/* Returns */}
+              <div>
+                <div className="text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-2">
+                  Returns
+                </div>
+                <code className="block text-xs bg-muted/50 border border-border rounded-lg px-3 py-2 font-mono text-foreground/85 break-all">
+                  {t.returns}
+                </code>
+              </div>
+
+              {/* Example prompts */}
+              <div>
+                <div className="text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-2">
+                  উদাহরণ প্রম্পট (AI-কে যেভাবে বলবেন)
+                </div>
+                <ul className="space-y-2">
+                  {t.prompts.map((p, i) => (
+                    <li
+                      key={i}
+                      className="flex items-start gap-2 text-sm rounded-lg bg-muted/40 border border-border p-3"
+                    >
+                      <MessageSquare className="h-4 w-4 mt-0.5 text-[var(--gold)] shrink-0" />
+                      <span className="italic text-foreground/90">“{p}”</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              {/* JSON call example */}
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <div className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                    MCP tools/call payload
+                  </div>
+                  <button
+                    onClick={() => copyJson(t.name, t.jsonExample)}
+                    className="text-xs text-primary hover:underline inline-flex items-center gap-1"
+                  >
+                    {copiedName === t.name ? (
+                      <>
+                        <Check className="h-3 w-3" /> কপি হয়েছে
+                      </>
+                    ) : (
+                      <>
+                        <Copy className="h-3 w-3" /> কপি
+                      </>
+                    )}
+                  </button>
+                </div>
+                <pre className="text-xs bg-foreground/95 text-background rounded-lg p-4 overflow-x-auto leading-relaxed font-mono">
+{JSON.stringify(t.jsonExample, null, 2)}
+                </pre>
+              </div>
+            </div>
+          </article>
+        ))}
+      </div>
+
+      <div className="mt-6 rounded-xl border border-border bg-muted/30 p-4 text-xs text-muted-foreground">
+        <span className="font-semibold text-foreground">নোট:</span>{" "}
+        উপরের JSON payload গুলো MCP-এর <code className="font-mono">tools/call</code> method-এ পাঠানোর জন্য।
+        সাধারণ ব্যবহারকারী হিসেবে আপনি শুধু AI-কে বাংলায় জিজ্ঞেস করলেই AI নিজেই এই call তৈরি করে দেবে।
+      </div>
     </section>
   );
 }
