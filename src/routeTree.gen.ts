@@ -20,6 +20,7 @@ import { Route as EventsRouteImport } from './routes/events'
 import { Route as GalleryRouteImport } from './routes/gallery'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as McpRouteImport } from './routes/mcp'
+import { Route as McpGuideRouteImport } from './routes/mcp-guide'
 import { Route as MembershipRouteImport } from './routes/membership'
 import { Route as NagorikSonglap2026RouteImport } from './routes/nagorik-songlap-2026'
 import { Route as NoticesRouteImport } from './routes/notices'
@@ -86,6 +87,11 @@ const LoginRoute = LoginRouteImport.update({
 const McpRoute = McpRouteImport.update({
   id: '/mcp',
   path: '/mcp',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const McpGuideRoute = McpGuideRouteImport.update({
+  id: '/mcp-guide',
+  path: '/mcp-guide',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MembershipRoute = MembershipRouteImport.update({
@@ -165,6 +171,7 @@ export interface FileRoutesByFullPath {
   '/gallery': typeof GalleryRoute
   '/login': typeof LoginRoute
   '/mcp': typeof McpRoute
+  '/mcp-guide': typeof McpGuideRoute
   '/membership': typeof MembershipRoute
   '/nagorik-songlap-2026': typeof NagorikSonglap2026Route
   '/notices': typeof NoticesRouteWithChildren
@@ -190,6 +197,7 @@ export interface FileRoutesByTo {
   '/gallery': typeof GalleryRoute
   '/login': typeof LoginRoute
   '/mcp': typeof McpRoute
+  '/mcp-guide': typeof McpGuideRoute
   '/membership': typeof MembershipRoute
   '/nagorik-songlap-2026': typeof NagorikSonglap2026Route
   '/notices': typeof NoticesRouteWithChildren
@@ -216,6 +224,7 @@ export interface FileRoutesById {
   '/gallery': typeof GalleryRoute
   '/login': typeof LoginRoute
   '/mcp': typeof McpRoute
+  '/mcp-guide': typeof McpGuideRoute
   '/membership': typeof MembershipRoute
   '/nagorik-songlap-2026': typeof NagorikSonglap2026Route
   '/notices': typeof NoticesRouteWithChildren
@@ -243,6 +252,7 @@ export interface FileRouteTypes {
     | '/gallery'
     | '/login'
     | '/mcp'
+    | '/mcp-guide'
     | '/membership'
     | '/nagorik-songlap-2026'
     | '/notices'
@@ -268,6 +278,7 @@ export interface FileRouteTypes {
     | '/gallery'
     | '/login'
     | '/mcp'
+    | '/mcp-guide'
     | '/membership'
     | '/nagorik-songlap-2026'
     | '/notices'
@@ -293,6 +304,7 @@ export interface FileRouteTypes {
     | '/gallery'
     | '/login'
     | '/mcp'
+    | '/mcp-guide'
     | '/membership'
     | '/nagorik-songlap-2026'
     | '/notices'
@@ -319,6 +331,7 @@ export interface RootRouteChildren {
   GalleryRoute: typeof GalleryRoute
   LoginRoute: typeof LoginRoute
   McpRoute: typeof McpRoute
+  McpGuideRoute: typeof McpGuideRoute
   MembershipRoute: typeof MembershipRoute
   NagorikSonglap2026Route: typeof NagorikSonglap2026Route
   NoticesRoute: typeof NoticesRouteWithChildren
@@ -409,6 +422,13 @@ declare module '@tanstack/react-router' {
       path: '/mcp'
       fullPath: '/mcp'
       preLoaderRoute: typeof McpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/mcp-guide': {
+      id: '/mcp-guide'
+      path: '/mcp-guide'
+      fullPath: '/mcp-guide'
+      preLoaderRoute: typeof McpGuideRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/membership': {
@@ -521,6 +541,7 @@ const rootRouteChildren: RootRouteChildren = {
   GalleryRoute: GalleryRoute,
   LoginRoute: LoginRoute,
   McpRoute: McpRoute,
+  McpGuideRoute: McpGuideRoute,
   MembershipRoute: MembershipRoute,
   NagorikSonglap2026Route: NagorikSonglap2026Route,
   NoticesRoute: NoticesRouteWithChildren,
