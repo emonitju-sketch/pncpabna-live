@@ -116,7 +116,7 @@ function ConsentPage() {
             <Sparkles className="h-4 w-4 text-[var(--gold)]" /> অনুমতির বিবরণ
           </div>
           <ul className="mt-2 space-y-1 text-muted-foreground">
-            {scopes.map((s) => (
+            {scopes.map((s: string) => (
               <li key={s}>• {labelFor(s)}</li>
             ))}
           </ul>
