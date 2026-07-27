@@ -703,3 +703,153 @@ function ToolPlayground() {
     </section>
   );
 }
+
+/* ============ Complete Tool Reference Section ============ */
+function ToolReferenceSection() {
+  const [copiedName, setCopiedName] = useState<string | null>(null);
+
+  const copyJson = async (name: string, obj: object) => {
+    try {
+      await navigator.clipboard.writeText(JSON.stringify(obj, null, 2));
+      setCopiedName(name);
+      setTimeout(() => setCopiedName(null), 1600);
+    } catch {}
+  };
+
+  return (
+    <section>
+      <h2 className="heading-display text-2xl md:text-3xl font-bold text-primary flex items-center gap-2">
+        <Code2 className="h-6 w-6 text-[var(--gold)]" />
+        সম্পূর্ণ টুল রেফারেন্স
+      </h2>
+      <p className="mt-2 text-muted-foreground text-sm">
+        প্রতিটি MCP টুলের উদ্দেশ্য, প্রয়োজনীয় parameter, return field, এবং পিএনসি-র জন্য প্রস্তুত উদাহরণ call — এক জায়গায়।
+      </p>
+
+      <div className="mt-6 space-y-6">
+        {TOOL_REFERENCE.map((t) => (
+          <article
+            key={t.name}
+            id={`tool-${t.name}`}
+            className="rounded-2xl border border-border bg-background overflow-hidden"
+          >
+            {/* Header */}
+            <div className="p-5 md:p-6 border-b border-border bg-gradient-to-br from-primary-soft/40 to-background">
+              <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                <h3 className="text-lg md:text-xl font-bold text-primary">{t.title}</h3>
+                <code className="font-mono text-sm text-foreground/70">{t.name}</code>
+              </div>
+              <p className="mt-2 text-sm text-foreground/85">{t.purpose}</p>
+              <div className="mt-3 flex flex-wrap gap-2 text-xs">
+                <span className="inline-flex items-center gap-1 rounded-full bg-primary/10 text-primary px-3 py-1">
+                  <ShieldCheck className="h-3 w-3" />
+                  {t.auth}
+                </span>
+              </div>
+            </div>
+
+            {/* Parameters */}
+            <div className="p-5 md:p-6 space-y-5">
+              <div>
+                <div className="text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-2">
+                  Parameters
+                </div>
+                {t.params.length === 0 ? (
+                  <p className="text-sm text-muted-foreground italic">কোনো parameter নেই।</p>
+                ) : (
+                  <div className="overflow-x-auto rounded-lg border border-border">
+                    <table className="w-full text-sm">
+                      <thead className="bg-muted/50">
+                        <tr>
+                          <th className="text-left px-3 py-2 font-semibold">Name</th>
+                          <th className="text-left px-3 py-2 font-semibold">Type</th>
+                          <th className="text-left px-3 py-2 font-semibold">বিবরণ</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {t.params.map((p) => (
+                          <tr key={p.name} className="border-t border-border align-top">
+                            <td className="px-3 py-2 font-mono text-xs">
+                              {p.name}
+                              {p.required && (
+                                <span className="ml-1 text-red-600 dark:text-red-400">*</span>
+                              )}
+                            </td>
+                            <td className="px-3 py-2 text-xs text-muted-foreground whitespace-nowrap">
+                              {p.type}
+                            </td>
+                            <td className="px-3 py-2 text-foreground/85">{p.desc}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+              </div>
+
+              {/* Returns */}
+              <div>
+                <div className="text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-2">
+                  Returns
+                </div>
+                <code className="block text-xs bg-muted/50 border border-border rounded-lg px-3 py-2 font-mono text-foreground/85 break-all">
+                  {t.returns}
+                </code>
+              </div>
+
+              {/* Example prompts */}
+              <div>
+                <div className="text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-2">
+                  উদাহরণ প্রম্পট (AI-কে যেভাবে বলবেন)
+                </div>
+                <ul className="space-y-2">
+                  {t.prompts.map((p, i) => (
+                    <li
+                      key={i}
+                      className="flex items-start gap-2 text-sm rounded-lg bg-muted/40 border border-border p-3"
+                    >
+                      <MessageSquare className="h-4 w-4 mt-0.5 text-[var(--gold)] shrink-0" />
+                      <span className="italic text-foreground/90">“{p}”</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              {/* JSON call example */}
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <div className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                    MCP tools/call payload
+                  </div>
+                  <button
+                    onClick={() => copyJson(t.name, t.jsonExample)}
+                    className="text-xs text-primary hover:underline inline-flex items-center gap-1"
+                  >
+                    {copiedName === t.name ? (
+                      <>
+                        <Check className="h-3 w-3" /> কপি হয়েছে
+                      </>
+                    ) : (
+                      <>
+                        <Copy className="h-3 w-3" /> কপি
+                      </>
+                    )}
+                  </button>
+                </div>
+                <pre className="text-xs bg-foreground/95 text-background rounded-lg p-4 overflow-x-auto leading-relaxed font-mono">
+{JSON.stringify(t.jsonExample, null, 2)}
+                </pre>
+              </div>
+            </div>
+          </article>
+        ))}
+      </div>
+
+      <div className="mt-6 rounded-xl border border-border bg-muted/30 p-4 text-xs text-muted-foreground">
+        <span className="font-semibold text-foreground">নোট:</span>{" "}
+        উপরের JSON payload গুলো MCP-এর <code className="font-mono">tools/call</code> method-এ পাঠানোর জন্য।
+        সাধারণ ব্যবহারকারী হিসেবে আপনি শুধু AI-কে বাংলায় জিজ্ঞেস করলেই AI নিজেই এই call তৈরি করে দেবে।
+      </div>
+    </section>
+  );
+}
