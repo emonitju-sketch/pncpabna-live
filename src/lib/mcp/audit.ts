@@ -67,7 +67,7 @@ export function withAudit<I, R>(
 ): (input: I, ctx: ToolContext) => Promise<R> {
   const wrapped = async (input: I, ctx: ToolContext): Promise<R> => {
     const startedAt = Date.now();
-    let result: ToolResultLike;
+    let result: R;
     let threw: unknown = null;
     try {
       result = await handler(input, ctx);
