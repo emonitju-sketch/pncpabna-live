@@ -1,7 +1,9 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { PageHeader } from "@/components/site/PageHeader";
 import { Button } from "@/components/ui/button";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/use-auth";
 import {
   Copy,
   Check,
@@ -16,6 +18,8 @@ import {
   CalendarDays,
   UserPlus,
   MessageSquare,
+  Play,
+  Loader2,
 } from "lucide-react";
 
 export const Route = createFileRoute("/mcp-guide")({
