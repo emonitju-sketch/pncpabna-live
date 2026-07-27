@@ -196,6 +196,17 @@ const TOOLS: ToolSpec[] = [
 // Matrix: tool × scenario → expected allow/deny at the auth gate
 // ---------------------------------------------------------------------------
 describe("MCP auth matrix", () => {
+  // Freeze time to one day BEFORE the registration deadline so the register
+  // tool exercises its auth branches (email presence) rather than short-
+  // circuiting on the closed deadline once real time passes June 26 2026.
+  beforeAll(() => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date(REGISTRATION_DEADLINE.getTime() - 24 * 60 * 60 * 1000));
+  });
+  afterAll(() => {
+    vi.useRealTimers();
+  });
+
   for (const tool of TOOLS) {
     describe(tool.name, () => {
       for (const scenario of SCENARIOS) {
