@@ -1,4 +1,5 @@
 import { defineTool } from "@lovable.dev/mcp-js";
+import { withAudit } from "../audit";
 
 export default defineTool({
   name: "whoami",
@@ -7,7 +8,7 @@ export default defineTool({
     "Returns the currently signed-in Pabna Nagorik Committee user's id and email — useful to confirm the MCP connection is authenticated.",
   inputSchema: {},
   annotations: { readOnlyHint: true, idempotentHint: true, openWorldHint: false },
-  handler: (_input, ctx) => {
+  handler: withAudit("whoami", (_input, ctx) => {
     if (!ctx.isAuthenticated()) {
       return { content: [{ type: "text", text: "Not authenticated" }], isError: true };
     }
@@ -19,5 +20,5 @@ export default defineTool({
       content: [{ type: "text", text: JSON.stringify(payload) }],
       structuredContent: payload,
     };
-  },
+  }),
 });
