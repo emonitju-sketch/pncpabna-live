@@ -262,7 +262,10 @@ function McpGuidePage() {
           </div>
         </section>
 
-        {/* Tips / FAQ */}
+        {/* Interactive Playground */}
+        <ToolPlayground />
+
+
         <section className="rounded-2xl border border-border bg-muted/30 p-6 md:p-8">
           <h2 className="heading-display text-xl md:text-2xl font-bold text-primary">টিপস ও প্রায়শই জিজ্ঞাসিত প্রশ্ন</h2>
           <div className="mt-4 space-y-4 text-sm text-foreground/90">
