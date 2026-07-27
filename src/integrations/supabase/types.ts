@@ -357,6 +357,51 @@ export type Database = {
           },
         ]
       }
+      mcp_audit_logs: {
+        Row: {
+          client_id: string | null
+          created_at: string
+          duration_ms: number | null
+          error_message: string | null
+          id: string
+          input_summary: Json | null
+          ip_address: string | null
+          success: boolean
+          tool_name: string
+          user_agent: string | null
+          user_email: string | null
+          user_id: string | null
+        }
+        Insert: {
+          client_id?: string | null
+          created_at?: string
+          duration_ms?: number | null
+          error_message?: string | null
+          id?: string
+          input_summary?: Json | null
+          ip_address?: string | null
+          success: boolean
+          tool_name: string
+          user_agent?: string | null
+          user_email?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          client_id?: string | null
+          created_at?: string
+          duration_ms?: number | null
+          error_message?: string | null
+          id?: string
+          input_summary?: Json | null
+          ip_address?: string | null
+          success?: boolean
+          tool_name?: string
+          user_agent?: string | null
+          user_email?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       news: {
         Row: {
           body_bn: string | null
