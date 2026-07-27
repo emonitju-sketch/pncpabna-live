@@ -1,4 +1,5 @@
 import { defineTool } from "@lovable.dev/mcp-js";
+import { withAudit } from "../audit";
 
 export default defineTool({
   name: "whoami",
