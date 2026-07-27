@@ -113,4 +113,5 @@ export function withAudit<H extends (input: any, ctx: ToolContext) => any>(
     if (threw) throw threw;
     return result;
   };
+  return wrapped as unknown as H;
 }
