@@ -459,6 +459,9 @@ function McpGuidePage() {
           </div>
         </section>
 
+        {/* Complete Tool Reference */}
+        <ToolReferenceSection />
+
         {/* Interactive Playground */}
         <ToolPlayground />
 
