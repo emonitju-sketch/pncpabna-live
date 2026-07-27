@@ -19,7 +19,7 @@ export default defineTool({
     limit: z.number().int().min(1).max(50).optional().describe("Max rows (default 20)."),
   },
   annotations: { readOnlyHint: true, idempotentHint: true, openWorldHint: false },
-  handler: async ({ category, limit }, ctx) => {
+  handler: withAudit("list_activities", async ({ category, limit }, ctx) => {
     if (!ctx.isAuthenticated()) {
       return { content: [{ type: "text", text: "Not authenticated" }], isError: true };
     }
@@ -42,5 +42,5 @@ export default defineTool({
       content: [{ type: "text", text: JSON.stringify(data ?? []) }],
       structuredContent: { activities: data ?? [] },
     };
-  },
+  }),
 });
