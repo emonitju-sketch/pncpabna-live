@@ -66,6 +66,7 @@ function AdminPage() {
     { id: "reports", label: "প্রতিবেদন", icon: FileText },
     { id: "registrations", label: "নিবন্ধন", icon: Users },
     { id: "audit", label: "অডিট লগ", icon: History },
+    { id: "mcp", label: "MCP মনিটর", icon: Activity },
   ];
 
   return (
