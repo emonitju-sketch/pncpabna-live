@@ -76,7 +76,7 @@ export function withAudit<H extends (input: any, ctx: ToolContext) => any>(
       result = {
         content: [{ type: "text", text: err instanceof Error ? err.message : "Internal error" }],
         isError: true,
-      } as unknown as R;
+      };
     }
     const durationMs = Date.now() - startedAt;
     const success = !result.isError && !threw;
