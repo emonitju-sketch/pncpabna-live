@@ -11,7 +11,7 @@ export default defineTool({
     slug: z.string().trim().min(1).max(200).describe("The notice slug."),
   },
   annotations: { readOnlyHint: true, idempotentHint: true, openWorldHint: false },
-  handler: async ({ slug }, ctx) => {
+  handler: withAudit("get_notice", async ({ slug }, ctx) => {
     if (!ctx.isAuthenticated()) {
       return { content: [{ type: "text", text: "Not authenticated" }], isError: true };
     }
@@ -33,5 +33,5 @@ export default defineTool({
       content: [{ type: "text", text: JSON.stringify(data) }],
       structuredContent: { notice: data },
     };
-  },
+  }),
 });
