@@ -20,7 +20,204 @@ import {
   MessageSquare,
   Play,
   Loader2,
+  Code2,
 } from "lucide-react";
+
+/* ============ Complete Tool Reference data ============ */
+type ParamRow = {
+  name: string;
+  type: string;
+  required: boolean;
+  desc: string;
+};
+
+type ToolReference = {
+  name: string;
+  title: string;
+  purpose: string;
+  auth: string;
+  returns: string;
+  params: ParamRow[];
+  prompts: string[];
+  jsonExample: object;
+  curlExample?: string;
+};
+
+const TOOL_REFERENCE: ToolReference[] = [
+  {
+    name: "whoami",
+    title: "আমি কে?",
+    purpose:
+      "বর্তমান MCP সংযোগে কোন পিএনসি user sign-in করা আছে তা যাচাই করে — সংযোগ ও authentication debug করার প্রথম টুল।",
+    auth: "Sign-in আবশ্যক",
+    returns: "user_id (UUID), email",
+    params: [],
+    prompts: ["আমি কে হিসেবে sign in করা আছি?", "MCP সংযোগ ঠিক আছে কিনা যাচাই কর"],
+    jsonExample: { name: "whoami", arguments: {} },
+  },
+  {
+    name: "list_activities",
+    title: "কার্যক্রম তালিকা",
+    purpose:
+      "পিএনসি-র প্রকাশিত সব কার্যক্রম (activities) সর্বশেষ তারিখ অনুযায়ী তালিকা আকারে আনে — featured কার্যক্রম উপরে থাকে।",
+    auth: "Sign-in আবশ্যক",
+    returns: "id, title_bn, description_bn, category, activity_date, location, is_featured, external_url, cover_image_path",
+    params: [
+      {
+        name: "category",
+        type: "string (optional)",
+        required: false,
+        desc: "ক্যাটেগরি ফিল্টার — যেমন: জনস্বার্থ, নাগরিক মতামত, নাগরিক সমর্থন।",
+      },
+      {
+        name: "limit",
+        type: "number 1–50 (optional)",
+        required: false,
+        desc: "সর্বাধিক কতটি row ফেরত দিবে। ডিফল্ট: 20।",
+      },
+    ],
+    prompts: [
+      "পিএনসি-র সাম্প্রতিক ১০টি কার্যক্রম দেখাও",
+      "জনস্বার্থ ক্যাটেগরির কার্যক্রমগুলো তালিকা কর",
+      "সাম্প্রতিক featured কার্যক্রম কী কী?",
+    ],
+    jsonExample: {
+      name: "list_activities",
+      arguments: { category: "জনস্বার্থ", limit: 10 },
+    },
+  },
+  {
+    name: "list_notices",
+    title: "নোটিশ তালিকা",
+    purpose:
+      "নোটিশ বোর্ডের সক্রিয় ঘোষণা/নোটিশ — priority ও starts_at অনুযায়ী সাজানো।",
+    auth: "Sign-in আবশ্যক",
+    returns: "id, slug, title_bn, category, priority, starts_at, expires_at, cover_image_path",
+    params: [
+      {
+        name: "category",
+        type: "string (optional)",
+        required: false,
+        desc: "ক্যাটেগরি — ঘোষণা, নোটিশ, সভা ইত্যাদি।",
+      },
+      {
+        name: "search",
+        type: "string (optional)",
+        required: false,
+        desc: "শিরোনামে টেক্সট খোঁজে (case-insensitive)।",
+      },
+      {
+        name: "limit",
+        type: "number 1–50 (optional)",
+        required: false,
+        desc: "সর্বাধিক row। ডিফল্ট: 20।",
+      },
+    ],
+    prompts: [
+      "সর্বশেষ ৫টি নোটিশ দেখাও",
+      "‘সভা’ ক্যাটেগরির সব নোটিশ তালিকা কর",
+      "‘সংলাপ’ শব্দ আছে এমন নোটিশ খোঁজো",
+    ],
+    jsonExample: {
+      name: "list_notices",
+      arguments: { category: "সভা", limit: 5 },
+    },
+  },
+  {
+    name: "get_notice",
+    title: "নোটিশ বিস্তারিত",
+    purpose:
+      "একটি নির্দিষ্ট নোটিশের সম্পূর্ণ body সহ বিবরণ ফেরত দেয় — slug দিয়ে খোঁজা হয়। list_notices থেকে slug পাওয়া যায়।",
+    auth: "Sign-in আবশ্যক",
+    returns: "id, slug, title_bn, body_bn (full), category, priority, starts_at, expires_at, cover_image_path, is_active",
+    params: [
+      {
+        name: "slug",
+        type: "string (required)",
+        required: true,
+        desc: "নোটিশের unique slug — যেমন: nagorik-songlap-2026।",
+      },
+    ],
+    prompts: [
+      "‘nagorik-songlap-2026’ নোটিশটি সম্পূর্ণ পড়ে শোনাও",
+      "সর্বশেষ নোটিশটির বিস্তারিত বিবরণ দাও",
+    ],
+    jsonExample: {
+      name: "get_notice",
+      arguments: { slug: "nagorik-songlap-2026" },
+    },
+  },
+  {
+    name: "list_events",
+    title: "ইভেন্ট তালিকা",
+    purpose:
+      "আসন্ন ও অতীত ইভেন্ট — event_date অনুযায়ী ascending। চাইলে শুধু open registration-এর ইভেন্ট আনা যায়।",
+    auth: "Sign-in আবশ্যক",
+    returns: "id, title, description, event_date, location, registration_open, cover_image_path",
+    params: [
+      {
+        name: "only_open",
+        type: "boolean (optional)",
+        required: false,
+        desc: "true দিলে শুধু registration_open = true ইভেন্ট।",
+      },
+      {
+        name: "limit",
+        type: "number 1–50 (optional)",
+        required: false,
+        desc: "সর্বাধিক row। ডিফল্ট: 20।",
+      },
+    ],
+    prompts: [
+      "সামনের ইভেন্টগুলো কী কী?",
+      "যেসব ইভেন্টে registration খোলা আছে সেগুলো দেখাও",
+    ],
+    jsonExample: {
+      name: "list_events",
+      arguments: { only_open: true, limit: 10 },
+    },
+  },
+  {
+    name: "register_nagorik_songlap_2026",
+    title: "নাগরিক সংলাপ ২০২৬ রেজিস্ট্রেশন",
+    purpose:
+      "Sign-in করা user-কে নাগরিক সংলাপ ২০২৬ কর্মসূচিতে নিবন্ধন করে। Deadline ২৬ জুন ২০২৬ — server-side enforce করা।",
+    auth: "Sign-in আবশ্যক · Deadline: ২৬ জুন ২০২৬",
+    returns: "success (bool), message (bn)",
+    params: [
+      {
+        name: "name",
+        type: "string (required, 2–100)",
+        required: true,
+        desc: "নিবন্ধনকারীর পূর্ণ নাম।",
+      },
+      {
+        name: "phone",
+        type: "string (required, 10–20)",
+        required: true,
+        desc: "মোবাইল নম্বর — digits, +, -, space, () allowed।",
+      },
+      {
+        name: "comment",
+        type: "string (optional, ≤1000)",
+        required: false,
+        desc: "ঐচ্ছিক মন্তব্য বা প্রশ্ন।",
+      },
+    ],
+    prompts: [
+      "আমাকে নাগরিক সংলাপ ২০২৬-এ registration করে দাও — নাম: রফিকুল ইসলাম, ফোন: 01711223344",
+      "নাগরিক সংলাপে যোগ দিতে চাই",
+    ],
+    jsonExample: {
+      name: "register_nagorik_songlap_2026",
+      arguments: {
+        name: "রফিকুল ইসলাম",
+        phone: "01711223344",
+        comment: "পানি নিষ্কাশন নিয়ে কথা বলতে চাই",
+      },
+    },
+  },
+];
 
 export const Route = createFileRoute("/mcp-guide")({
   component: McpGuidePage,
