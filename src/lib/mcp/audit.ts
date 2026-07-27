@@ -114,5 +114,5 @@ export function withAudit<I, R>(
     if (threw) throw threw;
     return result;
   };
-  return wrapped as unknown as H;
+  return wrapped;
 }
