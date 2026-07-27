@@ -21,7 +21,7 @@ export default defineTool({
     comment: z.string().trim().max(1000).optional().describe("Optional comment or question."),
   },
   annotations: { readOnlyHint: false, destructiveHint: false, openWorldHint: false },
-  handler: async ({ name, phone, comment }, ctx) => {
+  handler: withAudit("register_nagorik_songlap_2026", async ({ name, phone, comment }, ctx) => {
     if (!ctx.isAuthenticated()) {
       return { content: [{ type: "text", text: "Not authenticated" }], isError: true };
     }
@@ -53,5 +53,5 @@ export default defineTool({
       content: [{ type: "text", text: msg }],
       structuredContent: { success: true, message: msg },
     };
-  },
+  }),
 });
