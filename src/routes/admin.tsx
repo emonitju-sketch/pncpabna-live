@@ -105,6 +105,7 @@ function AdminPage() {
       {tab === "reports" && <ReportsAdmin />}
       {tab === "registrations" && <RegistrationsAdmin />}
       {tab === "audit" && <AuditAdmin />}
+      {tab === "mcp" && <MCPMonitor />}
     </section>
   );
 }
