@@ -10,9 +10,12 @@ import { Lock, LogIn } from "lucide-react";
 export const Route = createFileRoute("/login")({
   head: () => ({
     meta: [
-      { title: "অ্যাডমিন লগইন — পিএনসি" },
+      { title: "লগইন — পিএনসি" },
       { name: "robots", content: "noindex" },
     ],
+  }),
+  validateSearch: (s: Record<string, unknown>) => ({
+    next: typeof s.next === "string" ? s.next : "",
   }),
   component: LoginPage,
 });
@@ -22,8 +25,16 @@ const schema = z.object({
   password: z.string().min(6, "পাসওয়ার্ড অন্তত ৬ অক্ষরের হতে হবে").max(72),
 });
 
+// Only allow same-origin relative paths as post-login redirect.
+function safeNext(next: string | undefined): string | null {
+  if (!next) return null;
+  if (!next.startsWith("/") || next.startsWith("//")) return null;
+  return next;
+}
+
 function LoginPage() {
   const navigate = useNavigate();
+  const { next } = Route.useSearch();
   const [busy, setBusy] = useState(false);
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -36,7 +47,12 @@ function LoginPage() {
       const { error } = await supabase.auth.signInWithPassword(parsed.data);
       if (error) throw error;
       toast.success("সফলভাবে লগইন হয়েছে");
-      navigate({ to: "/admin" });
+      const dest = safeNext(next);
+      if (dest) {
+        window.location.href = dest;
+      } else {
+        navigate({ to: "/admin" });
+      }
     } catch (err) {
       console.error(err);
       toast.error("ইমেইল বা পাসওয়ার্ড সঠিক নয়।");

@@ -1,0 +1,193 @@
+{
+  "version": 1,
+  "sdk_version": "0.24.0",
+  "path": "/mcp",
+  "auth": {
+    "type": "oauth",
+    "issuer": "https://nkmnzldsrgbwyratihms.supabase.co/auth/v1",
+    "accepted_audiences": [
+      "authenticated"
+    ]
+  },
+  "mcp": {
+    "server": {
+      "name": "pnc-pabna-mcp",
+      "version": "0.1.0",
+      "title": "পাবনা নাগরিক কমিটি (PNC)"
+    },
+    "tools": [
+      {
+        "name": "whoami",
+        "title": "Signed-in user",
+        "description": "Returns the currently signed-in Pabna Nagorik Committee user's id and email — useful to confirm the MCP connection is authenticated.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {}
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "list_activities",
+        "title": "List activities",
+        "description": "List published PNC civic activities (কার্যক্রম), most recent first. Optional category filter and limit.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "category": {
+              "description": "Optional category filter, e.g. জনস্বার্থ, নাগরিক মতামত.",
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 60
+            },
+            "limit": {
+              "description": "Max rows (default 20).",
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 50
+            }
+          }
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "list_notices",
+        "title": "List notice board",
+        "description": "List active PNC notice board announcements (নোটিশ বোর্ড), sorted by priority and start date.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "category": {
+              "description": "Optional category filter, e.g. ঘোষণা, নোটিশ, সভা.",
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 60
+            },
+            "search": {
+              "description": "Text search in title.",
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 120
+            },
+            "limit": {
+              "description": "Max rows (default 20).",
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 50
+            }
+          }
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "get_notice",
+        "title": "Get notice",
+        "description": "Fetch a single PNC notice by slug, including full body text.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "slug": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200,
+              "description": "The notice slug."
+            }
+          },
+          "required": [
+            "slug"
+          ]
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "list_events",
+        "title": "List events",
+        "description": "List PNC events, upcoming first. Optionally include only events with open registration.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "only_open": {
+              "description": "If true, only events with registration currently open.",
+              "type": "boolean"
+            },
+            "limit": {
+              "description": "Max rows (default 20).",
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 50
+            }
+          }
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "register_nagorik_songlap_2026",
+        "title": "Register for নাগরিক সংলাপ ২০২৬",
+        "description": "Register the signed-in user for the PNC নাগরিক সংলাপ ২০২৬ civic dialogue program. The deadline is enforced server-side.",
+        "annotations": {
+          "readOnlyHint": false,
+          "destructiveHint": false,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "minLength": 2,
+              "maxLength": 100,
+              "description": "Full name of the registrant."
+            },
+            "phone": {
+              "type": "string",
+              "minLength": 10,
+              "maxLength": 20,
+              "pattern": "^[0-9+\\-\\s()]+$",
+              "description": "Mobile phone number."
+            },
+            "comment": {
+              "description": "Optional comment or question.",
+              "type": "string",
+              "maxLength": 1000
+            }
+          },
+          "required": [
+            "name",
+            "phone"
+          ]
+        },
+        "outputSchema": null
+      }
+    ]
+  }
+}
