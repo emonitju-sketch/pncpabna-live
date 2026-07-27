@@ -1,6 +1,7 @@
 import { defineTool } from "@lovable.dev/mcp-js";
 import { z } from "zod";
 import { supabaseForUser } from "../supabase";
+import { withAudit } from "../audit";
 import { isRegistrationOpen, CLOSED_MESSAGE_BN } from "@/lib/nagorik-songlap";
 
 export default defineTool({
