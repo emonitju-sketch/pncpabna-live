@@ -15,7 +15,7 @@ export default defineTool({
     limit: z.number().int().min(1).max(50).optional().describe("Max rows (default 20)."),
   },
   annotations: { readOnlyHint: true, idempotentHint: true, openWorldHint: false },
-  handler: async ({ only_open, limit }, ctx) => {
+  handler: withAudit("list_events", async ({ only_open, limit }, ctx) => {
     if (!ctx.isAuthenticated()) {
       return { content: [{ type: "text", text: "Not authenticated" }], isError: true };
     }
@@ -33,5 +33,5 @@ export default defineTool({
       content: [{ type: "text", text: JSON.stringify(data ?? []) }],
       structuredContent: { events: data ?? [] },
     };
-  },
+  }),
 });
