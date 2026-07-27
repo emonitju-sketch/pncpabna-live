@@ -18,7 +18,7 @@ export const Route = createFileRoute("/admin")({
 });
 
 const GALLERY_CATEGORIES = ["সভা ও আলোচনা", "সামাজিক উদ্যোগ", "মানবিক কার্যক্রম", "শুভেচ্ছা ও সম্মাননা", "পাবনার মুহূর্ত"];
-type Tab = "studio" | "events" | "gallery" | "reports" | "registrations" | "audit";
+type Tab = "studio" | "events" | "gallery" | "reports" | "registrations" | "audit" | "mcp";
 
 function AdminPage() {
   const { user, loading } = useAuth();
