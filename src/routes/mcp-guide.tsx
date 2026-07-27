@@ -1,7 +1,9 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { PageHeader } from "@/components/site/PageHeader";
 import { Button } from "@/components/ui/button";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/use-auth";
 import {
   Copy,
   Check,
@@ -16,6 +18,8 @@ import {
   CalendarDays,
   UserPlus,
   MessageSquare,
+  Play,
+  Loader2,
 } from "lucide-react";
 
 export const Route = createFileRoute("/mcp-guide")({
@@ -258,7 +262,10 @@ function McpGuidePage() {
           </div>
         </section>
 
-        {/* Tips / FAQ */}
+        {/* Interactive Playground */}
+        <ToolPlayground />
+
+
         <section className="rounded-2xl border border-border bg-muted/30 p-6 md:p-8">
           <h2 className="heading-display text-xl md:text-2xl font-bold text-primary">টিপস ও প্রায়শই জিজ্ঞাসিত প্রশ্ন</h2>
           <div className="mt-4 space-y-4 text-sm text-foreground/90">
@@ -290,5 +297,209 @@ function McpGuidePage() {
         </section>
       </main>
     </div>
+  );
+}
+
+/* ============ Interactive Tool Playground ============ */
+type ToolId = "list_notices" | "list_events" | "whoami";
+
+const TOOL_OPTIONS: { id: ToolId; label: string; icon: any; prompt: string; desc: string }[] = [
+  {
+    id: "list_notices",
+    label: "list_notices",
+    icon: FileText,
+    prompt: "সাম্প্রতিক ৫টি নোটিশ দেখাও",
+    desc: "সক্রিয় নোটিশগুলোর তালিকা আনে।",
+  },
+  {
+    id: "list_events",
+    label: "list_events",
+    icon: CalendarDays,
+    prompt: "আসন্ন ইভেন্টগুলো দেখাও যেখানে registration খোলা আছে",
+    desc: "ইভেন্ট তালিকা, চাইলে শুধু open registration।",
+  },
+  {
+    id: "whoami",
+    label: "whoami",
+    icon: UserCircle,
+    prompt: "আমি কে? আমার MCP সংযোগ যাচাই কর",
+    desc: "বর্তমান sign-in করা user-এর তথ্য।",
+  },
+];
+
+function ToolPlayground() {
+  const { user, loading } = useAuth();
+  const [selected, setSelected] = useState<ToolId>("list_notices");
+  const [limit, setLimit] = useState(5);
+  const [onlyOpen, setOnlyOpen] = useState(true);
+  const [running, setRunning] = useState(false);
+  const [result, setResult] = useState<any>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  const active = TOOL_OPTIONS.find((t) => t.id === selected)!;
+
+  const run = async () => {
+    setRunning(true);
+    setError(null);
+    setResult(null);
+    try {
+      if (selected === "list_notices") {
+        const { data, error } = await supabase
+          .from("notices")
+          .select("id,slug,title_bn,category,priority,starts_at,expires_at")
+          .eq("is_active", true)
+          .order("priority", { ascending: false })
+          .order("starts_at", { ascending: false })
+          .limit(limit);
+        if (error) throw error;
+        setResult({ notices: data ?? [] });
+      } else if (selected === "list_events") {
+        let q = supabase
+          .from("events")
+          .select("id,title,description,event_date,location,registration_open")
+          .order("event_date", { ascending: true })
+          .limit(limit);
+        if (onlyOpen) q = q.eq("registration_open", true);
+        const { data, error } = await q;
+        if (error) throw error;
+        setResult({ events: data ?? [] });
+      } else {
+        setResult({
+          user_id: user?.id ?? null,
+          email: user?.email ?? null,
+          authenticated: !!user,
+        });
+      }
+    } catch (e: any) {
+      setError(e?.message ?? "Unknown error");
+    } finally {
+      setRunning(false);
+    }
+  };
+
+  return (
+    <section className="rounded-2xl border border-primary/20 bg-gradient-to-br from-primary-soft/40 to-background p-6 md:p-8 shadow-elegant">
+      <div className="flex items-start gap-3">
+        <div className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-primary text-primary-foreground shrink-0">
+          <Play className="h-5 w-5" />
+        </div>
+        <div>
+          <h2 className="heading-display text-2xl md:text-3xl font-bold text-primary">টুল চালিয়ে দেখুন</h2>
+          <p className="text-sm text-muted-foreground mt-1">
+            নিচের টুলগুলো এখানেই লাইভ চালিয়ে দেখুন — MCP টুল ঠিক এই ডেটাই ফেরত দেয়।
+          </p>
+        </div>
+      </div>
+
+      {!loading && !user && (
+        <div className="mt-6 rounded-xl border border-border bg-card p-5">
+          <p className="text-sm text-foreground">
+            টুল চালাতে প্রথমে{" "}
+            <Link to="/login" className="text-primary font-semibold underline">
+              sign in
+            </Link>{" "}
+            করুন। MCP টুলগুলোও আপনার session ব্যবহার করেই ডেটা দেখায়।
+          </p>
+        </div>
+      )}
+
+      {user && (
+        <div className="mt-6 space-y-5">
+          {/* Tool selector */}
+          <div className="flex flex-wrap gap-2">
+            {TOOL_OPTIONS.map((t) => {
+              const Icon = t.icon;
+              const isActive = selected === t.id;
+              return (
+                <button
+                  key={t.id}
+                  onClick={() => {
+                    setSelected(t.id);
+                    setResult(null);
+                    setError(null);
+                  }}
+                  className={`inline-flex items-center gap-2 rounded-lg border px-3 py-2 text-sm font-mono transition ${
+                    isActive
+                      ? "bg-primary text-primary-foreground border-primary"
+                      : "bg-card border-border hover:bg-muted"
+                  }`}
+                >
+                  <Icon className="h-4 w-4" />
+                  {t.label}
+                </button>
+              );
+            })}
+          </div>
+
+          <p className="text-sm text-muted-foreground">{active.desc}</p>
+
+          {/* Params */}
+          {(selected === "list_notices" || selected === "list_events") && (
+            <div className="flex flex-wrap items-center gap-4 text-sm">
+              <label className="inline-flex items-center gap-2">
+                <span className="text-foreground">limit:</span>
+                <input
+                  type="number"
+                  min={1}
+                  max={20}
+                  value={limit}
+                  onChange={(e) => setLimit(Math.max(1, Math.min(20, Number(e.target.value) || 1)))}
+                  className="w-20 rounded-md border border-border bg-background px-2 py-1"
+                />
+              </label>
+              {selected === "list_events" && (
+                <label className="inline-flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    checked={onlyOpen}
+                    onChange={(e) => setOnlyOpen(e.target.checked)}
+                  />
+                  <span className="text-foreground">only_open</span>
+                </label>
+              )}
+            </div>
+          )}
+
+          {/* Sample prompt */}
+          <div className="rounded-lg border border-border bg-card p-3">
+            <div className="text-xs font-semibold text-muted-foreground mb-1">💬 AI-কে যেভাবে বলবেন:</div>
+            <p className="text-sm text-foreground italic">"{active.prompt}"</p>
+          </div>
+
+          {/* Run button */}
+          <Button onClick={run} disabled={running} className="gap-2">
+            {running ? <Loader2 className="h-4 w-4 animate-spin" /> : <Play className="h-4 w-4" />}
+            {running ? "চলছে..." : "টুল চালান"}
+          </Button>
+
+          {/* Result */}
+          {error && (
+            <div className="rounded-lg border border-red-500/40 bg-red-500/10 p-4 text-sm text-red-700 dark:text-red-400">
+              <div className="font-semibold mb-1">Error</div>
+              <div>{error}</div>
+            </div>
+          )}
+
+          {result && (
+            <div className="rounded-lg border border-border bg-background overflow-hidden">
+              <div className="flex items-center justify-between px-3 py-2 bg-muted/50 border-b border-border">
+                <span className="text-xs font-mono text-muted-foreground">
+                  {active.label} → response
+                </span>
+                <button
+                  onClick={() => navigator.clipboard.writeText(JSON.stringify(result, null, 2))}
+                  className="text-xs text-primary hover:underline inline-flex items-center gap-1"
+                >
+                  <Copy className="h-3 w-3" /> copy
+                </button>
+              </div>
+              <pre className="p-4 text-xs overflow-x-auto max-h-96 leading-relaxed">
+{JSON.stringify(result, null, 2)}
+              </pre>
+            </div>
+          )}
+        </div>
+      )}
+    </section>
   );
 }
